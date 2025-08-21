@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "32902740595",
+    "project_id": "gizmostore-2a3ff",
+    "storage_bucket": "gizmostore-2a3ff.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:32902740595:android:bec80d1f18d70dfb8fc806",
+        "android_client_info": {
+          "package_name": "com.example.gizmo_store"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_iLiUfhwwkgcWjnM_mUqiKrmotqtdoX0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

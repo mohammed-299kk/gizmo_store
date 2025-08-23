@@ -8,12 +8,13 @@ import 'package:gizmo_store/screens/auth/auth_screen.dart';
 import 'package:gizmo_store/screens/product/products_screen.dart';
 import 'package:gizmo_store/screens/product/product_detail_screen.dart';
 import 'package:gizmo_store/models/product.dart';
+import 'package:gizmo_store/screens/splash_screen.dart';
 
 class AppRoutes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => const HomeScreen());
+        return MaterialPageRoute(builder: (_) => const SplashScreen());
       case '/home':
         return MaterialPageRoute(builder: (_) => const HomeScreen());
       case '/profile':

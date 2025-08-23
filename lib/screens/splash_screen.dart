@@ -1,10 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
-import 'package:firebase_ui_auth/firebase_ui_auth.dart' as ui_auth;
-import 'package:gizmo_store/screens/home/home_screen.dart';
-import 'auth/auth_screen.dart'; // استيراد شاشة المصادقة
+import 'package:flutter/material.dart';
+import 'auth_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,74 +9,149 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
+
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 3), () {
-      // الانتقال مباشرة إلى شاشة تسجيل الدخول / التسجيل
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const AuthGate()),
+    _setupAnimations();
+    _navigateToAuth();
+  }
+
+  void _setupAnimations() {
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 2000),
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: const Interval(0.0, 0.6, curve: Curves.easeInOut),
+    ));
+
+    _scaleAnimation = Tween<double>(
+      begin: 0.5,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: const Interval(0.2, 0.8, curve: Curves.elasticOut),
+    ));
+
+    _animationController.forward();
+  }
+
+  Future<void> _navigateToAuth() async {
+    // انتظار لإظهار الرسوم المتحركة
+    await Future.delayed(const Duration(milliseconds: 3000));
+
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const AuthScreen(),
+        ),
       );
-    });
+    }
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFB71C1C),
+      backgroundColor: const Color(0xFF1A1A1A),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
+        child: AnimatedBuilder(
+          animation: _animationController,
+          builder: (context, child) {
+            return FadeTransition(
+              opacity: _fadeAnimation,
+              child: ScaleTransition(
+                scale: _scaleAnimation,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // شعار التطبيق
+                    Container(
+                      width: 150,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFB71C1C),
+                        borderRadius: BorderRadius.circular(25),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.4),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.shopping_bag,
+                        size: 80,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+
+                    // اسم التطبيق
+                    const Text(
+                      'Gizmo Store',
+                      style: TextStyle(
+                        fontSize: 42,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    const Text(
+                      'متجر الإلكترونيات الذكي',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white70,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                    const SizedBox(height: 60),
+
+                    // مؤشر التحميل
+                    const SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Color(0xFFB71C1C),
+                        ),
+                        strokeWidth: 3,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'جاري التحميل...',
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              child: const Icon(
-                Icons.shopping_bag,
-                size: 60,
-                color: Color(0xFFB71C1C),
-              ),
-            ),
-            const SizedBox(height: 30),
-            const Text(
-              'Gizmo Store',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'متجر الإلكترونيات الذكي',
-              style: TextStyle(fontSize: 16, color: Colors.white70),
-            ),
-          ],
+            );
+          },
         ),
       ),
-    );
-  }
-}
-
-class AuthGate extends StatelessWidget {
-  const AuthGate({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return const HomeScreen();
-        } else {
-          return const AuthScreen(); // شاشة تسجيل الدخول
-        }
-      },
     );
   }
 }

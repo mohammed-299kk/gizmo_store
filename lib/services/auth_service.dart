@@ -2,7 +2,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  static final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // Stream لتتبع تغييرات حالة المستخدم (تسجيل دخول/خروج)
   Stream<User?> get userChanges => _auth.authStateChanges();
@@ -52,7 +52,7 @@ class AuthService {
   }
 
   // تسجيل الخروج
-  Future<void> signOut() async {
+  static Future<void> signOut() async {
     try {
       await _auth.signOut();
     } catch (e) {

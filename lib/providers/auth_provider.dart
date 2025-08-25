@@ -26,6 +26,10 @@ class AuthProvider with ChangeNotifier {
     try {
       _setLoading(true);
       _errorMessage = null;
+      // Clear previous session before signing in
+      if (_auth.currentUser != null) {
+        await _auth.signOut();
+      }
       await _auth.signInWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {
       _errorMessage = _getAuthErrorMessage(e.code);

@@ -1,3 +1,4 @@
+import 'package:gizmo_store/screens/categories_screen.dart';
 import 'package:flutter/material.dart';
 import '../../services/product_service.dart';
 import '../../services/cart_service.dart';
@@ -155,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 0:
         return _buildHomeTab();
       case 1:
-        return _buildCategoriesTab();
+        return const CategoriesScreen();
       case 2:
         return _buildFavoritesTab();
       case 3:
@@ -372,7 +373,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '${product.price.toStringAsFixed(0)} ر.س',
+                              '${product.price.toStringAsFixed(0)} ج.س',
                               style: const TextStyle(
                                 color: Color(0xFFB71C1C),
                                 fontSize: 16,
@@ -418,106 +419,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildCategoriesTab() {
-    final categories = [
-      {'name': 'هواتف', 'icon': Icons.phone_android, 'count': 0},
-      {'name': 'حاسوب', 'icon': Icons.laptop_mac, 'count': 0},
-      {'name': 'سماعات', 'icon': Icons.headphones, 'count': 0},
-      {'name': 'تابلت', 'icon': Icons.tablet_mac, 'count': 0},
-      {'name': 'ساعات', 'icon': Icons.watch, 'count': 0},
-      {'name': 'تلفزيون', 'icon': Icons.tv, 'count': 0},
-    ];
-
-    // حساب عدد المنتجات في كل فئة
-    for (var category in categories) {
-      category['count'] = _products
-          .where((product) => product.category == category['name'])
-          .length;
-    }
-
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'الفئات',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 20),
-          Expanded(
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 1.2,
-              ),
-              itemCount: categories.length,
-              itemBuilder: (context, index) {
-                final category = categories[index];
-                return GestureDetector(
-                  onTap: () {
-                    // TODO: إضافة شاشة منتجات الفئة
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('فئة ${category['name']} قريباً!'),
-                        backgroundColor: const Color(0xFFB71C1C),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF2A2A2A),
-                      borderRadius: BorderRadius.circular(15),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          category['icon'] as IconData,
-                          size: 40,
-                          color: const Color(0xFFB71C1C),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          category['name'] as String,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '${category['count']} منتج',
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  
 
   Widget _buildFavoritesTab() {
     return const Center(

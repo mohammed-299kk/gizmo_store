@@ -39,6 +39,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
             subtitle: 'إدارة كلمة المرور والأمان',
             onTap: () => _showComingSoon('الأمان والخصوصية'),
           ),
+          _buildSettingTile(
+            icon: Icons.location_on,
+            title: 'العناوين',
+            subtitle: 'إدارة عناوين الشحن',
+            onTap: () => Navigator.pushNamed(context, '/addresses'),
+          ),
+          _buildSettingTile(
+            icon: Icons.local_shipping,
+            title: 'الشحن',
+            subtitle: 'إدارة طرق الشحن',
+            onTap: () => Navigator.pushNamed(context, '/shipping'),
+          ),
+          _buildSettingTile(
+            icon: Icons.payment,
+            title: 'طرق الدفع',
+            subtitle: 'إدارة طرق الدفع',
+            onTap: () => _showComingSoon('طرق الدفع'),
+          ),
           
           const SizedBox(height: 20),
           _buildSectionTitle('التطبيق'),

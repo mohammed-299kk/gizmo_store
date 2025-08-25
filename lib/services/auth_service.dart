@@ -1,5 +1,6 @@
 // lib/services/auth_service.dart
 import 'package:firebase_auth/firebase_auth.dart';
+import '../utils/app_exceptions.dart'; // Added this line
 
 class AuthService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -20,9 +21,9 @@ class AuthService {
           email: email, password: password);
       return credential.user;
     } on FirebaseAuthException catch (e) {
-      throw FirebaseAuthException(code: e.code, message: e.message);
+      throw AuthException(e.message ?? "Authentication failed.");
     } catch (e) {
-      throw Exception("حدث خطأ غير متوقع أثناء تسجيل الدخول");
+      throw AuthException("An unexpected error occurred during sign-in: $e");
     }
   }
 
@@ -33,9 +34,9 @@ class AuthService {
           email: email, password: password);
       return credential.user;
     } on FirebaseAuthException catch (e) {
-      throw FirebaseAuthException(code: e.code, message: e.message);
+      throw AuthException(e.message ?? "Account creation failed.");
     } catch (e) {
-      throw Exception("حدث خطأ غير متوقع أثناء إنشاء الحساب");
+      throw AuthException("An unexpected error occurred during account creation: $e");
     }
   }
 
@@ -45,9 +46,9 @@ class AuthService {
       final credential = await _auth.signInAnonymously();
       return credential.user;
     } on FirebaseAuthException catch (e) {
-      throw FirebaseAuthException(code: e.code, message: e.message);
+      throw AuthException(e.message ?? "Anonymous sign-in failed.");
     } catch (e) {
-      throw Exception("فشل تسجيل الدخول كضيف");
+      throw AuthException("An unexpected error occurred during anonymous sign-in: $e");
     }
   }
 
@@ -55,8 +56,10 @@ class AuthService {
   static Future<void> signOut() async {
     try {
       await _auth.signOut();
+    } on FirebaseAuthException catch (e) {
+      throw AuthException(e.message ?? "Sign-out failed.");
     } catch (e) {
-      throw Exception("فشل تسجيل الخروج");
+      throw AuthException("An unexpected error occurred during sign-out: $e");
     }
   }
 }

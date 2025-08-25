@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/product.dart';
+import '../utils/app_exceptions.dart'; // Added this line
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -18,9 +19,12 @@ class FirestoreService {
           'icon': doc['icon'],
         };
       }).toList();
+    } on FirebaseException catch (e) {
+      print('Firebase Error getting categories: ${e.message}');
+      throw FirestoreException('Failed to get categories: ${e.message}');
     } catch (e) {
       print('Error getting categories: $e');
-      return [];
+      throw FirestoreException('An unexpected error occurred while getting categories: $e');
     }
   }
 
@@ -32,8 +36,12 @@ class FirestoreService {
   Future<void> addProduct(Product product) async {
     try {
       await _db.collection('products').add(product.toMap());
+    } on FirebaseException catch (e) {
+      print('Firebase Error adding product: ${e.message}');
+      throw FirestoreException('Failed to add product: ${e.message}');
     } catch (e) {
-      throw "فشل إضافة المنتج: $e";
+      print('Error adding product: $e');
+      throw FirestoreException('An unexpected error occurred while adding product: $e');
     }
   }
 
@@ -51,8 +59,12 @@ class FirestoreService {
   Future<void> updateProduct(Product product) async {
     try {
       await _db.collection('products').doc(product.id).update(product.toMap());
+    } on FirebaseException catch (e) {
+      print('Firebase Error updating product: ${e.message}');
+      throw FirestoreException('Failed to update product: ${e.message}');
     } catch (e) {
-      throw "فشل تحديث المنتج: $e";
+      print('Error updating product: $e');
+      throw FirestoreException('An unexpected error occurred while updating product: $e');
     }
   }
 
@@ -60,8 +72,12 @@ class FirestoreService {
   Future<void> deleteProduct(String productId) async {
     try {
       await _db.collection('products').doc(productId).delete();
+    } on FirebaseException catch (e) {
+      print('Firebase Error deleting product: ${e.message}');
+      throw FirestoreException('Failed to delete product: ${e.message}');
     } catch (e) {
-      throw "فشل حذف المنتج: $e";
+      print('Error deleting product: $e');
+      throw FirestoreException('An unexpected error occurred while deleting product: $e');
     }
   }
 
@@ -72,10 +88,13 @@ class FirestoreService {
       if (doc.exists) {
         return Product.fromMap(doc.data()!, doc.id);
       }
-      return null;
+      return null; // Product not found, not an error
+    } on FirebaseException catch (e) {
+      print('Firebase Error getting product by ID: ${e.message}');
+      throw FirestoreException('Failed to get product by ID: ${e.message}');
     } catch (e) {
       print('Error getting product by ID: $e');
-      return null;
+      throw FirestoreException('An unexpected error occurred while getting product by ID: $e');
     }
   }
 
@@ -91,9 +110,12 @@ class FirestoreService {
       return snapshot.docs.map((doc) {
         return Product.fromMap(doc.data() as Map<String, dynamic>, doc.id);
       }).toList();
+    } on FirebaseException catch (e) {
+      print('Firebase Error getting featured products: ${e.message}');
+      throw FirestoreException('Failed to get featured products: ${e.message}');
     } catch (e) {
       print('Error getting featured products: $e');
-      return [];
+      throw FirestoreException('An unexpected error occurred while getting featured products: $e');
     }
   }
 
@@ -108,9 +130,12 @@ class FirestoreService {
       return snapshot.docs.map((doc) {
         return Product.fromMap(doc.data() as Map<String, dynamic>, doc.id);
       }).toList();
+    } on FirebaseException catch (e) {
+      print('Firebase Error getting products by category: ${e.message}');
+      throw FirestoreException('Failed to get products by category: ${e.message}');
     } catch (e) {
       print('Error getting products by category: $e');
-      return [];
+      throw FirestoreException('An unexpected error occurred while getting products by category: $e');
     }
   }
 
@@ -126,9 +151,31 @@ class FirestoreService {
       return snapshot.docs.map((doc) {
         return Product.fromMap(doc.data() as Map<String, dynamic>, doc.id);
       }).toList();
+    } on FirebaseException catch (e) {
+      print('Firebase Error searching products: ${e.message}');
+      throw FirestoreException('Failed to search products: ${e.message}');
     } catch (e) {
       print('Error searching products: $e');
-      return [];
+      throw FirestoreException('An unexpected error occurred while searching products: $e');
+    }
+  }
+
+  // ------------------------------
+  // الطلبات
+  // ------------------------------
+  Future<int> getUserOrderCount(String userId) async {
+    try {
+      final snapshot = await _db
+          .collection('orders')
+          .where('userId', isEqualTo: userId)
+          .get();
+      return snapshot.size;
+    } on FirebaseException catch (e) {
+      print('Firebase Error getting user order count: ${e.message}');
+      throw FirestoreException('Failed to get user order count: ${e.message}');
+    } catch (e) {
+      print('Error getting user order count: $e');
+      throw FirestoreException('An unexpected error occurred: $e');
     }
   }
 }

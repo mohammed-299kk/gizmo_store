@@ -317,7 +317,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '${product['price']} ر.س',
+                        '${product['price']} ج.س',
                         style: const TextStyle(
                           color: Color(0xFFB71C1C),
                           fontSize: 16,

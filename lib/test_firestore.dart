@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:gizmo_store/services/enhanced_sample_data_service.dart';
 
 class TestFirestoreScreen extends StatelessWidget {
   const TestFirestoreScreen({super.key});
 
-  Future<void> _addTestData() async {
+  Future<void> _addEnhancedData(BuildContext context) async {
     try {
-      await FirebaseFirestore.instance.collection("products").add({
-        "name": "Test Product",
-        "price": 99.99,
-        "created_at": DateTime.now(),
-      });
-      debugPrint("✅ Data added successfully!");
+      await EnhancedSampleDataService().addAllEnhancedData();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('✅ Enhanced data added successfully!')),
+      );
     } catch (e) {
-      debugPrint("❌ Error: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('❌ Error: $e')),
+      );
     }
   }
 
@@ -23,8 +23,8 @@ class TestFirestoreScreen extends StatelessWidget {
       appBar: AppBar(title: const Text("Firestore Test")),
       body: Center(
         child: ElevatedButton(
-          onPressed: _addTestData,
-          child: const Text("Add Test Data"),
+          onPressed: () => _addEnhancedData(context),
+          child: const Text("Add Enhanced Sample Data"),
         ),
       ),
     );

@@ -9,20 +9,14 @@ class ProductService {
   static Future<List<Product>> getAllProducts() async {
     try {
       final querySnapshot = await _firestore.collection(_collection).get();
-      
-      if (querySnapshot.docs.isEmpty) {
-        // إذا لم توجد منتجات، إنشاء بيانات تجريبية
-        await _createSampleProducts();
-        return await getAllProducts();
-      }
-      
       return querySnapshot.docs
           .map((doc) => Product.fromMap(doc.data(), doc.id))
           .toList();
     } catch (e) {
       print('خطأ في جلب المنتجات: $e');
-      // إرجاع بيانات افتراضية في حالة الخطأ
-      return _getDefaultProducts();
+      // In a real app, you might want to throw an exception or return a custom error object.
+      // For now, we return an empty list.
+      return [];
     }
   }
 

@@ -1,3 +1,4 @@
+import 'package:gizmo_store/providers/checkout_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:gizmo_store/providers/app_state.dart';
@@ -48,6 +49,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ReviewProvider()),
         ChangeNotifierProvider(create: (_) => SearchProvider()),
         ChangeNotifierProvider(create: (_) => WishlistProvider()),
+        ChangeNotifierProvider(create: (_) => CheckoutProvider()),
       ],
       child: MaterialApp(
         title: 'Gizmo Store',

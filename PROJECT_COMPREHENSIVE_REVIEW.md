@@ -21,7 +21,7 @@
 - ✅ **Cart Service**: خدمة سلة التسوق
 - ✅ **Firebase Auth Service**: خدمة مصادقة متقدمة
 
-### 3. التص��يم
+### 3. التصميم
 - ✅ **Dark Theme**: تصميم داكن أنيق
 - ✅ **Consistent Colors**: ألوان متسقة
 - ✅ **Arabic Support**: دعم اللغة العربية

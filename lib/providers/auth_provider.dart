@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gizmo_store/services/firebase_auth_service.dart';
 
 class AuthProvider with ChangeNotifier {
   User? _user;
@@ -42,7 +43,11 @@ class AuthProvider with ChangeNotifier {
 
   // تسجيل جديد
   Future<void> signUp(
-      String email, String password, String confirmPassword) async {
+      String email, String password, String confirmPassword, {
+      String? firstName,
+      String? middleName,
+      String? lastName,
+      }) async {
     try {
       if (password != confirmPassword) {
         throw Exception('كلمات المرور غير متطابقة');
@@ -50,8 +55,20 @@ class AuthProvider with ChangeNotifier {
 
       _setLoading(true);
       _errorMessage = null;
-      await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+
+      // Build full name
+      final fullName = [firstName, middleName, lastName]
+          .where((name) => name != null && name.trim().isNotEmpty)
+          .join(' ');
+
+      await FirebaseAuthService.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+        name: fullName,
+        firstName: firstName,
+        middleName: middleName,
+        lastName: lastName,
+      );
     } on FirebaseAuthException catch (e) {
       _errorMessage = _getAuthErrorMessage(e.code);
       notifyListeners();

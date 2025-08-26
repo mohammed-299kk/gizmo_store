@@ -70,14 +70,12 @@ class _AuthScreenState extends State<AuthScreen> {
         await authProvider.signIn(email, password);
       } else {
         await authProvider.signUp(
-            email, password, _confirmPasswordController.text.trim());
-
-        // تحديث اسم المستخدم بعد التسجيل
-        final user = FirebaseAuth.instance.currentUser;
-        if (user != null) {
-          await user.updateDisplayName(
-              '${_firstNameController.text.trim()} ${_lastNameController.text.trim()}');
-        }
+          email,
+          password,
+          _confirmPasswordController.text.trim(),
+          firstName: _firstNameController.text.trim(),
+          lastName: _lastNameController.text.trim(),
+        );
       }
     } catch (e) {
       if (mounted) {

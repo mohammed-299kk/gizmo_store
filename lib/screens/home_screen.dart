@@ -447,7 +447,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 20),
           Text(
-            widget.userType == 'guest' ? 'ضيف' : 'المستخدم',
+            widget.userType == 'guest' ? 'ضيف' : 'ملفي الشخصي',
             style: const TextStyle(
               color: Colors.white,
               fontSize: 24,

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 class FirebaseAuthService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -40,6 +41,9 @@ class FirebaseAuthService {
     required String email,
     required String password,
     required String name,
+    String? firstName,
+    String? middleName,
+    String? lastName,
   }) async {
     try {
       final credential = await _auth.createUserWithEmailAndPassword(
@@ -50,12 +54,15 @@ class FirebaseAuthService {
       if (credential.user != null) {
         // تحديث اسم المستخدم
         await credential.user!.updateDisplayName(name);
-        
+
         // إنشاء ملف المستخدم في Firestore
         await _createUserProfile(
           uid: credential.user!.uid,
           email: email,
           name: name,
+          firstName: firstName,
+          middleName: middleName,
+          lastName: lastName,
         );
       }
 
@@ -110,6 +117,9 @@ class FirebaseAuthService {
     required String uid,
     required String email,
     required String name,
+    String? firstName,
+    String? middleName,
+    String? lastName,
   }) async {
     try {
       await _firestore.collection('users').doc(uid).set({
@@ -126,6 +136,9 @@ class FirebaseAuthService {
           'theme': 'dark',
         },
         'profile': {
+          'firstName': firstName,
+          'middleName': middleName,
+          'lastName': lastName,
           'avatar': null,
           'phone': null,
           'address': null,
@@ -139,7 +152,8 @@ class FirebaseAuthService {
         }
       });
     } catch (e) {
-      print('خطأ في إنشاء ملف المستخدم: $e');
+      // Use debugPrint instead of print for production
+      debugPrint('خطأ في إنشاء ملف المستخدم: $e');
     }
   }
 
@@ -164,7 +178,7 @@ class FirebaseAuthService {
         }
       });
     } catch (e) {
-      print('خطأ في إنشاء ملف الضيف: $e');
+      debugPrint('خطأ في إنشاء ملف الضيف: $e');
     }
   }
 
@@ -175,7 +189,7 @@ class FirebaseAuthService {
         'lastLoginAt': FieldValue.serverTimestamp(),
       });
     } catch (e) {
-      print('خطأ في تحديث آخر تسجيل دخول: $e');
+      debugPrint('خطأ في تحديث آخر تسجيل دخول: $e');
     }
   }
 
@@ -185,7 +199,7 @@ class FirebaseAuthService {
       final doc = await _firestore.collection('users').doc(uid).get();
       return doc.exists ? doc.data() : null;
     } catch (e) {
-      print('خطأ في جلب بيانات المستخدم: $e');
+      debugPrint('خطأ في جلب بيانات المستخدم: $e');
       return null;
     }
   }
@@ -249,7 +263,7 @@ class FirebaseAuthService {
       }
       return {};
     } catch (e) {
-      print('خطأ في جلب إحصائيات المستخدم: $e');
+      debugPrint('خطأ في جلب إحصائيات المستخدم: $e');
       return {};
     }
   }
@@ -261,7 +275,7 @@ class FirebaseAuthService {
         'stats': stats,
       });
     } catch (e) {
-      print('خطأ في تحديث إحصائيات المستخدم: $e');
+      debugPrint('خطأ في تحديث إحصائيات المستخدم: $e');
     }
   }
 }

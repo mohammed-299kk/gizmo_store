@@ -5,11 +5,13 @@ import 'package:gizmo_store/providers/auth_provider.dart' as auth;
 import 'package:gizmo_store/providers/app_state.dart';
 import 'package:gizmo_store/providers/wishlist_provider.dart';
 import 'package:gizmo_store/services/firestore_service.dart';
+import 'package:gizmo_store/services/firebase_auth_service.dart';
 import 'package:gizmo_store/screens/auth/auth_screen.dart';
 import 'package:gizmo_store/screens/order/orders_screen.dart';
 import 'package:gizmo_store/screens/firebase_details_screen.dart';
 import 'package:gizmo_store/screens/edit_profile_screen.dart';
 import 'package:gizmo_store/screens/security_settings_screen.dart'; // Added this line
+import 'package:gizmo_store/screens/settings_screen.dart';
 import 'wishlist_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -65,7 +67,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
           ),
           const SizedBox(height: 10),
-          Text(
+          const Text(
             'سجل الدخول لعرض ملفك الشخصي والاستفادة من ميزات التطبيق الكاملة.',
             style: TextStyle(color: Colors.white70, fontSize: 16),
             textAlign: TextAlign.center,
@@ -126,81 +128,175 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildUserInfoCard(User user) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFFB71C1C), Color(0xFF8E0000)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        children: [
-          Container( // Added Container for shadow
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  spreadRadius: 2,
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
+    return FutureBuilder<Map<String, dynamic>?>(
+      future: FirebaseAuthService.getUserData(user.uid),
+      builder: (context, snapshot) {
+        final userData = snapshot.data;
+
+        return Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const EditProfileScreen()),
+              );
+            },
+            borderRadius: BorderRadius.circular(20),
+            splashColor: Colors.white.withValues(alpha: 0.1),
+            highlightColor: Colors.white.withValues(alpha: 0.05),
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFFB71C1C), Color(0xFF8E0000)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
-              ],
-            ),
-            child: CircleAvatar(
-              radius: 40, // Increased radius
-              backgroundColor: Colors.white.withOpacity(0.2),
-              backgroundImage: user.photoURL != null ? NetworkImage(user.photoURL!) : null,
-              child: user.photoURL == null
-                  ? Text(
-                      user.displayName?.substring(0, 1).toUpperCase() ?? 'U',
-                      style: const TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.bold), // Increased font size
-                    )
-                  : null,
-            ),
-          ),
-          const SizedBox(width: 20), // Increased spacing
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      user.displayName ?? 'مستخدم جديد',
-                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white), // Increased font size
-                    ),
-                    const SizedBox(width: 10), // Increased spacing
-                    StreamBuilder<User?>(
-                      stream: FirebaseAuth.instance.authStateChanges(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Icon(Icons.cloud_sync, color: Colors.white54, size: 22); // Increased icon size
-                        } else if (snapshot.hasData) {
-                          return const Icon(Icons.cloud_done, color: Colors.greenAccent, size: 22); // Increased icon size
-                        } else if (snapshot.hasError) {
-                          return const Icon(Icons.cloud_off, color: Colors.redAccent, size: 22); // Increased icon size
-                        }
-                        return const Icon(Icons.cloud_off, color: Colors.redAccent, size: 22); // Default disconnected
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 6), // Increased spacing
-                if (user.email != null)
-                  Text(
-                    user.email!,
-                    style: TextStyle(fontSize: 16, color: Colors.white.withOpacity(0.8)), // Increased font size
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    spreadRadius: 2,
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
                   ),
+                ],
+              ),
+              child: Column(
+                children: [
+              Row(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.3),
+                          spreadRadius: 2,
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: CircleAvatar(
+                      radius: 40,
+                      backgroundColor: Colors.white.withValues(alpha: 0.2),
+                      backgroundImage: user.photoURL != null ? NetworkImage(user.photoURL!) : null,
+                      child: user.photoURL == null
+                          ? Text(
+                              user.displayName?.substring(0, 1).toUpperCase() ?? 'U',
+                              style: const TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.bold),
+                            )
+                          : null,
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                user.displayName ?? 'مستخدم جديد',
+                                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            StreamBuilder<User?>(
+                              stream: FirebaseAuth.instance.authStateChanges(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return const Icon(Icons.cloud_sync, color: Colors.white54, size: 20);
+                                } else if (snapshot.hasData) {
+                                  return const Icon(Icons.cloud_done, color: Colors.greenAccent, size: 20);
+                                } else if (snapshot.hasError) {
+                                  return const Icon(Icons.cloud_off, color: Colors.redAccent, size: 20);
+                                }
+                                return const Icon(Icons.cloud_off, color: Colors.redAccent, size: 20);
+                              },
+                            ),
+                            const SizedBox(width: 8),
+                            const Icon(Icons.edit, color: Colors.white70, size: 18),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        if (user.email != null)
+                          Text(
+                            user.email!,
+                            style: TextStyle(fontSize: 14, color: Colors.white.withValues(alpha: 0.8)),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              if (userData != null) ...[
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'معرف المستخدم',
+                              style: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.7)),
+                            ),
+                            Text(
+                              '${user.uid.substring(0, 8)}...',
+                              style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'تاريخ التسجيل',
+                              style: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.7)),
+                            ),
+                            Text(
+                              _formatDate(userData['createdAt']),
+                              style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
+                ],
+              ),
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
+  }
+
+  String _formatDate(dynamic timestamp) {
+    if (timestamp == null) return 'غير محدد';
+    try {
+      final date = timestamp.toDate();
+      return '${date.day}/${date.month}/${date.year}';
+    } catch (e) {
+      return 'غير محدد';
+    }
   }
 
   Widget _buildStatsRow(User user, WishlistProvider wishlistProvider) {
@@ -214,7 +310,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 return _buildStatCard('الطلبات', '...', Icons.shopping_bag_outlined);
               } else if (snapshot.hasError) {
                 // Handle the error, e.g., show a message or a specific icon
-                print('Error loading order count: ${snapshot.error}'); // For debugging
+                debugPrint('Error loading order count: ${snapshot.error}'); // For debugging
                 return _buildStatCard('الطلبات', 'خطأ', Icons.error_outline); // Display 'Error'
               } else {
                 String count = snapshot.data?.toString() ?? '0';
@@ -244,7 +340,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 8),
           Text(value, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
           const SizedBox(height: 4),
-          Text(title, style: TextStyle(fontSize: 14, color: Colors.white70)),
+          Text(title, style: const TextStyle(fontSize: 14, color: Colors.white70)),
         ],
       ),
     );
@@ -258,7 +354,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Navigator.push(context, MaterialPageRoute(builder: (context) => const EditProfileScreen()));
         }),
         _buildSettingsOption(icon: Icons.shopping_bag_outlined, title: 'طلباتي', onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersScreen()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const OrdersScreen()));
         }),
         _buildSettingsOption(icon: Icons.favorite_border, title: 'المفضلة', onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) => const WishlistScreen()));
@@ -268,10 +364,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SnackBar(content: Text('إدارة العناوين قيد التطوير')),
           );
         }),
-        _buildSettingsOption(icon: Icons.credit_card, title: 'طرق الدفع', onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('إدارة طرق الدفع قيد التطوير')),
-          );
+        _buildSettingsOption(icon: Icons.settings, title: 'الإعدادات', onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
         }),
         _buildSettingsOption(
           icon: Icons.color_lens_outlined,
@@ -279,7 +373,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           trailing: Switch(
             value: appState.isDarkMode,
             onChanged: (value) => appState.toggleDarkMode(),
-            activeColor: const Color(0xFFB71C1C),
+            activeThumbColor: const Color(0xFFB71C1C),
           ),
         ),
       ],
@@ -320,7 +414,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (i < children.length - 1) {
         spacedChildren.add(Divider(
           height: 1,
-          color: Colors.white.withOpacity(0.1),
+          color: Colors.white.withValues(alpha: 0.1),
           indent: 16,
           endIndent: 16,
         ));

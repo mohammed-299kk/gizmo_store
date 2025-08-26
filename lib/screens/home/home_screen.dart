@@ -1,5 +1,7 @@
 import 'package:gizmo_store/screens/categories_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 import '../../services/product_service.dart';
 import '../../services/cart_service.dart';
 import '../../models/product.dart';
@@ -7,6 +9,10 @@ import '../../models/cart_item.dart';
 import '../product/product_detail_screen.dart';
 import '../cart/cart_screen.dart';
 import '../settings_screen.dart';
+import '../order/orders_screen.dart';
+import '../search/search_screen.dart';
+import '../profile/profile_screen.dart';
+import '../../providers/auth_provider.dart' as auth;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -62,6 +68,16 @@ class _HomeScreenState extends State<HomeScreen> {
         foregroundColor: Colors.white,
         centerTitle: true,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.receipt_long),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const OrdersScreen()),
+              );
+            },
+            tooltip: 'طلباتي',
+          ),
           Stack(
             children: [
               IconButton(
@@ -110,14 +126,60 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {
-              // TODO: إضافة شاشة البحث
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('البحث ��ريباً!'),
-                  backgroundColor: Color(0xFFB71C1C),
-                ),
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SearchScreen()),
               );
             },
+            tooltip: 'البحث',
+          ),
+          Consumer<auth.AuthProvider>(
+            builder: (context, authProvider, child) {
+              final user = authProvider.user;
+              return IconButton(
+                icon: CircleAvatar(
+                  radius: 16,
+                  backgroundColor: Colors.white.withValues(alpha: 0.2),
+                  backgroundImage: user?.photoURL != null ? NetworkImage(user!.photoURL!) : null,
+                  child: user?.photoURL == null
+                      ? Text(
+                          user?.displayName?.substring(0, 1).toUpperCase() ?? 'G',
+                          style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold),
+                        )
+                      : null,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                  );
+                },
+                tooltip: 'الملف الشخصي',
+              );
+            },
+          ),
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            onSelected: (value) {
+              switch (value) {
+                case 'logout':
+                  _showLogoutDialog();
+                  break;
+              }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'logout',
+                child: Row(
+                  children: [
+                    Icon(Icons.logout, color: Colors.red),
+                    SizedBox(width: 8),
+                    Text('تسجيل الخروج', style: TextStyle(color: Colors.red)),
+                  ],
+                ),
+              ),
+            ],
+            color: const Color(0xFF2A2A2A),
           ),
         ],
       ),
@@ -191,7 +253,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 gradient: LinearGradient(
                   colors: [
                     const Color(0xFFB71C1C),
-                    const Color(0xFFB71C1C).withOpacity(0.8),
+                    const Color(0xFFB71C1C).withValues(alpha: 0.8),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(15),
@@ -296,7 +358,7 @@ class _HomeScreenState extends State<HomeScreen> {
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha: 0.3),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -311,7 +373,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFB71C1C).withOpacity(0.1),
+                  color: const Color(0xFFB71C1C).withValues(alpha: 0.1),
                   borderRadius:
                       const BorderRadius.vertical(top: Radius.circular(15)),
                 ),
@@ -469,7 +531,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 20),
           const Text(
-            'المستخدم',
+            'ملفي الشخصي',
             style: TextStyle(
               color: Colors.white,
               fontSize: 24,
@@ -479,7 +541,6 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 40),
           _buildAccountOption(Icons.shopping_bag, 'طلباتي'),
           _buildAccountOption(Icons.location_on, 'العناوين'),
-          _buildAccountOption(Icons.payment, 'طرق الدفع'),
           ListTile(
             leading: const Icon(Icons.settings, color: Color(0xFFB71C1C)),
             title: const Text(
@@ -497,7 +558,7 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
-          _buildAccountOption(Icons.help, 'المس��عدة'),
+          _buildAccountOption(Icons.help, 'المساعدة'),
         ],
       ),
     );
@@ -512,12 +573,21 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white54),
       onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('$title قريباً!'),
-            backgroundColor: const Color(0xFFB71C1C),
-          ),
-        );
+        switch (title) {
+          case 'طلباتي':
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const OrdersScreen()),
+            );
+            break;
+          default:
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('$title قريباً!'),
+                backgroundColor: const Color(0xFFB71C1C),
+              ),
+            );
+        }
       },
     );
   }
@@ -547,6 +617,43 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           },
         ),
+      ),
+    );
+  }
+
+  void _showLogoutDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF2A2A2A),
+        title: const Text(
+          'تسجيل الخروج',
+          style: TextStyle(color: Colors.white),
+        ),
+        content: const Text(
+          'هل أنت متأكد من أنك تريد تسجيل الخروج؟',
+          style: TextStyle(color: Colors.white70),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              'إلغاء',
+              style: TextStyle(color: Colors.white70),
+            ),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              final authProvider = Provider.of<auth.AuthProvider>(context, listen: false);
+              await authProvider.signOut();
+            },
+            child: const Text(
+              'تسجيل الخروج',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
       ),
     );
   }

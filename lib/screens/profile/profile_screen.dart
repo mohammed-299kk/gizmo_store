@@ -28,7 +28,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final authProvider = Provider.of<auth.AuthProvider>(context, listen: false);
+      final authProvider =
+          Provider.of<auth.AuthProvider>(context, listen: false);
       if (authProvider.user != null) {
         Provider.of<WishlistProvider>(context, listen: false).loadWishlist();
       }
@@ -43,7 +44,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
-        title: const Text('الملف الشخصي', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('الملف الشخصي',
+            style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFF1F1F1F),
         foregroundColor: Colors.white,
         elevation: 0,
@@ -60,11 +62,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.person_off_outlined, size: 80, color: Colors.white38),
+          const Icon(Icons.person_off_outlined,
+              size: 80, color: Colors.white38),
           const SizedBox(height: 20),
           const Text(
             'أنت زائر الآن',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+            style: TextStyle(
+                fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
           ),
           const SizedBox(height: 10),
           const Text(
@@ -87,7 +91,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               backgroundColor: const Color(0xFFB71C1C),
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30)),
             ),
           ),
         ],
@@ -115,10 +120,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Center(
             child: TextButton.icon(
               icon: const Icon(Icons.logout, color: Colors.redAccent),
-              label: const Text('تسجيل الخروج', style: TextStyle(color: Colors.redAccent, fontSize: 16)),
+              label: const Text('تسجيل الخروج',
+                  style: TextStyle(color: Colors.redAccent, fontSize: 16)),
               onPressed: () => _showLogoutDialog(context),
               style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
               ),
             ),
           ),
@@ -139,7 +146,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const EditProfileScreen()),
+                MaterialPageRoute(
+                    builder: (context) => const EditProfileScreen()),
               );
             },
             borderRadius: BorderRadius.circular(20),
@@ -165,121 +173,153 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               child: Column(
                 children: [
-              Row(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.3),
-                          spreadRadius: 2,
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Colors.white.withValues(alpha: 0.2),
-                      backgroundImage: user.photoURL != null ? NetworkImage(user.photoURL!) : null,
-                      child: user.photoURL == null
-                          ? Text(
-                              user.displayName?.substring(0, 1).toUpperCase() ?? 'U',
-                              style: const TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.bold),
-                            )
-                          : null,
-                    ),
-                  ),
-                  const SizedBox(width: 20),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                user.displayName ?? 'مستخدم جديد',
-                                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            StreamBuilder<User?>(
-                              stream: FirebaseAuth.instance.authStateChanges(),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return const Icon(Icons.cloud_sync, color: Colors.white54, size: 20);
-                                } else if (snapshot.hasData) {
-                                  return const Icon(Icons.cloud_done, color: Colors.greenAccent, size: 20);
-                                } else if (snapshot.hasError) {
-                                  return const Icon(Icons.cloud_off, color: Colors.redAccent, size: 20);
-                                }
-                                return const Icon(Icons.cloud_off, color: Colors.redAccent, size: 20);
-                              },
-                            ),
-                            const SizedBox(width: 8),
-                            const Icon(Icons.edit, color: Colors.white70, size: 18),
-                          ],
-                        ),
-                        const SizedBox(height: 6),
-                        if (user.email != null)
-                          Text(
-                            user.email!,
-                            style: TextStyle(fontSize: 14, color: Colors.white.withValues(alpha: 0.8)),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              if (userData != null) ...[
-                const SizedBox(height: 16),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
+                  Row(
                     children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'معرف المستخدم',
-                              style: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.7)),
-                            ),
-                            Text(
-                              '${user.uid.substring(0, 8)}...',
-                              style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500),
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.3),
+                              spreadRadius: 2,
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
                             ),
                           ],
+                        ),
+                        child: CircleAvatar(
+                          radius: 40,
+                          backgroundColor: Colors.white.withValues(alpha: 0.2),
+                          backgroundImage: user.photoURL != null
+                              ? NetworkImage(user.photoURL!)
+                              : null,
+                          child: user.photoURL == null
+                              ? Text(
+                                  user.displayName
+                                          ?.substring(0, 1)
+                                          .toUpperCase() ??
+                                      'U',
+                                  style: const TextStyle(
+                                      fontSize: 32,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              : null,
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: 20),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'تاريخ التسجيل',
-                              style: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.7)),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    user.displayName ?? 'مستخدم جديد',
+                                    style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                StreamBuilder<User?>(
+                                  stream:
+                                      FirebaseAuth.instance.authStateChanges(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const Icon(Icons.cloud_sync,
+                                          color: Colors.white54, size: 20);
+                                    } else if (snapshot.hasData) {
+                                      return const Icon(Icons.cloud_done,
+                                          color: Colors.greenAccent, size: 20);
+                                    } else if (snapshot.hasError) {
+                                      return const Icon(Icons.cloud_off,
+                                          color: Colors.redAccent, size: 20);
+                                    }
+                                    return const Icon(Icons.cloud_off,
+                                        color: Colors.redAccent, size: 20);
+                                  },
+                                ),
+                                const SizedBox(width: 8),
+                                const Icon(Icons.edit,
+                                    color: Colors.white70, size: 18),
+                              ],
                             ),
-                            Text(
-                              _formatDate(userData['createdAt']),
-                              style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500),
-                            ),
+                            const SizedBox(height: 6),
+                            if (user.email != null)
+                              Text(
+                                user.email!,
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white.withValues(alpha: 0.8)),
+                                overflow: TextOverflow.ellipsis,
+                              ),
                           ],
                         ),
                       ),
                     ],
                   ),
-                ),
-              ],
+                  if (userData != null) ...[
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'معرف المستخدم',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color:
+                                          Colors.white.withValues(alpha: 0.7)),
+                                ),
+                                Text(
+                                  '${user.uid.substring(0, 8)}...',
+                                  style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'تاريخ التسجيل',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color:
+                                          Colors.white.withValues(alpha: 0.7)),
+                                ),
+                                Text(
+                                  _formatDate(userData['createdAt']),
+                                  style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -307,21 +347,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
             future: _firestoreService.getUserOrderCount(user.uid),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return _buildStatCard('الطلبات', '...', Icons.shopping_bag_outlined);
+                return _buildStatCard(
+                    'الطلبات', '...', Icons.shopping_bag_outlined);
               } else if (snapshot.hasError) {
                 // Handle the error, e.g., show a message or a specific icon
-                debugPrint('Error loading order count: ${snapshot.error}'); // For debugging
-                return _buildStatCard('الطلبات', 'خطأ', Icons.error_outline); // Display 'Error'
+                debugPrint(
+                    'Error loading order count: ${snapshot.error}'); // For debugging
+                return _buildStatCard(
+                    'الطلبات', 'خطأ', Icons.error_outline); // Display 'Error'
               } else {
                 String count = snapshot.data?.toString() ?? '0';
-                return _buildStatCard('الطلبات', count, Icons.shopping_bag_outlined);
+                return _buildStatCard(
+                    'الطلبات', count, Icons.shopping_bag_outlined);
               }
             },
           ),
         ),
         const SizedBox(width: 12),
         Expanded(
-          child: _buildStatCard('المفضلة', wishlistProvider.itemCount.toString(), Icons.favorite_border),
+          child: _buildStatCard('المفضلة',
+              wishlistProvider.itemCount.toString(), Icons.favorite_border),
         ),
       ],
     );
@@ -338,9 +383,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           Icon(icon, color: const Color(0xFFB71C1C), size: 28),
           const SizedBox(height: 8),
-          Text(value, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+          Text(value,
+              style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white)),
           const SizedBox(height: 4),
-          Text(title, style: const TextStyle(fontSize: 14, color: Colors.white70)),
+          Text(title,
+              style: const TextStyle(fontSize: 14, color: Colors.white70)),
         ],
       ),
     );
@@ -350,30 +400,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return _buildSectionContainer(
       'حسابي',
       [
-        _buildSettingsOption(icon: Icons.person_outline, title: 'تعديل الملف الشخصي', onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const EditProfileScreen()));
-        }),
-        _buildSettingsOption(icon: Icons.shopping_bag_outlined, title: 'طلباتي', onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const OrdersScreen()));
-        }),
-        _buildSettingsOption(icon: Icons.favorite_border, title: 'المفضلة', onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const WishlistScreen()));
-        }),
-        _buildSettingsOption(icon: Icons.location_on_outlined, title: 'العناوين', onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('إدارة العناوين قيد التطوير')),
-          );
-        }),
-        _buildSettingsOption(icon: Icons.settings, title: 'الإعدادات', onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
-        }),
+        _buildSettingsOption(
+            icon: Icons.person_outline,
+            title: 'تعديل الملف الشخصي',
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const EditProfileScreen()));
+            }),
+        _buildSettingsOption(
+            icon: Icons.shopping_bag_outlined,
+            title: 'طلباتي',
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const OrdersScreen()));
+            }),
+        _buildSettingsOption(
+            icon: Icons.favorite_border,
+            title: 'المفضلة',
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const WishlistScreen()));
+            }),
+        _buildSettingsOption(
+            icon: Icons.location_on_outlined,
+            title: 'العناوين',
+            onTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('إدارة العناوين قيد التطوير')),
+              );
+            }),
+        _buildSettingsOption(
+            icon: Icons.settings,
+            title: 'الإعدادات',
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const SettingsScreen()));
+            }),
         _buildSettingsOption(
           icon: Icons.color_lens_outlined,
           title: 'المظهر الداكن',
           trailing: Switch(
             value: appState.isDarkMode,
             onChanged: (value) => appState.toggleDarkMode(),
-            activeThumbColor: const Color(0xFFB71C1C),
+            activeColor: const Color(0xFFB71C1C), // Use activeColor instead
           ),
         ),
       ],
@@ -384,25 +461,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return _buildSectionContainer(
       'التطبيق',
       [
-        _buildSettingsOption(icon: Icons.notifications_none, title: 'الإشعارات', onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('إدارة الإشعارات قيد التطوير')),
-          );
-        }),
-        _buildSettingsOption(icon: Icons.help_outline, title: 'المساعدة والدعم', onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('المساعدة والدعم قيد التطوير')),
-          );
-        }),
-        _buildSettingsOption(icon: Icons.security_outlined, title: 'الخصوصية والأمان', onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('إعدادات الخصوصية والأمان قيد التطوير')),
-          );
-        }),
-        _buildSettingsOption(icon: Icons.info_outline, title: 'عن التطبيق', onTap: () => _showAboutDialog(context)),
-        _buildSettingsOption(icon: Icons.cloud_queue, title: 'تفاصيل Firebase', onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const FirebaseDetailsScreen()));
-        }),
+        _buildSettingsOption(
+            icon: Icons.notifications_none,
+            title: 'الإشعارات',
+            onTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('إدارة الإشعارات قيد التطوير')),
+              );
+            }),
+        _buildSettingsOption(
+            icon: Icons.help_outline,
+            title: 'المساعدة والدعم',
+            onTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('المساعدة والدعم قيد التطوير')),
+              );
+            }),
+        _buildSettingsOption(
+            icon: Icons.security_outlined,
+            title: 'الخصوصية والأمان',
+            onTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                    content: Text('إعدادات الخصوصية والأمان قيد التطوير')),
+              );
+            }),
+        _buildSettingsOption(
+            icon: Icons.info_outline,
+            title: 'عن التطبيق',
+            onTap: () => _showAboutDialog(context)),
+        _buildSettingsOption(
+            icon: Icons.cloud_queue,
+            title: 'تفاصيل Firebase',
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const FirebaseDetailsScreen()));
+            }),
       ],
     );
   }
@@ -426,7 +522,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       children: [
         Text(
           title,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white70),
+          style: const TextStyle(
+              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white70),
         ),
         const SizedBox(height: 12),
         Container(
@@ -440,20 +537,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildSettingsOption({required IconData icon, required String title, Widget? trailing, VoidCallback? onTap}) {
+  Widget _buildSettingsOption(
+      {required IconData icon,
+      required String title,
+      Widget? trailing,
+      VoidCallback? onTap}) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         // Removed borderRadius here, will be handled by parent Container
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14), // Increased vertical padding
+          padding: const EdgeInsets.symmetric(
+              horizontal: 16, vertical: 14), // Increased vertical padding
           child: Row(
             children: [
               Icon(icon, color: Colors.white70, size: 22),
               const SizedBox(width: 16),
-              Expanded(child: Text(title, style: const TextStyle(color: Colors.white, fontSize: 16))),
-              trailing ?? const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.white38),
+              Expanded(
+                  child: Text(title,
+                      style:
+                          const TextStyle(color: Colors.white, fontSize: 16))),
+              trailing ??
+                  const Icon(Icons.arrow_forward_ios,
+                      size: 16, color: Colors.white38),
             ],
           ),
         ),
@@ -467,17 +574,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: const Color(0xFF1F1F1F),
-          title: const Text('تسجيل الخروج', style: TextStyle(color: Colors.white)),
-          content: const Text('هل أنت متأكد أنك تريد تسجيل الخروج؟', style: TextStyle(color: Colors.white70)),
+          title:
+              const Text('تسجيل الخروج', style: TextStyle(color: Colors.white)),
+          content: const Text('هل أنت متأكد أنك تريد تسجيل الخروج؟',
+              style: TextStyle(color: Colors.white70)),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('إلغاء', style: TextStyle(color: Colors.white70))),
+            TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('إلغاء',
+                    style: TextStyle(color: Colors.white70))),
             TextButton(
               onPressed: () async {
                 Navigator.of(context).pop();
-                final authProvider = Provider.of<auth.AuthProvider>(context, listen: false);
+                final authProvider =
+                    Provider.of<auth.AuthProvider>(context, listen: false);
                 await authProvider.signOut();
               },
-              child: const Text('تأكيد', style: TextStyle(color: Colors.redAccent)),
+              child: const Text('تأكيد',
+                  style: TextStyle(color: Colors.redAccent)),
             ),
           ],
         );
@@ -491,17 +605,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: const Color(0xFF1F1F1F),
-          title: const Text('عن Gizmo Store', style: TextStyle(color: Colors.white)),
+          title: const Text('عن Gizmo Store',
+              style: TextStyle(color: Colors.white)),
           content: const Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('الإصدار: 1.0.0', style: TextStyle(color: Colors.white70)),
               SizedBox(height: 8),
-              Text('تطبيق متجر إلكتروني تجريبي.', style: TextStyle(color: Colors.white70)),
+              Text('تطبيق متجر إلكتروني تجريبي.',
+                  style: TextStyle(color: Colors.white70)),
             ],
           ),
-          actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('موافق'))],
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('موافق'))
+          ],
         );
       },
     );

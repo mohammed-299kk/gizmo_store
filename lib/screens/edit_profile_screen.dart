@@ -49,7 +49,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               if (nameParts.length > 1) {
                 _lastNameController.text = nameParts.last;
                 if (nameParts.length > 2) {
-                  _middleNameController.text = nameParts.sublist(1, nameParts.length - 1).join(' ');
+                  _middleNameController.text =
+                      nameParts.sublist(1, nameParts.length - 1).join(' ');
                 }
               }
             }
@@ -83,7 +84,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
-        title: const Text('تعديل الملف الشخصي', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('تعديل الملف الشخصي',
+            style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFF1F1F1F),
         foregroundColor: Colors.white,
         elevation: 0,
@@ -106,7 +108,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               onPressed: _saveProfile,
               child: const Text(
                 'حفظ',
-                style: TextStyle(color: Color(0xFFB71C1C), fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    color: Color(0xFFB71C1C), fontWeight: FontWeight.bold),
               ),
             ),
         ],
@@ -144,7 +147,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         children: [
           const Text(
             'صورة الملف الشخصي',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+            style: TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
           ),
           const SizedBox(height: 16),
           GestureDetector(
@@ -157,7 +161,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               child: CircleAvatar(
                 radius: 60,
                 backgroundColor: Colors.grey[800],
-                backgroundImage: user?.photoURL != null ? NetworkImage(user!.photoURL!) : null,
+                backgroundImage: user?.photoURL != null
+                    ? NetworkImage(user!.photoURL!)
+                    : null,
                 child: user?.photoURL == null
                     ? Icon(
                         Icons.camera_alt,
@@ -194,7 +200,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         children: [
           const Text(
             'المعلومات الشخصية',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+            style: TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
           ),
           const SizedBox(height: 16),
           _buildTextField(
@@ -243,7 +250,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         children: [
           const Text(
             'معلومات الاتصال',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+            style: TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
           ),
           const SizedBox(height: 16),
           _buildTextField(
@@ -255,7 +263,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               if (value == null || value.trim().isEmpty) {
                 return 'البريد الإلكتروني مطلوب';
               }
-              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                  .hasMatch(value)) {
                 return 'البريد الإلكتروني غير صحيح';
               }
               return null;
@@ -288,7 +297,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             children: [
               const Text(
                 'تغيير كلمة المرور',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
               ),
               Switch(
                 value: _showPasswordFields,
@@ -302,7 +314,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     }
                   });
                 },
-                activeThumbColor: const Color(0xFFB71C1C),
+                inactiveThumbColor: const Color(0xFFB71C1C),
               ),
             ],
           ),
@@ -314,7 +326,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               icon: Icons.lock_outline,
               obscureText: true,
               validator: (value) {
-                if (_showPasswordFields && (value == null || value.trim().isEmpty)) {
+                if (_showPasswordFields &&
+                    (value == null || value.trim().isEmpty)) {
                   return 'كلمة المرور الحالية مطلوبة';
                 }
                 return null;

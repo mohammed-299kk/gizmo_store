@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:gizmo_store/models/product.dart';
-import 'package:gizmo_store/services/firestore_service.dart';
-import 'package:gizmo_store/screens/product/product_detail_screen.dart';
+import 'package:gizmo_store/services/database_setup_service.dart';
+import 'package:gizmo_store/screens/product_detail_screen.dart';
 
 class CategoryProductsScreen extends StatefulWidget {
   final String category;
@@ -10,13 +10,13 @@ class CategoryProductsScreen extends StatefulWidget {
   const CategoryProductsScreen({super.key, required this.category});
 
   @override
-  _CategoryProductsScreenState createState() => _CategoryProductsScreenState();
+  State<CategoryProductsScreen> createState() => _CategoryProductsScreenState();
 }
 
 class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
-  final FirestoreService _firestoreService = FirestoreService();
   List<Product> categoryProducts = [];
   bool _isLoading = true;
+  String? errorMessage;
 
   // دالة مساعدة لتحديد نوع الصورة وعرضها بشكل صحيح
   Widget _buildImageWidget(String? imagePath,
@@ -74,8 +74,13 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
   }
 
   Future<void> _loadProducts() async {
+    setState(() {
+      _isLoading = true;
+      errorMessage = null;
+    });
+
     try {
-      List<Product> products = await _firestoreService.getProductsByCategory(widget.category);
+      List<Product> products = await DatabaseSetupService.getProductsByCategory(widget.category);
 
       setState(() {
         categoryProducts = products;
@@ -85,6 +90,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
       print('Error loading products: $e');
       setState(() {
         _isLoading = false;
+        errorMessage = 'فشل في تحميل المنتجات';
       });
     }
   }
@@ -121,8 +127,10 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                ProductDetailScreen(product: product),
+                            builder: (context) => ProductDetailScreen(
+                              product: product,
+                              cart: [], // Empty cart for now
+                            ),
                           ),
                         );
                       },

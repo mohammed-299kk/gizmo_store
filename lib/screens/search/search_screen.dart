@@ -2,22 +2,19 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-// استيراد الموديل (لو موجود في lib/models/product.dart)
+// استيراد الموديل
 import 'package:gizmo_store/models/product.dart';
 
-// استيراد شاشة التفاصيل (لو موجودة في lib/screens/product_detail_screen.dart)
+// استيراد شاشة التفاصيل
 import 'package:gizmo_store/screens/product_detail_screen.dart';
-
-// استيراد الشاشات الأخرى حسب الحاجة (تشيك لو فعلاً عندك هذه الملفات)
-import 'package:gizmo_store/screens/order/orders_screen.dart';
-import 'package:gizmo_store/screens/auth/auth_screen.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
 
   @override
-  _SearchScreenState createState() => _SearchScreenState();
+  State<SearchScreen> createState() => _SearchScreenState();
 }
 
 enum ViewMode { grid, list }
@@ -67,7 +64,83 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    _searchResults = allProducts!;
+    _loadProducts();
+  }
+
+  Future<void> _loadProducts() async {
+    setState(() {
+      _isSearching = true;
+    });
+
+    try {
+      // Load products from Firestore
+      final QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('products')
+          .where('isAvailable', isEqualTo: true)
+          .get();
+
+      final List<Product> products = snapshot.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        return Product(
+          id: doc.id,
+          name: data['name'] ?? '',
+          price: (data['price'] ?? 0).toDouble(),
+          image: data['image'] ?? '',
+          description: data['description'] ?? '',
+          category: data['category'] ?? '',
+          rating: (data['rating'] ?? 0).toDouble(),
+          reviewsCount: data['reviewsCount'] ?? 0,
+          featured: data['featured'] ?? false,
+        );
+      }).toList();
+
+      setState(() {
+        _searchResults = products.isNotEmpty ? products : _getSampleProducts();
+        _isSearching = false;
+      });
+    } catch (e) {
+      // Handle error gracefully with sample data
+      setState(() {
+        _searchResults = _getSampleProducts();
+        _isSearching = false;
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('فشل في تحميل المنتجات. يتم عرض منتجات تجريبية.'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+    }
+  }
+
+  List<Product> _getSampleProducts() {
+    return [
+      Product(
+        id: '1',
+        name: 'iPhone 15 Pro',
+        price: 4999.0,
+        image: 'https://via.placeholder.com/300x300?text=iPhone+15+Pro',
+        description: 'أحدث هاتف من Apple',
+        category: 'الهواتف الذكية',
+        rating: 4.8,
+        reviewsCount: 150,
+        featured: true,
+      ),
+      Product(
+        id: '2',
+        name: 'Samsung Galaxy S24',
+        price: 3999.0,
+        image: 'https://via.placeholder.com/300x300?text=Galaxy+S24',
+        description: 'هاتف Samsung الرائد',
+        category: 'الهواتف الذكية',
+        rating: 4.7,
+        reviewsCount: 120,
+        featured: false,
+      ),
+    ];
   }
 
   @override
@@ -85,24 +158,76 @@ class _SearchScreenState extends State<SearchScreen> {
       _isSearching = true;
     });
 
-    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
-      setState(() {
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
+      try {
+        List<Product> results;
+
         if (query.isEmpty) {
-          _searchResults = allProducts!;
+          // Load all products if query is empty
+          final QuerySnapshot snapshot = await FirebaseFirestore.instance
+              .collection('products')
+              .where('isAvailable', isEqualTo: true)
+              .get();
+
+          results = snapshot.docs.map((doc) {
+            final data = doc.data() as Map<String, dynamic>;
+            return Product(
+              id: doc.id,
+              name: data['name'] ?? '',
+              price: (data['price'] ?? 0).toDouble(),
+              image: data['image'] ?? '',
+              description: data['description'] ?? '',
+              category: data['category'] ?? '',
+              rating: (data['rating'] ?? 0).toDouble(),
+              reviewsCount: data['reviewsCount'] ?? 0,
+              featured: data['featured'] ?? false,
+            );
+          }).toList();
         } else {
-          _searchResults = allProducts!
-              .where(
-                (product) =>
-                    product.name.toLowerCase().contains(query.toLowerCase()) ||
-                    product.description
-                        .toLowerCase()
-                        .contains(query.toLowerCase()),
-              )
-              .toList();
+          // Search products by name, description, or category
+          final QuerySnapshot snapshot = await FirebaseFirestore.instance
+              .collection('products')
+              .where('isAvailable', isEqualTo: true)
+              .get();
+
+          results = snapshot.docs.map((doc) {
+            final data = doc.data() as Map<String, dynamic>;
+            return Product(
+              id: doc.id,
+              name: data['name'] ?? '',
+              price: (data['price'] ?? 0).toDouble(),
+              image: data['image'] ?? '',
+              description: data['description'] ?? '',
+              category: data['category'] ?? '',
+              rating: (data['rating'] ?? 0).toDouble(),
+              reviewsCount: data['reviewsCount'] ?? 0,
+              featured: data['featured'] ?? false,
+            );
+          }).where((product) {
+            final searchLower = query.toLowerCase();
+            return product.name.toLowerCase().contains(searchLower) ||
+                   product.description.toLowerCase().contains(searchLower) ||
+                   (product.category ?? '').toLowerCase().contains(searchLower);
+          }).toList();
         }
-        _applyFilters();
-        _isSearching = false;
-      });
+
+        setState(() {
+          _searchResults = results;
+          _applyFilters();
+          _isSearching = false;
+        });
+      } catch (e) {
+        setState(() {
+          _searchResults = _getSampleProducts().where((product) {
+            if (query.isEmpty) return true;
+            final searchLower = query.toLowerCase();
+            return product.name.toLowerCase().contains(searchLower) ||
+                   product.description.toLowerCase().contains(searchLower) ||
+                   (product.category ?? '').toLowerCase().contains(searchLower);
+          }).toList();
+          _isSearching = false;
+        });
+      }
     });
   }
 
@@ -110,7 +235,7 @@ class _SearchScreenState extends State<SearchScreen> {
     setState(() {
       _searchResults = _searchResults.where((product) {
         bool categoryMatch = _selectedCategory == 'الكل' ||
-            product.category == _selectedCategory;
+            (product.category ?? '') == _selectedCategory;
         bool priceMatch =
             product.price >= _minPrice && product.price <= _maxPrice;
 
@@ -130,7 +255,7 @@ class _SearchScreenState extends State<SearchScreen> {
           _searchResults.sort((a, b) => b.price.compareTo(a.price));
           break;
         case 'الأعلى تقييماً':
-          _searchResults.sort((a, b) => b.rating!.compareTo(a.rating as num));
+          _searchResults.sort((a, b) => (b.rating ?? 0).compareTo(a.rating ?? 0));
           break;
       }
       _currentPage = 0; // إعادة الصفحة إلى الصفر عند تغيير الفلتر
@@ -370,9 +495,12 @@ class _SearchScreenState extends State<SearchScreen> {
                               onPressed: () {
                                 setState(() {
                                   _searchController.clear();
-                                  _searchResults = allProducts!;
-                                  _applyFilters();
+                                  _selectedCategory = 'الكل';
+                                  _selectedBrand = 'الكل';
+                                  _minPrice = 0;
+                                  _maxPrice = 5000;
                                 });
+                                _loadProducts(); // Reload all products
                               },
                               child: const Text('إعادة تعيين الفلاتر'),
                             ),

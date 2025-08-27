@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 import 'package:gizmo_store/providers/auth_provider.dart' as auth;
 import 'package:gizmo_store/services/firebase_auth_service.dart';
@@ -522,6 +523,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Future<void> _pickImageFromSource(ImageSource source) async {
     try {
+      // Try to request permissions, but continue even if denied
+      await _checkAndRequestPermissions(source);
+
+      // Show loading indicator
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('جاري اختيار الصورة...'),
+            duration: Duration(seconds: 1),
+          ),
+        );
+      }
+
       final XFile? pickedFile = await _picker.pickImage(
         source: source,
         maxWidth: 1024,
@@ -530,14 +544,78 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       );
 
       if (pickedFile != null) {
-        setState(() {
-          _selectedImage = File(pickedFile.path);
-        });
+        final file = File(pickedFile.path);
+
+        // Verify file exists and is readable
+        if (await file.exists()) {
+          setState(() {
+            _selectedImage = file;
+          });
+
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('تم اختيار الصورة بنجاح'),
+                backgroundColor: Colors.green,
+                duration: Duration(seconds: 2),
+              ),
+            );
+          }
+        } else {
+          _showErrorMessage('الملف المحدد غير موجود');
+        }
+      } else {
+        // User cancelled the picker
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('تم إلغاء اختيار الصورة'),
+              duration: Duration(seconds: 1),
+            ),
+          );
+        }
       }
     } catch (e) {
-      _showErrorMessage('فشل في اختيار الصورة');
+      _showErrorMessage('فشل في اختيار الصورة: ${e.toString()}');
     }
   }
+
+  Future<bool> _checkAndRequestPermissions(ImageSource source) async {
+    try {
+      if (source == ImageSource.camera) {
+        // Check camera permission
+        var cameraStatus = await Permission.camera.status;
+        if (cameraStatus.isDenied || cameraStatus.isRestricted) {
+          cameraStatus = await Permission.camera.request();
+        }
+        return cameraStatus.isGranted;
+      } else {
+        // For gallery access, try storage permission first (works on most Android versions)
+        var storageStatus = await Permission.storage.status;
+        if (storageStatus.isDenied || storageStatus.isRestricted) {
+          storageStatus = await Permission.storage.request();
+        }
+
+        // If storage permission granted, return true
+        if (storageStatus.isGranted) {
+          return true;
+        }
+
+        // Try photos permission for newer Android versions
+        var photosStatus = await Permission.photos.status;
+        if (photosStatus.isDenied || photosStatus.isRestricted) {
+          photosStatus = await Permission.photos.request();
+        }
+
+        // Return true if either permission is granted, or if we should try anyway
+        return storageStatus.isGranted || photosStatus.isGranted || storageStatus.isLimited || photosStatus.isLimited;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+
 
   Future<String?> _uploadImageToFirebase(File imageFile) async {
     try {
@@ -651,6 +729,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
       if (photoURL != null) {
         updateData['photoURL'] = photoURL;
+        updateData['profile.photoURL'] = photoURL; // Also update in profile sub-document
       }
 
       await FirebaseAuthService.updateUserData(user.uid, updateData);

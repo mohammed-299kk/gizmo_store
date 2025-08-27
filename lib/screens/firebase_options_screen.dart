@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart' as auth;
+import 'database_init_screen.dart';
 
 class FirebaseOptionsScreen extends StatefulWidget {
   const FirebaseOptionsScreen({super.key});
@@ -241,6 +242,13 @@ class _FirebaseOptionsScreenState extends State<FirebaseOptionsScreen> {
             Icons.network_check,
             _testConnection,
           ),
+          const SizedBox(height: 8),
+
+          _buildActionButton(
+            'تهيئة قاعدة البيانات',
+            Icons.storage,
+            _initializeDatabase,
+          ),
         ],
       ),
     );
@@ -299,5 +307,14 @@ class _FirebaseOptionsScreenState extends State<FirebaseOptionsScreen> {
     } catch (e) {
       _showErrorMessage('فشل في الاتصال بـ Firebase: $e');
     }
+  }
+
+  void _initializeDatabase() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const DatabaseInitScreen(),
+      ),
+    );
   }
 }

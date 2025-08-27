@@ -1,8 +1,6 @@
 import 'package:gizmo_store/screens/categories_screen.dart';
 import 'package:gizmo_store/screens/shipping_screen.dart';
 import 'package:gizmo_store/screens/address_screen.dart';
-import 'package:gizmo_store/screens/shipping_screen.dart';
-import 'package:gizmo_store/screens/address_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:gizmo_store/screens/home/home_screen.dart';
 import 'package:gizmo_store/screens/profile/profile_screen.dart';

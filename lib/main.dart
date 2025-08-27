@@ -18,7 +18,7 @@ import 'constants/app_colors.dart';
 /// The main entry point of the application. It initializes Firebase
 /// asynchronously and then runs the app's widget tree. If Firebase
 /// initialization fails, it prints an error message to the console.
-/*******  0f3e244b-8940-403f-ab9b-f6eaef0e9a25  *******/ void main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Firebase with error handling

@@ -68,17 +68,17 @@ class WishlistScreen extends StatelessWidget {
   }
 
   Widget _buildEmptyWishlist() {
-    return Center(
+    return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.favorite_border, size: 80, color: Colors.white38),
-          const SizedBox(height: 20),
-          const Text(
+          Icon(Icons.favorite_border, size: 80, color: Colors.white38),
+          SizedBox(height: 20),
+          Text(
             'قائمة المفضلة فارغة',
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
           Text(
             'أضف المنتجات التي تعجبك للوصول إليها بسهولة لاحقًا.',
             style: TextStyle(color: Colors.white70, fontSize: 16),

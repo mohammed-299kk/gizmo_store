@@ -147,4 +147,15 @@ class AuthProvider with ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
   }
+
+  // تحديث بيانات المستخدم
+  Future<void> refreshUser() async {
+    try {
+      await _auth.currentUser?.reload();
+      _user = _auth.currentUser;
+      notifyListeners();
+    } catch (e) {
+      // Handle error silently or log it
+    }
+  }
 }

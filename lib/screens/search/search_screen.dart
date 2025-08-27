@@ -184,7 +184,7 @@ class _SearchScreenState extends State<SearchScreen> {
               children: [
                 Expanded(
                   child: DropdownButtonFormField<String>(
-                    value: _selectedCategory,
+                    initialValue: _selectedCategory,
                     decoration: InputDecoration(
                       labelText: 'التصنيف',
                       border: OutlineInputBorder(
@@ -213,7 +213,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: DropdownButtonFormField<String>(
-                    value: _sortBy,
+                    initialValue: _sortBy,
                     decoration: InputDecoration(
                       labelText: 'ترتيب حسب',
                       border: OutlineInputBorder(
@@ -291,7 +291,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
                   // فلترة العلامة التجارية
                   DropdownButtonFormField<String>(
-                    value: _selectedBrand,
+                    initialValue: _selectedBrand,
                     decoration: InputDecoration(
                       labelText: 'العلامة التجارية',
                       border: OutlineInputBorder(
@@ -445,7 +445,7 @@ class _SearchScreenState extends State<SearchScreen> {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
+              color: Colors.grey.withValues(alpha: 0.2),
               spreadRadius: 2,
               blurRadius: 5,
             ),
@@ -564,7 +564,7 @@ class _SearchScreenState extends State<SearchScreen> {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
+              color: Colors.grey.withValues(alpha: 0.2),
               spreadRadius: 2,
               blurRadius: 5,
             ),

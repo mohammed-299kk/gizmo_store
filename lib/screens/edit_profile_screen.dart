@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:io';
 import 'package:gizmo_store/providers/auth_provider.dart' as auth;
 import 'package:gizmo_store/services/firebase_auth_service.dart';
 
@@ -25,6 +28,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   bool _isLoading = false;
   bool _showPasswordFields = false;
+  bool _obscureCurrentPassword = true;
+  bool _obscureNewPassword = true;
+  bool _obscureConfirmPassword = true;
+  File? _selectedImage;
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -157,8 +165,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               child: CircleAvatar(
                 radius: 60,
                 backgroundColor: Colors.grey[800],
-                backgroundImage: user?.photoURL != null ? NetworkImage(user!.photoURL!) : null,
-                child: user?.photoURL == null
+                backgroundImage: _selectedImage != null
+                    ? FileImage(_selectedImage!) as ImageProvider
+                    : (user?.photoURL != null ? NetworkImage(user!.photoURL!) as ImageProvider : null),
+                child: _selectedImage == null && user?.photoURL == null
                     ? Icon(
                         Icons.camera_alt,
                         size: 40,
@@ -172,9 +182,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           TextButton.icon(
             onPressed: _pickImage,
             icon: const Icon(Icons.edit, color: Color(0xFFB71C1C)),
-            label: const Text(
-              'تغيير الصورة',
-              style: TextStyle(color: Color(0xFFB71C1C)),
+            label: Text(
+              (_selectedImage != null || user?.photoURL != null) ? 'تغيير الصورة' : 'إضافة صورة',
+              style: const TextStyle(color: Color(0xFFB71C1C)),
             ),
           ),
         ],
@@ -312,7 +322,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               controller: _currentPasswordController,
               label: 'كلمة المرور الحالية',
               icon: Icons.lock_outline,
-              obscureText: true,
+              isPassword: true,
+              isPasswordVisible: !_obscureCurrentPassword,
+              onToggleVisibility: () {
+                setState(() {
+                  _obscureCurrentPassword = !_obscureCurrentPassword;
+                });
+              },
               validator: (value) {
                 if (_showPasswordFields && (value == null || value.trim().isEmpty)) {
                   return 'كلمة المرور الحالية مطلوبة';
@@ -325,7 +341,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               controller: _newPasswordController,
               label: 'كلمة المرور الجديدة',
               icon: Icons.lock,
-              obscureText: true,
+              isPassword: true,
+              isPasswordVisible: !_obscureNewPassword,
+              onToggleVisibility: () {
+                setState(() {
+                  _obscureNewPassword = !_obscureNewPassword;
+                });
+              },
               validator: (value) {
                 if (_showPasswordFields) {
                   if (value == null || value.trim().isEmpty) {
@@ -343,7 +365,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               controller: _confirmPasswordController,
               label: 'تأكيد كلمة المرور الجديدة',
               icon: Icons.lock_outline,
-              obscureText: true,
+              isPassword: true,
+              isPasswordVisible: !_obscureConfirmPassword,
+              onToggleVisibility: () {
+                setState(() {
+                  _obscureConfirmPassword = !_obscureConfirmPassword;
+                });
+              },
               validator: (value) {
                 if (_showPasswordFields) {
                   if (value == null || value.trim().isEmpty) {
@@ -369,17 +397,29 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     TextInputType? keyboardType,
     bool obscureText = false,
     String? Function(String?)? validator,
+    bool isPassword = false,
+    VoidCallback? onToggleVisibility,
+    bool? isPasswordVisible,
   }) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
-      obscureText: obscureText,
+      obscureText: isPassword ? !(isPasswordVisible ?? false) : obscureText,
       validator: validator,
       style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         labelText: label,
         labelStyle: const TextStyle(color: Colors.white70),
         prefixIcon: Icon(icon, color: const Color(0xFFB71C1C)),
+        suffixIcon: isPassword
+            ? IconButton(
+                icon: Icon(
+                  (isPasswordVisible ?? false) ? Icons.visibility : Icons.visibility_off,
+                  color: Colors.white70,
+                ),
+                onPressed: onToggleVisibility,
+              )
+            : null,
         filled: true,
         fillColor: const Color(0xFF2A2A2A),
         border: OutlineInputBorder(
@@ -403,8 +443,144 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> _pickImage() async {
-    // Image picker functionality will be implemented when the package is added
-    _showErrorMessage('ميزة تغيير الصورة ستتوفر قريباً');
+    try {
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: const Color(0xFF2A2A2A),
+        builder: (context) => Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'اختر مصدر الصورة',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildImageSourceOption(
+                    icon: Icons.camera_alt,
+                    label: 'الكاميرا',
+                    onTap: () {
+                      Navigator.pop(context);
+                      _pickImageFromSource(ImageSource.camera);
+                    },
+                  ),
+                  _buildImageSourceOption(
+                    icon: Icons.photo_library,
+                    label: 'المعرض',
+                    onTap: () {
+                      Navigator.pop(context);
+                      _pickImageFromSource(ImageSource.gallery);
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        ),
+      );
+    } catch (e) {
+      _showErrorMessage('حدث خطأ في اختيار الصورة');
+    }
+  }
+
+  Widget _buildImageSourceOption({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: const Color(0xFF1F1F1F),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFB71C1C), width: 1),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: const Color(0xFFB71C1C), size: 40),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickImageFromSource(ImageSource source) async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(
+        source: source,
+        maxWidth: 1024,
+        maxHeight: 1024,
+        imageQuality: 85,
+      );
+
+      if (pickedFile != null) {
+        setState(() {
+          _selectedImage = File(pickedFile.path);
+        });
+      }
+    } catch (e) {
+      _showErrorMessage('فشل في اختيار الصورة');
+    }
+  }
+
+  Future<String?> _uploadImageToFirebase(File imageFile) async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        _showErrorMessage('المستخدم غير مسجل الدخول');
+        return null;
+      }
+
+      // Show upload progress
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('جاري رفع الصورة...'),
+          backgroundColor: Color(0xFFB71C1C),
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child('profile_pictures')
+          .child('${user.uid}_${DateTime.now().millisecondsSinceEpoch}.jpg');
+
+      final uploadTask = storageRef.putFile(imageFile);
+      final snapshot = await uploadTask;
+      final downloadUrl = await snapshot.ref.getDownloadURL();
+
+      // Show success message
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('تم رفع الصورة بنجاح'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+
+      return downloadUrl;
+    } catch (e) {
+      _showErrorMessage('فشل في رفع الصورة: ${e.toString()}');
+      return null;
+    }
   }
 
   Future<void> _saveProfile() async {
@@ -445,13 +621,39 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         await user.updatePassword(_newPasswordController.text);
       }
 
+      // Upload profile picture if selected
+      String? photoURL = user.photoURL;
+      if (_selectedImage != null) {
+        photoURL = await _uploadImageToFirebase(_selectedImage!);
+        if (photoURL != null) {
+          await user.updatePhotoURL(photoURL);
+          // Also update the auth provider to refresh the UI
+          if (mounted) {
+            final authProvider = Provider.of<auth.AuthProvider>(context, listen: false);
+            await authProvider.refreshUser();
+          }
+        } else {
+          // Upload failed, don't proceed with saving other data
+          setState(() {
+            _isLoading = false;
+          });
+          return;
+        }
+      }
+
       // Update Firestore data
-      await FirebaseAuthService.updateUserData(user.uid, {
+      final updateData = {
         'name': fullName,
         'email': _emailController.text.trim(),
         'profile.phone': _phoneController.text.trim(),
         'updatedAt': FieldValue.serverTimestamp(),
-      });
+      };
+
+      if (photoURL != null) {
+        updateData['photoURL'] = photoURL;
+      }
+
+      await FirebaseAuthService.updateUserData(user.uid, updateData);
 
       _showSuccessMessage('تم حفظ التغييرات بنجاح');
       if (mounted) {

@@ -408,7 +408,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 borderRadius: BorderRadius.circular(12)),
             child: IconButton(
               onPressed: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => CartScreen())),
+                  MaterialPageRoute(builder: (context) => const CartScreen())),
               icon: const Icon(Icons.shopping_cart, color: Color(0xFFB71C1C)),
             ),
           ),

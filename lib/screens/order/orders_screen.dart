@@ -202,7 +202,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
           Padding(
             padding: const EdgeInsets.all(16),
             child: DropdownButtonFormField<String>(
-              value: _selectedStatus,
+              initialValue: _selectedStatus,
               decoration: const InputDecoration(
                 labelText: 'فلتر حسب الحالة',
                 border: OutlineInputBorder(),

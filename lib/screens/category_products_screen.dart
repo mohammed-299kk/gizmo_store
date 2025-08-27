@@ -173,9 +173,9 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
+                                      const Text(
                                         '\${product.price.toStringAsFixed(2)}',
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           color: Color(0xFFB71C1C),
                                           fontWeight: FontWeight.bold,
                                         ),

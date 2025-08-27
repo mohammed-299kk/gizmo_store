@@ -228,7 +228,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => OrdersScreen(),
+                                    builder: (context) => const OrdersScreen(),
                                   ),
                                 );
                               },

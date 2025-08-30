@@ -64,7 +64,7 @@ class ProductService {
           .map((doc) => Product.fromMap(doc.data(), doc.id))
           .where((product) =>
               product.name.toLowerCase().contains(query.toLowerCase()) ||
-              (product.description?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
+              (product.description.toLowerCase().contains(query.toLowerCase()) ?? false) ||
               (product.category?.toLowerCase().contains(query.toLowerCase()) ?? false))
           .toList();
     } catch (e) {

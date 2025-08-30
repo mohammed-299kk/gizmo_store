@@ -19,6 +19,8 @@ class _AuthScreenState extends State<AuthScreen> {
 
   bool isLogin = true;
   bool isLoading = false;
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
 
   // دالة تسجيل الدخول أو إنشاء حساب
   Future<void> _submit() async {
@@ -196,7 +198,13 @@ class _AuthScreenState extends State<AuthScreen> {
                 controller: _passwordController,
                 label: "كلمة المرور",
                 icon: Icons.lock,
-                obscureText: true,
+                isPassword: true,
+                isPasswordVisible: !_obscurePassword,
+                onToggleVisibility: () {
+                  setState(() {
+                    _obscurePassword = !_obscurePassword;
+                  });
+                },
               ),
 
               if (!isLogin) ...[
@@ -205,7 +213,13 @@ class _AuthScreenState extends State<AuthScreen> {
                   controller: _confirmPasswordController,
                   label: "تأكيد كلمة المرور",
                   icon: Icons.lock_outline,
-                  obscureText: true,
+                  isPassword: true,
+                  isPasswordVisible: !_obscureConfirmPassword,
+                  onToggleVisibility: () {
+                    setState(() {
+                      _obscureConfirmPassword = !_obscureConfirmPassword;
+                    });
+                  },
                 ),
               ],
 
@@ -299,16 +313,28 @@ class _AuthScreenState extends State<AuthScreen> {
     required IconData icon,
     bool obscureText = false,
     TextInputType? keyboardType,
+    bool isPassword = false,
+    VoidCallback? onToggleVisibility,
+    bool? isPasswordVisible,
   }) {
     return TextField(
       controller: controller,
-      obscureText: obscureText,
+      obscureText: isPassword ? !(isPasswordVisible ?? false) : obscureText,
       keyboardType: keyboardType,
       style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         labelText: label,
         labelStyle: const TextStyle(color: Colors.white70),
         prefixIcon: Icon(icon, color: Colors.white70),
+        suffixIcon: isPassword
+            ? IconButton(
+                icon: Icon(
+                  (isPasswordVisible ?? false) ? Icons.visibility : Icons.visibility_off,
+                  color: Colors.white70,
+                ),
+                onPressed: onToggleVisibility,
+              )
+            : null,
         filled: true,
         fillColor: const Color(0xFF2A2A2A),
         border: OutlineInputBorder(

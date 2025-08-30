@@ -8,6 +8,7 @@ import '../main.dart';
 import 'cart/cart_screen.dart';
 import 'settings_screen.dart';
 import 'auth/auth_screen.dart';
+import 'profile/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final String userType;
@@ -171,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 2:
         return _buildFavoritesTab();
       case 3:
-        return _buildAccountTab();
+        return const ProfileScreen();
       default:
         return _buildHomeTab();
     }
@@ -430,97 +431,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildAccountTab() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          const SizedBox(height: 20),
-          CircleAvatar(
-            radius: 50,
-            backgroundColor: const Color(0xFFB71C1C),
-            child: Icon(
-              widget.userType == 'guest' ? Icons.person_outline : Icons.person,
-              size: 50,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            widget.userType == 'guest' ? 'ضيف' : 'ملفي الشخصي',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 40),
-          _buildAccountOption(Icons.shopping_bag, 'طلباتي'),
-          _buildAccountOption(Icons.location_on, 'العناوين'),
-          _buildAccountOption(Icons.payment, 'طرق الدفع'),
-          ListTile(
-            leading: const Icon(Icons.settings, color: Color(0xFFB71C1C)),
-            title: const Text(
-              'الإعدادات',
-              style: TextStyle(color: Colors.white),
-            ),
-            trailing:
-                const Icon(Icons.arrow_forward_ios, color: Colors.white54),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SettingsScreen(),
-                ),
-              );
-            },
-          ),
-          _buildAccountOption(Icons.help, 'المساعدة'),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () async {
-              // تسجيل الخروج وحذف البيانات المحفوظة
-              await AuthService.signOut();
 
-              if (mounted) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AuthScreen(),
-                  ),
-                );
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFB71C1C),
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-            ),
-            child: const Text('تسجيل الخروج'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAccountOption(IconData icon, String title) {
-    return ListTile(
-      leading: Icon(icon, color: const Color(0xFFB71C1C)),
-      title: Text(
-        title,
-        style: const TextStyle(color: Colors.white),
-      ),
-      trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white54),
-      onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('$title قريباً!'),
-            backgroundColor: const Color(0xFFB71C1C),
-          ),
-        );
-      },
-    );
-  }
 
   Future<void> _addToCart(Map<String, dynamic> productData) async {
     // تحويل البيانات إلى Product

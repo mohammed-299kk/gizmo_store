@@ -12,6 +12,7 @@ import '../settings_screen.dart';
 import '../order/orders_screen.dart';
 import '../search/search_screen.dart';
 import '../profile/profile_screen.dart';
+import '../firebase_options_screen.dart';
 import '../../providers/auth_provider.dart' as auth;
 
 class HomeScreen extends StatefulWidget {
@@ -133,53 +134,20 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             tooltip: 'البحث',
           ),
-          Consumer<auth.AuthProvider>(
-            builder: (context, authProvider, child) {
-              final user = authProvider.user;
-              return IconButton(
-                icon: CircleAvatar(
-                  radius: 16,
-                  backgroundColor: Colors.white.withValues(alpha: 0.2),
-                  backgroundImage: user?.photoURL != null ? NetworkImage(user!.photoURL!) : null,
-                  child: user?.photoURL == null
-                      ? Text(
-                          user?.displayName?.substring(0, 1).toUpperCase() ?? 'G',
-                          style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold),
-                        )
-                      : null,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const ProfileScreen()),
-                  );
-                },
-                tooltip: 'الملف الشخصي',
+          IconButton(
+            icon: const Icon(Icons.developer_mode),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const FirebaseOptionsScreen()),
               );
             },
+            tooltip: 'إعدادات Firebase',
           ),
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert),
-            onSelected: (value) {
-              switch (value) {
-                case 'logout':
-                  _showLogoutDialog();
-                  break;
-              }
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'logout',
-                child: Row(
-                  children: [
-                    Icon(Icons.logout, color: Colors.red),
-                    SizedBox(width: 8),
-                    Text('تسجيل الخروج', style: TextStyle(color: Colors.red)),
-                  ],
-                ),
-              ),
-            ],
-            color: const Color(0xFF2A2A2A),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: _showLogoutDialog,
+            tooltip: 'تسجيل الخروج',
           ),
         ],
       ),
@@ -222,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 2:
         return _buildFavoritesTab();
       case 3:
-        return _buildAccountTab();
+        return const ProfileScreen();
       default:
         return _buildHomeTab();
     }
@@ -514,83 +482,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildAccountTab() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          const SizedBox(height: 20),
-          const CircleAvatar(
-            radius: 50,
-            backgroundColor: Color(0xFFB71C1C),
-            child: Icon(
-              Icons.person,
-              size: 50,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            'ملفي الشخصي',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 40),
-          _buildAccountOption(Icons.shopping_bag, 'طلباتي'),
-          _buildAccountOption(Icons.location_on, 'العناوين'),
-          ListTile(
-            leading: const Icon(Icons.settings, color: Color(0xFFB71C1C)),
-            title: const Text(
-              'الإعدادات',
-              style: TextStyle(color: Colors.white),
-            ),
-            trailing:
-                const Icon(Icons.arrow_forward_ios, color: Colors.white54),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SettingsScreen(),
-                ),
-              );
-            },
-          ),
-          _buildAccountOption(Icons.help, 'المساعدة'),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildAccountOption(IconData icon, String title) {
-    return ListTile(
-      leading: Icon(icon, color: const Color(0xFFB71C1C)),
-      title: Text(
-        title,
-        style: const TextStyle(color: Colors.white),
-      ),
-      trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white54),
-      onTap: () {
-        switch (title) {
-          case 'طلباتي':
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const OrdersScreen()),
-            );
-            break;
-          default:
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('$title قريباً!'),
-                backgroundColor: const Color(0xFFB71C1C),
-              ),
-            );
-        }
-      },
-    );
-  }
 
   void _addToCart(Product product) {
     CartService.addItem(CartItem(product: product, quantity: 1));

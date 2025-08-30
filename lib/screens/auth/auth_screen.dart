@@ -207,8 +207,6 @@ class _AuthScreenState extends State<AuthScreen> {
                 },
               ),
 
-
-
               if (!isLogin) ...[
                 const SizedBox(height: 16),
                 _buildTextField(
@@ -331,12 +329,16 @@ class _AuthScreenState extends State<AuthScreen> {
         suffixIcon: isPassword && onToggleVisibility != null
             ? IconButton(
                 icon: Icon(
-                  (isPasswordVisible ?? false) ? Icons.visibility : Icons.visibility_off,
+                  (isPasswordVisible ?? false)
+                      ? Icons.visibility
+                      : Icons.visibility_off,
                   color: Colors.white,
                   size: 24,
                 ),
                 onPressed: onToggleVisibility,
-                tooltip: (isPasswordVisible ?? false) ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور',
+                tooltip: (isPasswordVisible ?? false)
+                    ? 'إخفاء كلمة المرور'
+                    : 'إظهار كلمة المرور',
                 splashRadius: 20,
               )
             : null,

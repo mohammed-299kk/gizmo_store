@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
+import '../providers/auth_provider.dart' as auth;
+import 'dashboard_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   final String? errorMessage;
@@ -27,16 +28,24 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _signIn() async {
     if (_formKey.currentState!.validate()) {
       try {
-        await context.read<AuthProvider>().signInWithEmailAndPassword(
+        await context.read<auth.AuthProvider>().signInWithEmailAndPassword(
           _emailController.text.trim(),
           _passwordController.text,
         );
+        
+        // If we reach here, authentication was successful and user is admin
+        // Navigate to dashboard
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const DashboardScreen()),
+          );
+        }
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(e.toString().replaceAll('Exception: ', '')),
-              backgroundColor: Colors.red,
+              backgroundColor: Colors.orange,
             ),
           );
         }
@@ -53,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xFFB71C1C),
+              Colors.orange,
               Color(0xFF8E0000),
             ],
           ),
@@ -78,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       const Icon(
                         Icons.admin_panel_settings,
                         size: 64,
-                        color: Color(0xFFB71C1C),
+                        color: Colors.orange,
                       ),
                       const SizedBox(height: 16),
                       const Text(
@@ -86,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFFB71C1C),
+                          color: Colors.orange,
                         ),
                       ),
                       const Text(
@@ -104,13 +113,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           padding: const EdgeInsets.all(12),
                           margin: const EdgeInsets.only(bottom: 16),
                           decoration: BoxDecoration(
-                            color: Colors.red.shade50,
-                            border: Border.all(color: Colors.red.shade200),
+                            color: Colors.orange.shade50,
+            border: Border.all(color: Colors.orange.shade200),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
                             widget.errorMessage!,
-                            style: TextStyle(color: Colors.red.shade700),
+                            style: TextStyle(color: Colors.orange.shade700),
                           ),
                         ),
 
@@ -167,7 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(height: 24),
 
                       // Sign in button
-                      Consumer<AuthProvider>(
+                      Consumer<auth.AuthProvider>(
                         builder: (context, authProvider, child) {
                           return SizedBox(
                             width: double.infinity,

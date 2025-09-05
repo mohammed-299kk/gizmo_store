@@ -18,7 +18,7 @@ class AdminProvider with ChangeNotifier {
   
   // Products data
   List<Product> _products = [];
-  List<String> _categories = [];
+  final List<String> _categories = [];
   
   // Orders data
   List<OrderModel> _orders = [];

@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gizmo_store/services/firebase_auth_service.dart';
+import 'package:gizmo_store/services/user_preferences_service.dart';
 
 class AuthProvider with ChangeNotifier {
   User? _user;
@@ -13,11 +15,23 @@ class AuthProvider with ChangeNotifier {
   bool get isAuthenticated => _user != null;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final UserPreferencesService _preferencesService = UserPreferencesService();
 
   AuthProvider() {
     // الاستماع إلى تغييرات حالة المصادقة
-    _auth.authStateChanges().listen((User? user) {
+    _auth.authStateChanges().listen((User? user) async {
+      final previousUser = _user;
       _user = user;
+      
+      // Handle preference syncing based on auth state changes
+      if (user != null && previousUser == null) {
+        // User just logged in - sync preferences from cloud
+        await _syncPreferencesOnLogin();
+      } else if (user == null && previousUser != null) {
+        // User just logged out - reset to defaults
+        await _resetPreferencesOnLogout();
+      }
+      
       notifyListeners();
     });
   }
@@ -47,6 +61,7 @@ class AuthProvider with ChangeNotifier {
       String? firstName,
       String? middleName,
       String? lastName,
+      required BuildContext context,
       }) async {
     try {
       if (password != confirmPassword) {
@@ -68,6 +83,7 @@ class AuthProvider with ChangeNotifier {
         firstName: firstName,
         middleName: middleName,
         lastName: lastName,
+        context: context,
       );
     } on FirebaseAuthException catch (e) {
       _errorMessage = _getAuthErrorMessage(e.code);
@@ -97,10 +113,38 @@ class AuthProvider with ChangeNotifier {
   Future<void> signOut() async {
     try {
       await _auth.signOut();
+      // Preferences will be reset automatically in authStateChanges listener
     } catch (e) {
       _errorMessage = 'حدث خطأ أثناء تسجيل الخروج';
       notifyListeners();
       throw Exception(_errorMessage);
+    }
+  }
+
+  // Sync preferences when user logs in
+  Future<void> _syncPreferencesOnLogin() async {
+    try {
+      // This will be called by LanguageProvider and ThemeProvider
+      // when they detect a user login through their listeners
+    } catch (e) {
+      debugPrint('Error syncing preferences on login: $e');
+    }
+  }
+
+  // Reset preferences when user logs out
+  Future<void> _resetPreferencesOnLogout() async {
+    try {
+      // This will be called by LanguageProvider and ThemeProvider
+      // when they detect a user logout through their listeners
+    } catch (e) {
+      debugPrint('Error resetting preferences on logout: $e');
+    }
+  }
+
+  // Method to trigger preference sync for providers
+  Future<void> syncUserPreferences() async {
+    if (_user != null) {
+      await _syncPreferencesOnLogin();
     }
   }
 

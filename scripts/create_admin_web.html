@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Admin User</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+</head>
+<body>
+    <h1>Create Admin User</h1>
+    <div id="status">Loading...</div>
+    <button id="createBtn" onclick="createAdminUser()" style="display:none;">Create Admin User</button>
+    
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDGpF-Hw3FqmONhOOYnHKI-Jmqk_NJdWJE",
+            authDomain: "gizmostore-2a3ff.firebaseapp.com",
+            projectId: "gizmostore-2a3ff",
+            storageBucket: "gizmostore-2a3ff.firebasestorage.app",
+            messagingSenderId: "1092527135",
+            appId: "1:1092527135:web:a8b8b8b8b8b8b8b8b8b8b8"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('status').textContent = 'Ready to create admin user';
+            document.getElementById('createBtn').style.display = 'block';
+        });
+
+        async function createAdminUser() {
+            const email = 'chatgpt0242@gmail.com';
+            const password = 'Chatgpt0242@';
+            const statusDiv = document.getElementById('status');
+            const createBtn = document.getElementById('createBtn');
+            
+            try {
+                statusDiv.textContent = 'Creating user...';
+                createBtn.disabled = true;
+                
+                // Create user with email and password
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                statusDiv.textContent = 'User created, adding admin role...';
+                
+                // Add user document to Firestore with admin role
+                await db.collection('users').doc(user.uid).set({
+                    email: email,
+                    displayName: 'Admin User',
+                    role: 'admin',
+                    isAdmin: true,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                statusDiv.innerHTML = `
+                    <h2>✅ Admin user created successfully!</h2>
+                    <p><strong>Email:</strong> ${email}</p>
+                    <p><strong>Password:</strong> ${password}</p>
+                    <p><strong>UID:</strong> ${user.uid}</p>
+                    <p>The user has been added to Firestore with admin privileges.</p>
+                `;
+                
+                // Sign out the newly created user
+                await auth.signOut();
+                
+            } catch (error) {
+                console.error('Error:', error);
+                
+                if (error.code === 'auth/email-already-in-use') {
+                    statusDiv.innerHTML = `
+                        <h2>⚠️ User already exists</h2>
+                        <p>The email ${email} is already registered.</p>
+                        <p>You can try logging in with the existing credentials.</p>
+                    `;
+                } else {
+                    statusDiv.innerHTML = `
+                        <h2>❌ Error creating user</h2>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p><strong>Code:</strong> ${error.code}</p>
+                    `;
+                }
+                
+                createBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

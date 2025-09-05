@@ -4,6 +4,7 @@ import 'package:gizmo_store/providers/auth_provider.dart' as auth;
 import 'package:gizmo_store/screens/home/home_screen.dart';
 import 'package:gizmo_store/screens/auth/auth_screen.dart';
 import 'package:gizmo_store/screens/splash_screen.dart';
+import 'package:gizmo_store/screens/admin/admin_panel.dart';
 
 class AuthGate extends StatefulWidget {
   const AuthGate({super.key});
@@ -18,7 +19,7 @@ class _AuthGateState extends State<AuthGate> {
   @override
   void initState() {
     super.initState();
-    // إظهار Splash Screen لمدة 3 ثوان فقط في بداية التطبيق
+    // Show Splash Screen for 3 seconds only at app startup
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
         setState(() {
@@ -45,6 +46,20 @@ class _AuthGateState extends State<AuthGate> {
       );
     }
 
-    return authProvider.isAuthenticated ? const HomeScreen() : const AuthScreen();
+    // Check if user is authenticated
+    if (authProvider.isAuthenticated) {
+      // Check if the authenticated user is admin
+      final user = authProvider.user;
+      if (user != null && user.email == 'mohbe777@gmail.com') {
+        // Redirect admin to admin panel
+        return const AdminPanel();
+      } else {
+        // Redirect regular users to home screen
+        return const HomeScreen();
+      }
+    } else {
+      // Show auth screen for unauthenticated users
+      return const AuthScreen();
+    }
   }
 }

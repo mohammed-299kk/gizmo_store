@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../l10n/app_localizations.dart';
 import 'home/home_screen.dart';
 import '../services/firebase_auth_service.dart';
+import '../providers/theme_provider.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -13,23 +16,58 @@ class _AuthScreenState extends State<AuthScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
-
   bool isLogin = true;
   bool isLoading = false;
+  bool _obscurePassword = true;
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
+    
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: isDark ? const Color(0xFF1A1A1A) : const Color(0xFFF5F5F5),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 40),
+              // Theme toggle button
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: isDark ? const Color(0xFF2A2A2A) : Colors.white,
+                      borderRadius: BorderRadius.circular(25),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.1),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: IconButton(
+                      onPressed: () => themeProvider.toggleTheme(),
+                      icon: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child: Icon(
+                          isDark ? Icons.wb_sunny : Icons.nightlight_round,
+                          key: ValueKey(isDark),
+                          color: isDark ? Colors.amber : const Color(0xFFB71C1C),
+                          size: 24,
+                        ),
+                      ),
+                      tooltip: isDark ? 'التبديل للوضع النهاري' : 'التبديل للوضع الليلي',
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
 
-              // شعار التطبيق
+              // App logo
               Container(
                 height: 120,
                 decoration: BoxDecoration(
@@ -37,25 +75,25 @@ class _AuthScreenState extends State<AuthScreen> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
+                      color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.15),
                       blurRadius: 15,
                       offset: const Offset(0, 8),
                     ),
                   ],
                 ),
-                child: const Center(
+                child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.shopping_bag,
                         size: 40,
                         color: Colors.white,
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(
-                        'Gizmo Store',
-                        style: TextStyle(
+                        AppLocalizations.of(context)!.appTitle,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -68,11 +106,11 @@ class _AuthScreenState extends State<AuthScreen> {
 
               const SizedBox(height: 40),
 
-              // العنوان
+              // Title
               Text(
-                isLogin ? "مرحباً بعودتك!" : "إنشاء حساب جديد",
-                style: const TextStyle(
-                  color: Colors.white,
+                isLogin ? AppLocalizations.of(context)!.welcomeBack : AppLocalizations.of(context)!.createNewAccount,
+                style: TextStyle(
+                  color: isDark ? Colors.white : Colors.black87,
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
                 ),
@@ -82,9 +120,9 @@ class _AuthScreenState extends State<AuthScreen> {
               const SizedBox(height: 8),
 
               Text(
-                isLogin ? "سجل دخولك للمتابعة" : "انضم إلى عائلة Gizmo Store",
-                style: const TextStyle(
-                  color: Colors.white70,
+                isLogin ? AppLocalizations.of(context)!.signInToContinue : AppLocalizations.of(context)!.joinGizmoFamily,
+                style: TextStyle(
+                  color: isDark ? Colors.white70 : Colors.black54,
                   fontSize: 16,
                 ),
                 textAlign: TextAlign.center,
@@ -92,11 +130,11 @@ class _AuthScreenState extends State<AuthScreen> {
 
               const SizedBox(height: 40),
 
-              // حقول الإدخال
+              // Input fields
               if (!isLogin) ...[
                 _buildTextField(
                   controller: _nameController,
-                  label: "الاسم الكامل",
+                  label: AppLocalizations.of(context)!.fullName,
                   icon: Icons.person,
                 ),
                 const SizedBox(height: 16),
@@ -104,7 +142,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
               _buildTextField(
                 controller: _emailController,
-                label: "البريد الإلكتروني",
+                label: AppLocalizations.of(context)!.email,
                 icon: Icons.email,
                 keyboardType: TextInputType.emailAddress,
               ),
@@ -113,9 +151,15 @@ class _AuthScreenState extends State<AuthScreen> {
 
               _buildTextField(
                 controller: _passwordController,
-                label: "كلمة المرور",
+                label: AppLocalizations.of(context)!.password,
                 icon: Icons.lock,
-                obscureText: true,
+                isPassword: true,
+                isPasswordVisible: !_obscurePassword,
+                onToggleVisibility: () {
+                  setState(() {
+                    _obscurePassword = !_obscurePassword;
+                  });
+                },
               ),
 
               const SizedBox(height: 32),
@@ -126,7 +170,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 child: ElevatedButton(
                   onPressed: isLoading ? null : _handleSubmit,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFB71C1C),
+                    backgroundColor: Color(0xFFB71C1C),
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
@@ -135,7 +179,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     elevation: isLoading ? 0 : 3,
                   ),
                   child: isLoading
-                      ? const Row(
+                      ? Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SizedBox(
@@ -149,14 +193,14 @@ class _AuthScreenState extends State<AuthScreen> {
                             ),
                             SizedBox(width: 12),
                             Text(
-                              "جاري المعالجة...",
+                              AppLocalizations.of(context)!.loading,
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.bold),
                             ),
                           ],
                         )
                       : Text(
-                          isLogin ? "تسجيل الدخول" : "إنشاء حساب",
+                          isLogin ? AppLocalizations.of(context)!.signIn : AppLocalizations.of(context)!.createAccount,
                           style: const TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold),
                         ),
@@ -165,15 +209,15 @@ class _AuthScreenState extends State<AuthScreen> {
 
               const SizedBox(height: 16),
 
-              // زر التبديل
+              // Toggle button
               TextButton(
                 onPressed: isLoading
                     ? null
                     : () => setState(() => isLogin = !isLogin),
                 child: Text(
                   isLogin
-                      ? "ليس لديك حساب؟ إنشاء حساب جديد"
-                      : "لديك حساب؟ تسجيل الدخول",
+                      ? AppLocalizations.of(context)!.noAccountCreateNew
+                      : AppLocalizations.of(context)!.haveAccountSignIn,
                   style: TextStyle(
                     color: isLoading ? Colors.grey : const Color(0xFFB71C1C),
                     fontSize: 16,
@@ -183,18 +227,18 @@ class _AuthScreenState extends State<AuthScreen> {
 
               const SizedBox(height: 24),
 
-              // خط فاصل
-              const Row(
+              // Divider line
+              Row(
                 children: [
-                  Expanded(child: Divider(color: Colors.white24)),
+                  Expanded(child: Divider(color: isDark ? Colors.white24 : Colors.black26)),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
-                      "أو",
-                      style: TextStyle(color: Colors.white70),
+                      AppLocalizations.of(context)!.or,
+                      style: TextStyle(color: isDark ? Colors.white70 : Colors.black54),
                     ),
                   ),
-                  Expanded(child: Divider(color: Colors.white24)),
+                  Expanded(child: Divider(color: isDark ? Colors.white24 : Colors.black26)),
                 ],
               ),
 
@@ -204,7 +248,7 @@ class _AuthScreenState extends State<AuthScreen> {
               OutlinedButton(
                 onPressed: isLoading ? null : _continueAsGuest,
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.white,
+                  foregroundColor: isDark ? Colors.white : Colors.black87,
                   side: BorderSide(
                       color: isLoading ? Colors.grey : const Color(0xFFB71C1C)),
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -212,9 +256,9 @@ class _AuthScreenState extends State<AuthScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text(
-                  "الدخول كضيف",
-                  style: TextStyle(fontSize: 16),
+                child: Text(
+                  AppLocalizations.of(context)!.continueAsGuest,
+                  style: const TextStyle(fontSize: 16),
                 ),
               ),
 
@@ -224,30 +268,37 @@ class _AuthScreenState extends State<AuthScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF2A2A2A),
+                  color: isDark ? const Color(0xFF2A2A2A) : Colors.white,
                   borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
-                child: const Column(
+                child: Column(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.security,
                       color: Color(0xFFB71C1C),
                       size: 32,
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       'بياناتك آمنة معنا',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: isDark ? Colors.white : Colors.black87,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       'نحن نحمي خصوصيتك ونؤمن بياناتك بأعلى معايير الأمان',
                       style: TextStyle(
-                        color: Colors.white70,
+                        color: isDark ? Colors.white70 : Colors.black54,
                         fontSize: 12,
                       ),
                       textAlign: TextAlign.center,
@@ -268,21 +319,43 @@ class _AuthScreenState extends State<AuthScreen> {
     required IconData icon,
     bool obscureText = false,
     TextInputType? keyboardType,
+    bool isPassword = false,
+    VoidCallback? onToggleVisibility,
+    bool? isPasswordVisible,
   }) {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    final isDark = themeProvider.isDarkMode;
+    
     return TextField(
       controller: controller,
-      obscureText: obscureText,
+      obscureText: isPassword ? !(isPasswordVisible ?? false) : obscureText,
       keyboardType: keyboardType,
-      style: const TextStyle(color: Colors.white),
+      style: TextStyle(color: isDark ? Colors.white : Colors.black87),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(color: Colors.white70),
-        prefixIcon: Icon(icon, color: Colors.white70),
+        labelStyle: TextStyle(color: isDark ? Colors.white70 : Colors.black54),
+        prefixIcon: Icon(icon, color: isDark ? Colors.white70 : Colors.black54),
+        suffixIcon: isPassword && onToggleVisibility != null
+            ? IconButton(
+                icon: Icon(
+                  (isPasswordVisible ?? false) ? Icons.visibility : Icons.visibility_off,
+                  color: isDark ? Colors.white70 : Colors.black54,
+                  size: 24,
+                ),
+                onPressed: onToggleVisibility,
+                tooltip: (isPasswordVisible ?? false) ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور',
+                splashRadius: 20,
+              )
+            : null,
         filled: true,
-        fillColor: const Color(0xFF2A2A2A),
+        fillColor: isDark ? const Color(0xFF2A2A2A) : Colors.white,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
+          borderSide: isDark ? BorderSide.none : const BorderSide(color: Colors.grey, width: 1),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: isDark ? BorderSide.none : const BorderSide(color: Colors.grey, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -330,10 +403,11 @@ class _AuthScreenState extends State<AuthScreen> {
         await FirebaseAuthService.signInWithEmailAndPassword(
           email: email,
           password: password,
+          context: context,
         );
         
         if (mounted) {
-          _showSuccessMessage('تم تسجيل الدخول بنجاح!');
+          _showSuccessMessage(AppLocalizations.of(context)!.signInSuccess);
         }
       } else {
         // إنشاء حساب جديد باستخدام Firebase Auth
@@ -341,17 +415,18 @@ class _AuthScreenState extends State<AuthScreen> {
           email: email,
           password: password,
           name: name,
+          context: context,
         );
         
         if (mounted) {
-          _showSuccessMessage('تم إنشاء الحساب بنجاح!');
+          _showSuccessMessage(AppLocalizations.of(context)!.accountCreatedSuccess);
         }
       }
 
       if (mounted) {
         setState(() => isLoading = false);
         
-        // الانتقال إلى الشاشة الرئيسية
+        // Navigate to home screen
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -371,15 +446,15 @@ class _AuthScreenState extends State<AuthScreen> {
     setState(() => isLoading = true);
 
     try {
-      // تسجيل الدخول كضيف باستخدام Firebase Auth
-      await FirebaseAuthService.signInAnonymously();
+      // Sign in as guest using Firebase Auth
+      await FirebaseAuthService.signInAnonymously(context);
 
       if (mounted) {
         setState(() => isLoading = false);
         
-        _showSuccessMessage('مرحباً بك كضيف!');
+        _showSuccessMessage(AppLocalizations.of(context)!.welcomeGuest);
 
-        // الانتقال إلى الشاشة الرئيسية
+        // Navigate to home screen
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

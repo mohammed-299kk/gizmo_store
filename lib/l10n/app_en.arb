@@ -1,0 +1,1674 @@
+{
+  "@@locale": "en",
+  "appTitle": "Gizmo Store",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "home": "Home",
+  "categories": "Categories",
+  "cart": "Cart",
+  "profile": "Profile",
+  "settings": "Settings",
+  "search": "Search",
+  "searchProducts": "Search products...",
+  "featuredProducts": "Featured Products",
+  "newArrivals": "New Arrivals",
+  "bestSellers": "Best Sellers",
+  "viewAll": "View All",
+  "addToCart": "Add to Cart",
+  "buyNow": "Buy Now",
+  "price": "Price",
+  "profile": "Profile",
+  "youAreGuestNow": "You are a guest now",
+  "loginToViewProfile": "Log in to view your profile and enjoy the full features of the app.",
+  "goToRegistrationPage": "Go to registration page",
+  "logout": "Logout",
+  "newUser": "New user",
+  "userId": "User ID",
+  "registrationDate": "Registration Date",
+  "undefined": "Undefined",
+  "orders": "Orders",
+  "favorites": "Favorites",
+  "myAccount": "My Account",
+  "editProfile": "Edit Profile",
+  "myOrders": "My Orders",
+  "addresses": "Addresses",
+  "addressManagementInDevelopment": "Address management is under development",
+  "settings": "Settings",
+  "application": "Application",
+  "notifications": "Notifications",
+  "notificationManagementInDevelopment": "Notification management is under development",
+  "helpAndSupport": "Help and Support",
+  "helpAndSupportInDevelopment": "Help and support is under development",
+  "privacyAndSecurity": "Privacy and Security",
+  "privacyAndSecurityInDevelopment": "Privacy and security settings are under development",
+  "aboutApp": "About App",
+  "firebaseDetails": "Firebase Details",
+  "areYouSureYouWantToLogout": "Are you sure you want to logout?",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "aboutGizmoStore": "About Gizmo Store",
+  "version100": "Version: 1.0.0",
+  "demoEcommerceApp": "Demo e-commerce application.",
+  "ok": "OK",
+  "privacyAndSecurityTitle": "Privacy and Security",
+  "securitySettings": "Security Settings",
+  "privacySettings": "Privacy Settings",
+  "changePassword": "Change Password",
+  "biometricAuthentication": "Biometric Authentication",
+  "managePrivacyData": "Manage Privacy Data",
+  "privacyPolicy": "Privacy Policy",
+  "changePasswordUnderDevelopment": "Change password feature is under development",
+  "biometricAuthUnderDevelopment": "Biometric authentication feature is under development",
+  "managePrivacyDataUnderDevelopment": "Manage privacy data feature is under development",
+  "privacyPolicyUnderDevelopment": "Privacy policy feature is under development",
+  "description": "Description",
+  "reviews": "Reviews",
+  "rating": "Rating",
+  "inStock": "In Stock",
+  "outOfStock": "Out of Stock",
+  "quantity": "Quantity",
+  "total": "Total",
+  "subtotal": "Subtotal",
+  "checkout": "Checkout",
+  "search": "Search",
+  "searchForProducts": "Search for products...",
+  "newest": "Newest",
+  "priceLowToHigh": "Price: Low to High",
+  "priceHighToLow": "Price: High to Low",
+  "topRated": "Top Rated",
+  "all": "All",
+  "smartphones": "Smartphones",
+  "computers": "Computers",
+  "tablets": "Tablets",
+  "smartwatches": "Smartwatches",
+  "headphones": "Headphones",
+  "accessories": "Accessories",
+  "failedToLoadProducts": "Failed to load products. Sample products are displayed.",
+  "category": "Category",
+  "sortBy": "Sort by",
+  "priceRange": "Price: from ${{min}} to ${{max}}",
+  "brand": "Brand",
+  "noResults": "No results",
+  "latestPhoneFromApple": "Latest phone from Apple",
+  "samsungFlagshipPhone": "Samsung's flagship phone",
+  "resetFilters": "Reset Filters",
+  "loadMore": "Load More",
+  "price": "Price",
+  "emptyCart": "Your cart is empty",
+  "continueShopping": "Continue Shopping",
+  "account": "Account",
+  "addressManagement": "Address Management",
+  "shipping": "Shipping",
+  "paymentMethods": "Payment Methods",
+  "notifications": "Notifications",
+  "darkMode": "Dark Mode",
+  "language": "Language",
+  "helpSupport": "Help & Support",
+  "appInformation": "App Information",
+  "logout": "Logout",
+  "login": "Login",
+  "register": "Register",
+  "email": "Email",
+  "password": "Password",
+  "confirmPassword": "Confirm Password",
+  "forgotPassword": "Forgot Password?",
+  "dontHaveAccount": "Don't have an account?",
+  "alreadyHaveAccount": "Already have an account?",
+  "signUp": "Sign Up",
+  "signIn": "Sign In",
+  "name": "Name",
+  "phone": "Phone",
+  "address": "Address",
+  "city": "City",
+  "state": "State",
+  "postalCode": "Postal Code",
+  "country": "Country",
+  "save": "Save",
+  "cancel": "Cancel",
+  "edit": "Edit",
+  "delete": "Delete",
+  "add": "Add",
+  "update": "Update",
+  "confirm": "Confirm",
+  "yes": "Yes",
+  "no": "No",
+  "ok": "OK",
+  "error": "Error",
+  "success": "Success",
+  "loading": "Loading...",
+  "retry": "Retry",
+  "noInternetConnection": "No internet connection",
+  "somethingWentWrong": "Something went wrong",
+  "addAddress": "Add Address",
+  "editAddress": "Edit Address",
+  "deleteAddress": "Delete Address",
+  "setAsDefault": "Set as Default",
+  "defaultAddress": "Default Address",
+  "noAddressesFound": "No addresses found",
+  "addYourFirstAddress": "Add your first address",
+  "street": "Street",
+  "required": "Required",
+  "invalidEmail": "Invalid email",
+  "passwordTooShort": "Password too short",
+  "passwordsDoNotMatch": "Passwords do not match",
+  "pleaseEnterValidName": "Please enter a valid name",
+  "pleaseEnterValidPhone": "Please enter a valid phone number",
+  "pleaseEnterValidStreet": "Please enter a valid street address",
+  "pleaseEnterValidCity": "Please enter a valid city",
+  "pleaseEnterValidState": "Please enter a valid state",
+  "pleaseEnterValidPostalCode": "Please enter a valid postal code",
+  "pleaseEnterValidCountry": "Please enter a valid country",
+  "deleteAddressConfirmation": "Are you sure you want to delete this address?",
+  "addressDeletedSuccessfully": "Address deleted successfully",
+  "addressSavedSuccessfully": "Address saved successfully",
+  "failedToSaveAddress": "Failed to save address",
+  "failedToDeleteAddress": "Failed to delete address",
+  "failedToLoadAddresses": "Failed to load addresses",
+  "priceFormat": "Price: {price} EGP",
+  "notSpecified": "Not specified",
+  "processing": "Processing...",
+  "english": "English",
+  "arabic": "العربية",
+  "continueAsGuest": "Continue as Guest",
+  "signInSuccess": "Sign in successful!",
+  "accountCreatedSuccess": "Account created successfully!",
+  "databaseInitDescription": "Initializing database with sample data...",
+  "or": "or",
+  "@or": {
+    "description": "The word 'or' used between options"
+  },
+  "createNewAccount": "Create New Account",
+  "@createNewAccount": {
+    "description": "Text for creating a new account"
+  },
+  "signInToContinue": "Sign in to continue",
+  "@signInToContinue": {
+    "description": "Text prompting user to sign in"
+  },
+  "joinGizmoFamily": "Join the Gizmo family",
+  "@joinGizmoFamily": {
+    "description": "Text inviting user to join"
+  },
+  "fullName": "Full Name",
+  "createAccount": "Create Account",
+  "noAccountCreateNew": "Don't have an account? Create new",
+  "haveAccountSignIn": "Already have an account? Sign in",
+  "@haveAccountSignIn": {
+    "description": "Text for users who already have an account"
+  },
+  "welcomeBack": "Welcome Back",
+  "@welcomeBack": {
+    "description": "Welcome message for returning users"
+  },
+  "aboutGizmoStore": "About Gizmo Store",
+  "@aboutGizmoStore": {
+    "description": "Title for about section"
+  },
+  "aboutDescription": "Gizmo Store is your one-stop shop for all electronic gadgets and accessories.",
+  "@aboutDescription": {
+    "description": "Description of the app"
+  },
+  "logoutConfirmation": "Are you sure you want to logout?",
+  "@logoutConfirmation": {
+    "description": "Confirmation message for logout"
+  },
+  "privacyPolicy": "Privacy Policy",
+  "@privacyPolicy": {
+    "description": "Privacy policy menu item"
+  },
+  "termsOfService": "Terms of Service",
+  "@termsOfService": {
+    "description": "Terms of service menu item"
+  },
+  "comingSoon": "coming soon!",
+  "@comingSoon": {
+    "description": "Text indicating feature is coming soon"
+  },
+  "rateApp": "Rate App",
+  "@rateApp": {
+    "description": "Rate app menu item"
+  },
+  "appInfo": "App Info",
+  "@appInfo": {
+    "description": "App information section title"
+  },
+  "aboutApp": "About App",
+  "@aboutApp": {
+    "description": "About app menu item"
+  },
+  "version": "Version 1.0.0",
+  "@version": {
+    "description": "App version information"
+  },
+  "helpCenter": "Help Center",
+  "@helpCenter": {
+    "description": "Help center menu item"
+  },
+  "contactUs": "Contact Us",
+  "@contactUs": {
+    "description": "Contact us menu item"
+  },
+  "firstName": "First Name",
+  "@firstName": {
+    "description": "First name field label"
+  },
+  "lastName": "Last Name",
+  "@lastName": {
+    "description": "Last name field label"
+  },
+  "helpAndSupport": "Help & Support",
+  "@helpAndSupport": {
+    "description": "Help and support section title"
+  },
+  "appLaunchedSuccessfully": "App launched successfully!",
+  "userType": "User Type",
+  "registeredUser": "Registered User",
+  "appWorkingNormally": "App is working normally now!",
+  "navigationButtons": "Navigation Buttons",
+  "cartWorks": "Cart works!",
+  "favoritesWork": "Favorites work!",
+  "settingsWork": "Settings work!",
+  "wishlist": "Wishlist",
+  "@wishlist": {
+    "description": "Wishlist tab label"
+  },
+  "phones": "Phones",
+  "@phones": {
+    "description": "Phone category"
+  },
+  "computers": "Computers",
+  "@computers": {
+    "description": "Computer category"
+  },
+  "headphones": "Headphones",
+  "@headphones": {
+    "description": "Headphones category"
+  },
+  "tablets": "Tablets",
+  "@tablets": {
+    "description": "Tablet category"
+  },
+  "watches": "Watches",
+  "@watches": {
+    "description": "Watch category"
+  },
+  "televisions": "Televisions",
+  "@televisions": {
+    "description": "Television category"
+  },
+  "currency": "EGP",
+  "cart": "Cart",
+  "clearCart": "Clear Cart",
+  "cartEmpty": "Cart is empty",
+  "startAddingProducts": "Start adding products to your cart",
+  "browseProducts": "Browse Products",
+  "total": "Total",
+  "subtotal": "Subtotal",
+  "tax": "Tax (15%)",
+  "shipping": "Shipping",
+  "finalTotal": "Final Total",
+  "proceedToPayment": "Proceed to Payment",
+  "productRemovedFromCart": "Product removed from cart",
+  "clearCartConfirmation": "Are you sure you want to clear all products from cart?",
+  "cartClearedSuccessfully": "Cart cleared successfully",
+  "clear": "Clear",
+  "paymentPageComingSoon": "Payment page coming soon!",
+  "orderCreatedSuccessfully": "Order created successfully!",
+  "confirmOrder": "Confirm Order",
+  "all": "All",
+  "smartphones": "Smartphones",
+  "computers": "Computers",
+  "tablets": "Tablets",
+  "smartwatches": "Smart Watches",
+  "headphones": "Headphones",
+  "accessories": "Accessories",
+  "newest": "Newest",
+  "priceLowToHigh": "Price: Low to High",
+  "priceHighToLow": "Price: High to Low",
+  "rating": "Rating",
+  "searchProducts": "Search for products...",
+  "filters": "Filters",
+  "category": "Category",
+  "priceRange": "Price Range (EGP)",
+  "minimumRating": "Minimum Rating",
+  "sortBy": "Sort by",
+  "reset": "Reset",
+  "apply": "Apply",
+  "previousSearches": "Previous Searches",
+  "clearAll": "Clear All",
+  "searchForProducts": "Search for products",
+  "noResults": "No results",
+  "tryDifferentKeywords": "Try different keywords or modify filters",
+  "smartElectronicsStore": "Smart Electronics Store",
+  "productDetails": "Product Details",
+  "discount": "Discount",
+  "reviews": "reviews",
+  "description": "Description",
+  "noProductDescription": "No product description available.",
+  "specifications": "Specifications",
+  "quantity": "Quantity:",
+  "addToCart": "Add to Cart",
+  "addedToCart": "added to cart",
+  "removedFromWishlist": "removed from wishlist",
+  "addedToWishlist": "added to wishlist",
+  "fromWishlist": "from wishlist",
+  "toWishlist": "to wishlist",
+  "viewAllReviews": "View All Reviews",
+  "products": "Products",
+  "firebaseDetails": "Firebase Details",
+  "appInfo": "App Information",
+  "appName": "App Name:",
+  "projectId": "Project ID:",
+  "apiKey": "API Key:",
+  "appId": "App ID:",
+  "androidClientId": "Android Client ID:",
+  "iosClientId": "iOS Client ID:",
+  "notAvailable": "Not Available",
+  "authStatus": "Authentication Status",
+  "loginStatus": "Login Status:",
+  "loggedIn": "Logged In",
+  "notLoggedIn": "Not Logged In",
+  "userId": "User ID (UID):",
+  "email": "Email:",
+  "displayName": "Display Name:",
+  "anonymous": "Anonymous:",
+  "yes": "Yes",
+  "no": "No",
+  "servicesStatus": "Services Status (Estimated)",
+  "firestoreStatus": "Firestore: Connected (if app is working)",
+  "messagingStatus": "Messaging: Connected (if configured)",
+  "wishlistEmpty": "Wishlist is empty",
+  "addFavoriteProducts": "Add your favorite products to access them easily later.",
+  "removedFromWishlist": "Product removed from wishlist",
+  "clearWishlist": "Clear Wishlist",
+  "clearWishlistConfirmation": "Are you sure you want to clear all products from wishlist?",
+  "featuredProducts": "Featured Products",
+  "specialOffer": "Special Offer",
+  "upTo50Off": "Up to 50% off",
+  "availableCoupons": "Available Coupons",
+  "myCoupons": "My Coupons",
+  "haveCouponCode": "Have a coupon code?",
+  "enterCouponCode": "Enter coupon code",
+  "applyCoupon": "Apply",
+  "couponApplied": "Coupon applied:",
+  "remove": "Remove",
+  "noCouponsAvailable": "No coupons available currently",
+  "noCouponsInWallet": "No coupons in your wallet",
+  "minimumOrder": "Minimum Order",
+  "maximumDiscount": "Maximum Discount",
+  "validUntil": "Valid Until",
+  "codeCopied": "Code copied",
+  "use": "Use",
+  "expired": "Expired",
+  "notAvailable": "Not Available",
+  "couponAppliedSuccessfully": "Coupon applied successfully",
+  "editProfile": "Edit Profile",
+  "profilePicture": "Profile Picture",
+  "changePhoto": "Change Photo",
+  "addPhoto": "Add Photo",
+  "personalInformation": "Personal Information",
+  "firstNameRequired": "First name is required",
+  "middleName": "Middle Name (Optional)",
+  "lastNameRequired": "Last name is required",
+  "contactInformation": "Contact Information",
+  "emailRequired": "Email is required",
+  "invalidEmail": "Invalid email",
+  "phoneOptional": "Phone Number (Optional)",
+  "changePassword": "Change Password",
+  "currentPassword": "Current Password",
+  "currentPasswordRequired": "Current password is required",
+  "newPassword": "New Password",
+  "newPasswordRequired": "New password is required",
+  "passwordMinLength": "Password must be at least 6 characters",
+  "confirmNewPassword": "Confirm New Password",
+  "confirmPasswordRequired": "Confirm password is required",
+  "passwordsDoNotMatch": "Passwords do not match",
+  "chooseImageSource": "Choose Image Source",
+  "camera": "Camera",
+  "gallery": "Gallery",
+  "errorSelectingImage": "Error selecting image",
+  "selectingImage": "Selecting image...",
+  "imageSelectedSuccessfully": "Image selected successfully",
+  "fileNotFound": "Selected file not found",
+  "imageSelectionCancelled": "Image selection cancelled",
+  "failedToSelectImage": "Failed to select image",
+  "userNotLoggedIn": "User not logged in",
+  "uploadingImage": "Uploading image...",
+  "imageUploadedSuccessfully": "Image uploaded successfully",
+  "failedToUploadImage": "Failed to upload image",
+  "changesSavedSuccessfully": "Changes saved successfully",
+  "failedToSaveChanges": "Failed to save changes",
+  "adminPanelTitle": "Gizmo Store Admin Panel",
+  "adminLogin": "Admin Login",
+  "unauthorizedAccess": "You are not authorized to access the admin panel",
+  "userNotFound": "User not found",
+  "wrongPassword": "Wrong password",
+  "invalidEmailFormat": "Invalid email format",
+  "accountDisabled": "This account has been disabled",
+  "tooManyAttempts": "Too many attempts, please try again later",
+  "loginError": "Login error",
+  "onlyAdminAccess": "Only admin can access this panel",
+  "myOrders": "My Orders",
+  "filterByStatus": "Filter by Status",
+  "preparing": "Preparing",
+  "shipping": "Shipping",
+  "delivered": "Delivered",
+  "cancelled": "Cancelled",
+  "loadingOrders": "Loading orders...",
+  "errorLoadingOrders": "Error loading orders",
+  "noOrdersYet": "No orders yet",
+  "noOrdersWithStatus": "No orders with status",
+  "startShoppingFirstOrder": "Start shopping to create your first order",
+  "orderDetails": "Order Details",
+  "trackOrder": "Track Order",
+  "orderDate": "Order Date",
+  "paymentMethod": "Payment Method: Credit Card",
+  "orderAddress": "Address: Khartoum, Riyadh District, Nile Fahd Street",
+  "orderProducts": "Products:",
+  "orderSubtotal": "Subtotal:",
+  "orderShipping": "Shipping:",
+  "free": "Free",
+  "orderTax": "Tax:",
+  "orderGrandTotal": "Grand Total:",
+  "close": "Close",
+  "loginRequiredForOrders": "You must log in to view orders",
+  "errorLoadingOrdersMessage": "An error occurred while loading orders",
+  "retryLoading": "Retry",
+  "shippingInformation": "Shipping Information",
+  "fullNameLabel": "Full Name",
+  "pleaseEnterFullName": "Please enter full name",
+  "addressLabel": "Address",
+  "pleaseEnterAddress": "Please enter address",
+  "cityLabel": "City",
+  "pleaseEnterCity": "Please enter city",
+  "phoneLabel": "Phone Number",
+  "pleaseEnterPhone": "Please enter phone number",
+  "paymentMethodLabel": "Payment Method",
+  "creditCard": "Credit Card",
+  "cashOnDelivery": "Cash on Delivery",
+  "orderSummary": "Order Summary",
+  "productsLabel": "Products:",
+  "shippingLabel": "Shipping:",
+  "taxLabel": "Tax:",
+  "grandTotalLabel": "Grand Total:",
+  "completeOrder": "Complete Order",
+  "orderCompleted": "Order Completed",
+  "orderCompletedMessage": "Thank you! Your order has been completed successfully. We will contact you soon.",
+  "completeOrderButton": "Complete Order",
+  "loadingText": "Loading...",
+  "appLaunchedSuccessfully": "App launched successfully! 🎉",
+  "redScreenIssueFixed": "Red screen freeze issue has been fixed",
+  "gizmoStoreTest": "Gizmo Store - Test",
+  "databaseInitialization": "Database Initialization",
+  "readyToInitialize": "Ready to initialize database",
+  "initializingDatabase": "Initializing database...",
+  "startingInitialization": "Starting database initialization...",
+  "creatingCategories": "Creating categories...",
+  "categoriesCreatedSuccessfully": "✅ Categories created successfully",
+  "creatingSampleProducts": "Creating sample products...",
+  "productsCreatedSuccessfully": "✅ Products created successfully",
+  "databaseInitializedSuccessfully": "✅ Database initialized successfully!",
+  "initializationCompleted": "🎉 Database initialization completed successfully!",
+  "initializationSuccess": "Initialization Success",
+  "initializationSuccessMessage": "Database initialized successfully!\nYou can now use the app.",
+  "initializationFailed": "❌ Failed to initialize database",
+  "operationLog": "Operation Log:",
+  "initializeDatabase": "Initialize Database",
+  "clearCart": "Clear Cart",
+  "emptyCart": "Cart is empty",
+  "startAddingProducts": "Start adding products to your cart",
+  "browseProducts": "Browse Products",
+  "proceedToPayment": "Proceed to Payment",
+  "productRemovedFromCart": "Product removed from cart",
+  "clearCartConfirmation": "Are you sure you want to clear all products from the cart?",
+  "clear": "Clear",
+  "cartClearedSuccessfully": "Cart cleared successfully",
+  "checkoutComingSoon": "Checkout page coming soon!",
+  "productDetails": "Product Details",
+  "discount": "Discount",
+  "reviews": "reviews",
+  "noProductDescription": "No product description available.",
+  "description": "Description",
+  "specifications": "Specifications",
+  "reviewsSection": "Reviews",
+  "viewAllReviews": "View All Reviews",
+  "quantity": "Quantity:",
+  "addToCart": "Add to Cart",
+  "addedToCart": "added to cart",
+  "removedFromWishlist": "removed from wishlist",
+  "addedToWishlist": "added to wishlist",
+  "@currency": {
+    "description": "Currency symbol"
+  },
+  "welcome": "Welcome",
+  "@welcome": {
+    "description": "Welcome message"
+  },
+  "welcomeGuest": "Welcome, Guest",
+  "@welcomeGuest": {
+    "description": "Welcome message for guest users"
+  },
+  "discoverLatestProducts": "Discover the latest products",
+  "@discoverLatestProducts": {
+    "description": "Subtitle encouraging product discovery"
+  },
+  "productTitle": "Product Title",
+  "@productTitle": {
+    "description": "Generic product title placeholder"
+  },
+  "noFavoriteProducts": "No favorite products yet",
+  "@noFavoriteProducts": {
+    "description": "Message when wishlist is empty"
+  },
+  "addedToCart": "Added to cart",
+  "@addedToCart": {
+    "description": "Success message when item added to cart"
+  },
+  "viewCart": "View Cart",
+  "@viewCart": {
+    "description": "Button to view shopping cart"
+  },
+  "guest": "Guest",
+  "myOrders": "My Orders",
+  "search": "Search",
+  "firebaseSettings": "Firebase Settings",
+  "logout": "Logout",
+  "homeTab": "Home",
+  "categoriesTab": "Categories",
+  "favoritesTab": "Favorites",
+  "accountTab": "Account",
+  "errorLoadingProducts": "Error loading products: {error}",
+  "welcomeToGizmoStore": "Welcome to Gizmo Store!",
+  "discoverLatestTechProducts": "Discover the latest tech products",
+  "featuredProducts": "Featured Products",
+  "allProducts": "All Products",
+  "general": "General",
+  "noFavoriteProductsYet": "No favorite products yet",
+  "tapHeartToAddFavorites": "Tap ♡ to add products to favorites",
+  "addedToCart": "Added {productName} to cart!",
+  "viewCart": "View Cart",
+  "removedFromFavorites": "Removed {productName} from favorites",
+  "addedToFavorites": "Added {productName} to favorites",
+  "logoutConfirmation": "Are you sure you want to logout?",
+  "logoutButton": "Logout",
+  "currency": "EGP",
+  "locationAndDate": "Khartoum - December 2024",
+  "searchForProducts": "Search for products...",
+  "errorPrefix": "Error:",
+  "categoriesTitle": "Categories",
+  "refresh": "Refresh",
+  "loadingCategories": "Loading categories...",
+  "noCategoriesAvailable": "No categories available",
+  "retry": "Retry",
+  "failedToLoadCategories": "Failed to load categories. Showing default categories.",
+  "smartphones": "Smartphones",
+  "laptops": "Laptops",
+  "headphones": "Headphones",
+  "smartwatches": "Smartwatches",
+  "tablets": "Tablets",
+  "accessories": "Accessories",
+  "failedToLoadProducts": "Failed to load products",
+  "categoryProducts": "Products",
+  "noProductsInCategory": "No products in this category",
+  "shoppingCart": "Shopping Cart",
+  "cartEmpty": "Cart is empty",
+  "quantity": "Quantity",
+  "total": "Total",
+  "checkout": "Checkout",
+  "@guest": {
+    "description": "Guest user label"
+  },
+  "free": "Free",
+  "@free": {
+    "description": "Free shipping or free item"
+  },
+  "shippingCost": "Shipping Cost",
+  "@shippingCost": {
+    "description": "Label for shipping cost"
+  },
+  "orderSummary": "Order Summary",
+  "@orderSummary": {
+    "description": "Order summary section title"
+  },
+  "proceedToCheckout": "Proceed to Checkout",
+  "@proceedToCheckout": {
+    "description": "Button to proceed to checkout"
+  },
+  "itemCount": "Item count:",
+  "@itemCount": {
+    "description": "Label for number of items"
+  },
+  "items": "items",
+  "@items": {
+    "description": "Plural form of item"
+  },
+  "removeProduct": "Remove Product",
+  "@removeProduct": {
+    "description": "Title for remove product dialog"
+  },
+  "removeProductConfirmation": "Do you want to remove \"{productName}\" from cart?",
+  "@removeProductConfirmation": {
+    "description": "Confirmation message for removing product from cart"
+  },
+  "productRemovedFromCart": "{productName} removed from cart",
+  "@productRemovedFromCart": {
+    "description": "Success message when product is removed from cart"
+  },
+  "clearCart": "Clear Cart",
+  "@clearCart": {
+    "description": "Title for clear cart dialog"
+  },
+  "clearCartConfirmation": "Do you want to remove all products from cart?",
+  "@clearCartConfirmation": {
+    "description": "Confirmation message for clearing cart"
+  },
+  "cartClearedCompletely": "Cart cleared completely",
+  "@cartClearedCompletely": {
+    "description": "Success message when cart is cleared"
+  },
+  "clearAll": "Clear All",
+  "@clearAll": {
+    "description": "Button to clear all items"
+  },
+  "checkoutComingSoon": "Checkout screen coming soon!",
+  "@checkoutComingSoon": {
+    "description": "Message indicating checkout feature is coming soon"
+  },
+  "notSpecified": "Not specified",
+  "@notSpecified": {
+    "description": "Text for unspecified or undefined values"
+  },
+  "hidePassword": "Hide password",
+  "showPassword": "Show password",
+  "categoryPhones": "Phones",
+  "categoryComputers": "Computers",
+  "categoryHeadphones": "Headphones",
+  "categoryTablets": "Tablets",
+  "categoryWatches": "Watches",
+  "categoryTv": "TV",
+  "checkout": "Checkout",
+  "shippingAddress": "Shipping Address",
+  "pleaseSelectAddress": "Please select an address",
+  "shippingMethod": "Shipping Method",
+  "pleaseSelectShippingMethod": "Please select a shipping method",
+  "orderSummary": "Order Summary",
+  "quantity": "Quantity",
+  "total": "Total",
+  "wishlist": "Wishlist",
+  "clearWishlist": "Clear Wishlist",
+  "cancel": "Cancel",
+  "clear": "Clear",
+  "languageArabic": "العربية",
+  "languageEnglish": "English",
+  "addresses": "Addresses",
+  "home": "Home",
+  "work": "Work",
+  "homeAddress": "King Fahd Street, Riyadh, Saudi Arabia",
+  "workAddress": "King Abdullah Road, Riyadh, Saudi Arabia",
+  "addressManagement": "Address Management",
+  "mustLoginFirst": "You must log in first",
+  "errorLoadingAddresses": "Error loading addresses",
+  "retry": "Retry",
+  "noSavedAddresses": "No saved addresses",
+  "addFirstAddress": "Add your first address to get started",
+  "addNewAddress": "Add New Address",
+  "shipping": "Shipping",
+  "standardShipping": "Standard Shipping",
+  "standardShippingDesc": "Takes 5-7 business days",
+  "expressShipping": "Express Shipping",
+  "expressShippingDesc": "Takes 2-3 business days",
+  "sameDayShipping": "Same Day Shipping",
+  "sameDayShippingDesc": "Your order arrives the same day",
+  "gizmoStoreAdminPanel": "Gizmo Store Admin Panel",
+  "dashboard": "Dashboard",
+  "addProduct": "Add Product",
+  "addCategory": "Add Category",
+  "manageProducts": "Manage Products",
+  "welcomeToDashboard": "Welcome to the Dashboard",
+  "addNewProduct": "Add New Product",
+  "addNewCategory": "Add New Category",
+  "manageOrders": "Manage Orders",
+  "sudanesePound": "Sudanese Pound",
+  "usDollar": "US Dollar",
+  "euro": "Euro",
+  "saudiRiyal": "Saudi Riyal",
+  "emiratiDirham": "Emirati Dirham",
+  "errorLoadingCategories": "Error loading categories",
+  "productAddedSuccessfully": "Product added successfully",
+  "errorAddingProduct": "Error adding product",
+  "addNewProductTitle": "Add New Product",
+  "productName": "Product Name",
+  "pleaseEnterProductName": "Please enter product name",
+  "productDescription": "Product Description",
+  "pleaseEnterProductDescription": "Please enter product description",
+  "price": "Price",
+  "pleaseEnterPrice": "Please enter price",
+  "pleaseEnterValidNumber": "Please enter a valid number",
+  "currency": "Currency",
+  "category": "Category",
+  "pleaseSelectCategory": "Please select category",
+  "discountPercentage": "Discount Percentage (%)",
+  "location": "Location",
+  "featuredProduct": "Featured Product",
+  "productImages": "Product Images",
+  "imageUrl": "Image URL",
+  "add": "Add",
+  "specifications": "Specifications",
+  "specification": "Specification",
+  "saveProduct": "Save Product",
+  "@saveProduct": {
+    "description": "Save product button text"
+  },
+  "searchForProduct": "Search for product",
+  "@searchForProduct": {
+    "description": "Search field placeholder for products"
+  },
+  "noProducts": "No products found",
+  "@noProducts": {
+    "description": "Message when no products are available"
+  },
+  "noName": "No name",
+  "@noName": {
+    "description": "Default text when product has no name"
+  },
+  "categoryLabel": "Category: ",
+  "@categoryLabel": {
+    "description": "Category label prefix"
+  },
+  "priceLabel": "Price: ",
+  "@priceLabel": {
+    "description": "Price label prefix"
+  },
+  "discountLabel": "Discount: ",
+  "@discountLabel": {
+    "description": "Discount label prefix"
+  },
+  "notSpecified": "Not specified",
+  "@notSpecified": {
+    "description": "Text for unspecified values"
+  },
+  "edit": "Edit",
+  "@edit": {
+    "description": "Edit button text"
+  },
+  "hide": "Hide",
+  "@hide": {
+    "description": "Hide button text"
+  },
+  "show": "Show",
+  "@show": {
+    "description": "Show button text"
+  },
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button text"
+  },
+  "confirmDelete": "Confirm Delete",
+  "@confirmDelete": {
+    "description": "Delete confirmation dialog title"
+  },
+  "deleteProductConfirmation": "Are you sure you want to delete the product \"{productName}\"?",
+  "@deleteProductConfirmation": {
+    "description": "Delete product confirmation message",
+    "placeholders": {
+      "productName": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+  "productDeletedSuccessfully": "Product deleted successfully",
+  "@productDeletedSuccessfully": {
+    "description": "Success message when product is deleted"
+  },
+  "errorDeletingProduct": "Error deleting product",
+  "@errorDeletingProduct": {
+    "description": "Error message when deleting product fails"
+  },
+  "productHidden": "Product hidden",
+  "@productHidden": {
+    "description": "Message when product is hidden"
+  },
+  "productShown": "Product shown",
+  "@productShown": {
+    "description": "Message when product is shown"
+  },
+  "errorUpdatingProduct": "Error updating product",
+  "@errorUpdatingProduct": {
+    "description": "Error message when updating product fails"
+  },
+  "productDetails": "Product Details",
+  "@productDetails": {
+    "description": "Product details dialog title"
+  },
+  "descriptionLabel": "Description: ",
+  "@descriptionLabel": {
+    "description": "Description label prefix"
+  },
+  "noDescription": "No description",
+  "@noDescription": {
+    "description": "Text when product has no description"
+  },
+  "stockLabel": "Stock: ",
+  "@stockLabel": {
+    "description": "Stock label prefix"
+  },
+  "ratingLabel": "Rating: ",
+  "@ratingLabel": {
+    "description": "Rating label prefix"
+  },
+  "reviews": "reviews",
+  "@reviews": {
+    "description": "Reviews text"
+  },
+  "statusLabel": "Status: ",
+  "@statusLabel": {
+    "description": "Status label prefix"
+  },
+  "available": "Available",
+  "@available": {
+    "description": "Available status text"
+  },
+  "unavailable": "Unavailable",
+  "@unavailable": {
+    "description": "Unavailable status text"
+  },
+  "close": "Close",
+  "@close": {
+    "description": "Close button text"
+  },
+  "editProduct": "Edit Product",
+  "@editProduct": {
+    "description": "Edit product screen title"
+  },
+  "errorPickingImage": "Error picking image",
+  "@errorPickingImage": {
+    "description": "Error message when image picking fails"
+  },
+  "errorUploadingImage": "Error uploading image",
+  "@errorUploadingImage": {
+    "description": "Error message when image upload fails"
+  },
+  "errorDeletingImage": "Error deleting image",
+  "@errorDeletingImage": {
+    "description": "Error message when image deletion fails"
+  },
+  "imageDeletedSuccessfully": "Image deleted successfully",
+  "@imageDeletedSuccessfully": {
+    "description": "Success message when image is deleted"
+  },
+  "productUpdatedSuccessfully": "Product updated successfully",
+  "@productUpdatedSuccessfully": {
+    "description": "Success message when product is updated"
+  },
+  "addImageFromGallery": "Add Image from Gallery",
+  "@addImageFromGallery": {
+    "description": "Button text to add image from gallery"
+  },
+  "selectedImage": "Selected Image:",
+  "@selectedImage": {
+    "description": "Label for selected image"
+  },
+  "currentImages": "Current Images:",
+  "@currentImages": {
+    "description": "Label for current images section"
+  },
+  "addSpecification": "Add Specification",
+  "@addSpecification": {
+    "description": "Button text to add specification"
+  },
+  "currentSpecifications": "Current Specifications:",
+  "@currentSpecifications": {
+    "description": "Label for current specifications section"
+  },
+  "availableForSale": "Available for Sale",
+  "@availableForSale": {
+    "description": "Label for availability toggle"
+  },
+  "updateProduct": "Update Product",
+  "@updateProduct": {
+    "description": "Button text to update product"
+  },
+  "productName": "Product Name",
+  "@productName": {
+    "description": "Label for product name field"
+  },
+  "pleaseEnterProductName": "Please enter product name",
+  "@pleaseEnterProductName": {
+    "description": "Validation message for product name field"
+  },
+  "productDescription": "Product Description",
+  "@productDescription": {
+    "description": "Label for product description field"
+  },
+  "pleaseEnterProductDescription": "Please enter product description",
+  "@pleaseEnterProductDescription": {
+    "description": "Validation message for product description field"
+  },
+  "pleaseSelectCategory": "Please select category",
+  "@pleaseSelectCategory": {
+    "description": "Validation message for category field"
+  },
+  "pleaseEnterPrice": "Please enter price",
+  "@pleaseEnterPrice": {
+    "description": "Validation message for price field"
+  },
+  "pleaseEnterValidNumber": "Please enter a valid number",
+  "@pleaseEnterValidNumber": {
+    "description": "Validation message for numeric fields"
+  },
+  "currency": "Currency",
+  "@currency": {
+    "description": "Label for currency field"
+  },
+  "location": "Location",
+  "@location": {
+    "description": "Label for location field"
+  },
+  "imageUrl": "Image URL",
+  "@imageUrl": {
+    "description": "Label for image URL field"
+  },
+  "featuredProduct": "Featured Product",
+  "@featuredProduct": {
+    "description": "Label for featured product toggle"
+  },
+  "errorLoadingCategories": "Error loading categories",
+  "@errorLoadingCategories": {
+    "description": "Error message when categories fail to load"
+  },
+  "sudanesePound": "Sudanese Pound",
+  "@sudanesePound": {
+    "description": "Sudanese Pound currency"
+  },
+  "usDollar": "US Dollar",
+  "@usDollar": {
+    "description": "US Dollar currency"
+  },
+  "euro": "Euro",
+  "@euro": {
+    "description": "Euro currency"
+  },
+  "saudiRiyal": "Saudi Riyal",
+  "@saudiRiyal": {
+    "description": "Saudi Riyal currency"
+  },
+  "emiratiDirham": "Emirati Dirham",
+  "@emiratiDirham": {
+    "description": "Emirati Dirham currency"
+  },
+  "manageProducts": "Manage Products",
+  "@manageProducts": {
+    "description": "Manage products screen title"
+  },
+  "categorySmartphones": "Smartphones",
+  "@categorySmartphones": {
+    "description": "Smartphones category"
+  },
+  "categoryLaptops": "Laptops",
+  "@categoryLaptops": {
+    "description": "Laptops category"
+  },
+  "categoryHeadphones": "Headphones",
+  "@categoryHeadphones": {
+    "description": "Headphones category"
+  },
+  "categorySmartWatches": "Smart Watches",
+  "@categorySmartWatches": {
+    "description": "Smart watches category"
+  },
+  "categoryTablets": "Tablets",
+  "@categoryTablets": {
+    "description": "Tablets category"
+  },
+  "categoryAccessories": "Accessories",
+  "@categoryAccessories": {
+    "description": "Accessories category"
+  },
+  "categoryComputers": "Computers",
+  "@categoryComputers": {
+    "description": "Computers category"
+  },
+  "categoryCameras": "Cameras",
+  "@categoryCameras": {
+    "description": "Cameras category"
+  },
+  "productIphone15ProDesc": "Latest Apple phone with A17 Pro chip and enhanced camera",
+  "@productIphone15ProDesc": {
+    "description": "iPhone 15 Pro description"
+  },
+  "productGalaxyS24UltraDesc": "Samsung flagship phone with S Pen and 200MP camera",
+  "@productGalaxyS24UltraDesc": {
+    "description": "Galaxy S24 Ultra description"
+  },
+  "productPixel8ProDesc": "Google phone with advanced AI and excellent camera",
+  "@productPixel8ProDesc": {
+    "description": "Pixel 8 Pro description"
+  },
+  "productMacBookProDesc": "Apple laptop with M3 Pro chip and Retina display",
+  "@productMacBookProDesc": {
+    "description": "MacBook Pro description"
+  },
+  "productDellXpsDesc": "Lightweight Dell laptop with Intel Core i7 processor",
+  "@productDellXpsDesc": {
+    "description": "Dell XPS description"
+  },
+  "productAirPodsProDesc": "Apple wireless earphones with active noise cancellation",
+  "@productAirPodsProDesc": {
+    "description": "AirPods Pro description"
+  },
+  "productSonyWHDesc": "Sony flagship headphones with excellent noise cancellation",
+  "@productSonyWHDesc": {
+    "description": "Sony WH-1000XM5 description"
+  },
+  "productAppleWatchDesc": "Apple smart watch with advanced health monitoring",
+  "@productAppleWatchDesc": {
+    "description": "Apple Watch description"
+  },
+  "productIpadProDesc": "iPad Pro with M2 chip and Liquid Retina display",
+  "@productIpadProDesc": {
+    "description": "iPad Pro description"
+  },
+  "productMagSafeDesc": "Apple wireless magnetic charger",
+  "@productMagSafeDesc": {
+    "description": "MagSafe charger description"
+  },
+  "productOnePlus12Desc": "OnePlus phone with 100W fast charging and powerful performance",
+  "@productOnePlus12Desc": {
+    "description": "OnePlus 12 description"
+  },
+  "productMacBookPro16M3MaxDesc": "Apple professional laptop with M3 Max processor for designers and developers",
+  "@productMacBookPro16M3MaxDesc": {
+    "description": "MacBook Pro 16 M3 Max description"
+  },
+  "productDellXps15Desc": "Dell professional laptop with 4K screen and powerful performance",
+  "@productDellXps15Desc": {
+    "description": "Dell XPS 15 description"
+  },
+  "productIpadProM2Desc": "Professional iPad with M2 processor and Liquid Retina XDR display",
+  "@productIpadProM2Desc": {
+    "description": "iPad Pro M2 description"
+  },
+  "productGalaxyTabS9UltraDesc": "Samsung tablet with large screen and S Pen",
+  "@productGalaxyTabS9UltraDesc": {
+    "description": "Galaxy Tab S9 Ultra description"
+  },
+  "productAppleWatchSeries9Desc": "Apple smart watch with advanced health sensors",
+  "@productAppleWatchSeries9Desc": {
+    "description": "Apple Watch Series 9 description"
+  },
+  "productGalaxyWatch6Desc": "Samsung smart watch with comprehensive health tracking",
+  "@productGalaxyWatch6Desc": {
+    "description": "Galaxy Watch 6 description"
+  },
+  "productAirPodsPro2Desc": "Apple wireless earphones with active noise cancellation",
+  "@productAirPodsPro2Desc": {
+    "description": "AirPods Pro 2 description"
+  },
+  "productSonyWH1000XM5Desc": "Sony professional headphones with best noise cancellation",
+  "@productSonyWH1000XM5Desc": {
+    "description": "Sony WH-1000XM5 description"
+  },
+  "sampleDataAddedSuccess": "All sample data added successfully",
+  "@sampleDataAddedSuccess": {
+    "description": "Success message for sample data"
+  },
+  "sampleDataAddError": "Error adding data",
+  "@sampleDataAddError": {
+    "description": "Error message for sample data"
+  },
+  "errorFetchingFeaturedProducts": "Error fetching featured products",
+  "@errorFetchingFeaturedProducts": {
+    "description": "Error message for fetching featured products"
+  },
+  "errorFetchingCategoryProducts": "Error fetching category products",
+  "@errorFetchingCategoryProducts": {
+    "description": "Error message for fetching products by category"
+  },
+  "errorSearching": "Error searching",
+  "@errorSearching": {
+    "description": "Error message for product search"
+  },
+  "errorAddingProduct": "Error adding product",
+  "@errorAddingProduct": {
+    "description": "Error message for adding product"
+  },
+  "failedToAddProduct": "Failed to add product",
+  "@failedToAddProduct": {
+    "description": "Exception message for adding product"
+  },
+  "errorUpdatingProduct": "Error updating product",
+  "@errorUpdatingProduct": {
+    "description": "Error message for updating product"
+  },
+  "failedToUpdateProduct": "Failed to update product",
+  "@failedToUpdateProduct": {
+    "description": "Exception message for updating product"
+  },
+  "errorDeletingProduct": "Error deleting product",
+  "@errorDeletingProduct": {
+    "description": "Error message for deleting product"
+  },
+  "failedToDeleteProduct": "Failed to delete product",
+  "@failedToDeleteProduct": {
+    "description": "Exception message for deleting product"
+  },
+  "errorUploadingImage": "Error uploading image",
+  "@errorUploadingImage": {
+    "description": "Error message for uploading image"
+  },
+  "failedToUploadImage": "Failed to upload image",
+  "@failedToUploadImage": {
+    "description": "Exception message for uploading image"
+  },
+  "errorDeletingImage": "Error deleting image",
+  "@errorDeletingImage": {
+    "description": "Error message for deleting image"
+  },
+  "failedToDeleteImage": "Failed to delete image",
+  "@failedToDeleteImage": {
+    "description": "Exception message for deleting image"
+  },
+  "errorUpdatingProductStatus": "Error updating product status",
+  "@errorUpdatingProductStatus": {
+    "description": "Error message for updating product availability"
+  },
+  "failedToUpdateProductStatus": "Failed to update product status",
+  "@failedToUpdateProductStatus": {
+    "description": "Exception message for updating product status"
+  },
+  "errorFetchingProduct": "Error fetching product",
+  "@errorFetchingProduct": {
+    "description": "Error message for fetching single product"
+  },
+  "sampleDataCreatedSuccess": "✅ Sample data created successfully",
+  "@sampleDataCreatedSuccess": {
+    "description": "Success message for creating sample data"
+  },
+  "errorCreatingSampleData": "❌ Error creating sample data",
+  "@errorCreatingSampleData": {
+    "description": "Error message for creating sample data"
+  },
+  "unexpectedError": "An unexpected error occurred",
+  "@unexpectedError": {
+    "description": "Generic unexpected error message"
+  },
+  "signOutFailed": "Failed to sign out",
+  "@signOutFailed": {
+    "description": "Error message for sign out failure"
+  },
+  "passwordResetFailed": "Failed to send password reset link",
+  "@passwordResetFailed": {
+    "description": "Error message for password reset failure"
+  },
+  "errorCreatingUserProfile": "Error creating user profile",
+  "@errorCreatingUserProfile": {
+    "description": "Debug message for user profile creation error"
+  },
+  "errorCreatingGuestProfile": "Error creating guest profile",
+  "@errorCreatingGuestProfile": {
+    "description": "Debug message for guest profile creation error"
+  },
+  "errorUpdatingLastLogin": "Error updating last login",
+  "@errorUpdatingLastLogin": {
+    "description": "Debug message for last login update error"
+  },
+  "errorFetchingUserData": "Error fetching user data",
+  "@errorFetchingUserData": {
+    "description": "Debug message for user data fetch error"
+  },
+  "failedToUpdateData": "Failed to update data",
+  "@failedToUpdateData": {
+    "description": "Error message for data update failure"
+  },
+  "errorFetchingUserStats": "Error fetching user stats",
+  "@errorFetchingUserStats": {
+    "description": "Debug message for user stats fetch error"
+  },
+  "errorUpdatingUserStats": "Error updating user stats",
+  "@errorUpdatingUserStats": {
+    "description": "Debug message for user stats update error"
+  },
+  "guest": "Guest",
+  "@guest": {
+    "description": "Label for guest user"
+  },
+  "userNotFound": "No user found with this email",
+  "@userNotFound": {
+    "description": "Firebase auth error: user-not-found"
+  },
+  "wrongPassword": "Incorrect password",
+  "@wrongPassword": {
+    "description": "Firebase auth error: wrong-password"
+  },
+  "emailAlreadyInUse": "Email is already in use",
+  "@emailAlreadyInUse": {
+    "description": "Firebase auth error: email-already-in-use"
+  },
+  "weakPassword": "Password is too weak",
+  "@weakPassword": {
+    "description": "Firebase auth error: weak-password"
+  },
+  "invalidEmail": "Invalid email address",
+  "@invalidEmail": {
+    "description": "Firebase auth error: invalid-email"
+  },
+  "userDisabled": "This account has been disabled",
+  "@userDisabled": {
+    "description": "Firebase auth error: user-disabled"
+  },
+  "tooManyRequests": "Too many attempts. Try again later",
+  "@tooManyRequests": {
+    "description": "Firebase auth error: too-many-requests"
+  },
+  "operationNotAllowed": "This operation is not allowed",
+  "@operationNotAllowed": {
+    "description": "Firebase auth error: operation-not-allowed"
+  },
+  "invalidCredential": "Invalid credentials",
+  "@invalidCredential": {
+    "description": "Firebase auth error: invalid-credential"
+  },
+  "networkRequestFailed": "Network connection failed",
+  "@networkRequestFailed": {
+    "description": "Firebase auth error: network-request-failed"
+  },
+  "requiresRecentLogin": "Requires recent login",
+  "@requiresRecentLogin": {
+    "description": "Firebase auth error: requires-recent-login"
+  },
+  "authenticationError": "Authentication error occurred",
+  "@authenticationError": {
+    "description": "Generic authentication error message"
+  },
+  "guestName": "Guest",
+  "@guestName": {
+    "description": "Name for guest users"
+  },
+  "authenticationFailed": "Authentication failed",
+  "@authenticationFailed": {
+    "description": "Generic authentication failure message"
+  },
+  "unexpectedSignInError": "An unexpected error occurred during sign-in",
+  "@unexpectedSignInError": {
+    "description": "Unexpected error during sign-in"
+  },
+  "accountCreationFailed": "Account creation failed",
+  "@accountCreationFailed": {
+    "description": "Account creation failure message"
+  },
+  "unexpectedSignUpError": "An unexpected error occurred during account creation",
+  "@unexpectedSignUpError": {
+    "description": "Unexpected error during account creation"
+  },
+  "anonymousSignInFailed": "Anonymous sign-in failed",
+  "@anonymousSignInFailed": {
+    "description": "Anonymous sign-in failure message"
+  },
+  "unexpectedAnonymousSignInError": "An unexpected error occurred during anonymous sign-in",
+  "@unexpectedAnonymousSignInError": {
+    "description": "Unexpected error during anonymous sign-in"
+  },
+  "unexpectedSignOutError": "An unexpected error occurred during sign-out",
+  "@unexpectedSignOutError": {
+    "description": "Unexpected error during sign-out"
+  },
+  "authGenericError": "Authentication error occurred",
+  "currency": "Sudanese Pound",
+  "location": "Khartoum, Sudan",
+  "guestName": "Guest",
+  "orderStatusPreparing": "Preparing",
+  "couponTypePercentage": "{value}% discount",
+  "@couponTypePercentage": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "couponTypeFixed": "{value} pound discount",
+  "@couponTypeFixed": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "couponTypeFreeShipping": "Free shipping",
+  "couponStatusActive": "Active",
+  "couponStatusExpired": "Expired",
+  "couponStatusUsed": "Used",
+  "couponStatusDisabled": "Disabled",
+  "validationNameRequired": "Name is required",
+  "validationNameTooShort": "Name must be more than 2 characters",
+  "validationPhoneRequired": "Phone number is required",
+  "validationPhoneInvalid": "Invalid phone number",
+  "validationStreetRequired": "Street address is required",
+  "validationStreetTooShort": "Street address must be more than 5 characters",
+  "validationCityRequired": "City is required",
+  "validationCityTooShort": "City name must be more than 2 characters",
+  "validationStateRequired": "State is required",
+  "validationPostalCodeRequired": "Postal code is required",
+  "validationPostalCodeInvalid": "Postal code must be 5 digits",
+  "validationCountryRequired": "Country is required",
+  "fillAllRequiredFields": "Please fill all required fields",
+  "@fillAllRequiredFields": {
+    "description": "Error message when required fields are empty"
+  },
+  "enterFirstAndLastName": "Please enter first and last name",
+  "@enterFirstAndLastName": {
+    "description": "Error message when name fields are empty"
+  },
+  "passwordsDoNotMatch": "Passwords do not match",
+  "@passwordsDoNotMatch": {
+    "description": "Error message when passwords don't match"
+  },
+  "passwordMinLength": "Password must be at least 6 characters",
+  "@passwordMinLength": {
+    "description": "Error message for password minimum length validation"
+  },
+  "errorFetchingProducts": "Error fetching products",
+  "@errorFetchingProducts": {
+    "description": "Error message when fetching products fails"
+  },
+  "errorFetchingFeaturedProducts": "Error fetching featured products",
+  "@errorFetchingFeaturedProducts": {
+    "description": "Error message when fetching featured products fails"
+  },
+  "errorFetchingCategoryProducts": "Error fetching category products",
+  "@errorFetchingCategoryProducts": {
+    "description": "Error message when fetching products by category fails"
+  },
+  "errorSearching": "Error searching",
+  "@errorSearching": {
+    "description": "Error message when search fails"
+  },
+  "errorAddingProduct": "Error adding product",
+  "@errorAddingProduct": {
+    "description": "Error message when adding product fails"
+  },
+  "failedToAddProduct": "Failed to add product",
+  "@failedToAddProduct": {
+    "description": "Exception message when adding product fails"
+  },
+  "errorUpdatingProduct": "Error updating product",
+  "@errorUpdatingProduct": {
+    "description": "Error message when updating product fails"
+  },
+  "failedToUpdateProduct": "Failed to update product",
+  "@failedToUpdateProduct": {
+    "description": "Exception message when updating product fails"
+  },
+  "errorDeletingProduct": "Error deleting product",
+  "@errorDeletingProduct": {
+    "description": "Error message when deleting product fails"
+  },
+  "failedToDeleteProduct": "Failed to delete product",
+  "@failedToDeleteProduct": {
+    "description": "Exception message when deleting product fails"
+  },
+  "errorUploadingImage": "Error uploading image",
+  "@errorUploadingImage": {
+    "description": "Error message when uploading image fails"
+  },
+  "failedToUploadImage": "Failed to upload image",
+  "@failedToUploadImage": {
+    "description": "Exception message when uploading image fails"
+  },
+  "errorDeletingImage": "Error deleting image",
+  "@errorDeletingImage": {
+    "description": "Error message when deleting image fails"
+  },
+  "failedToDeleteImage": "Failed to delete image",
+  "@failedToDeleteImage": {
+    "description": "Exception message when deleting image fails"
+  },
+  "errorUpdatingProductStatus": "Error updating product status",
+  "@errorUpdatingProductStatus": {
+    "description": "Error message when updating product status fails"
+  },
+  "failedToUpdateProductStatus": "Failed to update product status",
+  "@failedToUpdateProductStatus": {
+    "description": "Exception message when updating product status fails"
+  },
+  "errorFetchingProduct": "Error fetching product",
+  "@errorFetchingProduct": {
+    "description": "Error message when fetching single product fails"
+  },
+  "sampleDataAddedSuccess": "Sample data added successfully",
+  "@sampleDataAddedSuccess": {
+    "description": "Success message when sample data is added"
+  },
+  "sampleDataAddError": "Error adding sample data",
+  "@sampleDataAddError": {
+    "description": "Error message when adding sample data fails"
+  },
+  "test": "Test",
+  "@test": {
+    "description": "Test label"
+  },
+  "smartElectronicsStore": "Smart Electronics Store",
+  "@smartElectronicsStore": {
+    "description": "Smart electronics store description"
+  },
+  "appWorkingSuccessfully": "App is working successfully! 🎉",
+  "@appWorkingSuccessfully": {
+    "description": "Success message for app working"
+  },
+  "redScreenFreezeFixed": "Red screen freeze issue has been fixed",
+  "@redScreenFreezeFixed": {
+    "description": "Message indicating red screen freeze issue is fixed"
+  },
+  "sales": "Sales",
+  "@sales": {
+    "description": "Sales label"
+  },
+  "currency": "SAR",
+  "@currency": {
+    "description": "Currency abbreviation"
+  },
+  "emptyWishlistTitle": "Wishlist is empty",
+  "@emptyWishlistTitle": {
+    "description": "Title for empty wishlist"
+  },
+  "emptyWishlistMessage": "Add products you like to access them easily later.",
+  "@emptyWishlistMessage": {
+    "description": "Message for empty wishlist"
+  },
+  "shopNow": "Shop Now",
+  "@shopNow": {
+    "description": "Button text to start shopping"
+  },
+  "stock": "Stock",
+  "@stock": {
+    "description": "Stock label for product inventory"
+  },
+  "images": "Images",
+  "@images": {
+    "description": "Images label for product photos"
+  },
+  "imageUploadSuccess": "Image uploaded successfully",
+  "@imageUploadSuccess": {
+    "description": "Success message for image upload"
+  },
+  "imageUploadFailed": "Image upload failed",
+  "@imageUploadFailed": {
+    "description": "Error message for image upload failure"
+  },
+  "changesSavedSuccess": "Changes saved successfully",
+  "@changesSavedSuccess": {
+    "description": "Success message for saving changes"
+  },
+  "setAsDefaultAddress": "Set as default address",
+  "@setAsDefaultAddress": {
+    "description": "Option to set address as default"
+  },
+  "addressUpdatedSuccessfully": "Address updated successfully",
+  "@addressUpdatedSuccessfully": {
+    "description": "Success message for address update"
+  },
+  "addressAddedSuccessfully": "Address added successfully",
+  "@addressAddedSuccessfully": {
+    "description": "Success message for address addition"
+  },
+  "confirmDeleteAddress": "Are you sure you want to delete the address for {name}?",
+  "@confirmDeleteAddress": {
+    "description": "Confirmation message for deleting an address",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "description": "The name associated with the address"
+      }
+    }
+  },
+  "saudiArabia": "Saudi Arabia",
+  "@saudiArabia": {
+    "description": "Country name for Saudi Arabia"
+  },
+  "phoneNumber": "Phone Number",
+  "@phoneNumber": {
+    "description": "Label for phone number field"
+  },
+  "streetAddress": "Street Address",
+  "@streetAddress": {
+    "description": "Label for street address field"
+  },
+  "addressSetAsDefault": "Address set as default",
+  "@addressSetAsDefault": {
+    "description": "Success message when address is set as default"
+  },
+  "product": "Product",
+  "@product": {
+    "description": "Label for product"
+  },
+  "imageSelectionError": "Error selecting image",
+  "@imageSelectionError": {
+    "description": "Error message for image selection failure"
+  },
+  "imageSelectedSuccess": "Image selected successfully",
+  "@imageSelectedSuccess": {
+    "description": "Success message for image selection"
+  },
+  "imageSelectionFailed": "Image selection failed",
+  "@imageSelectionFailed": {
+    "description": "Error message when image selection fails"
+  },
+  "saveChangesFailed": "Failed to save changes",
+  "@saveChangesFailed": {
+    "description": "Error message when saving changes fails"
+  },
+  "changeImage": "Change Image",
+  "@changeImage": {
+    "description": "Button text to change profile image"
+  },
+  "placeOrder": "Place Order",
+  "@placeOrder": {
+    "description": "Button text to place an order"
+  },
+  "orderPlacedSuccessfully": "Order placed successfully!",
+  "@orderPlacedSuccessfully": {
+    "description": "Success message when order is placed"
+  },
+  "errorPlacingOrder": "Error placing order. Please try again.",
+  "@errorPlacingOrder": {
+    "description": "Error message when order placement fails"
+  },
+  "noAddressSelected": "Please select a delivery address",
+  "@noAddressSelected": {
+    "description": "Error message when no address is selected"
+  },
+  "deliveryAddress": "Delivery Address",
+  "@deliveryAddress": {
+    "description": "Label for delivery address section"
+  },
+  "change": "Change",
+  "@change": {
+    "description": "Button text to change something"
+  },
+  "addImage": "Add Image",
+  "@addImage": {
+    "description": "Button text to add profile image"
+  },
+  "middleNameOptional": "Middle Name (Optional)",
+  "@middleNameOptional": {
+    "description": "Label for optional middle name field"
+  },
+  "passwordMismatch": "Passwords do not match",
+  "@passwordMismatch": {
+    "description": "Error message when passwords don't match"
+  },
+  "connectedIfAppRunning": "Connected (if app running)",
+  "@connectedIfAppRunning": {
+    "description": "Status message for Firestore connection"
+  },
+  "connectedIfConfigured": "Connected (if configured)",
+  "@connectedIfConfigured": {
+    "description": "Status message for messaging connection"
+  },
+  "failedToLoadUserData": "Failed to load user data",
+  "@failedToLoadUserData": {
+    "description": "Error message when user data fails to load"
+  },
+  "privacyAndSecuritySettingsUnderDevelopment": "Privacy and security settings are under development",
+  "@privacyAndSecuritySettingsUnderDevelopment": {
+    "description": "Message shown when privacy and security settings are not yet implemented"
+  },
+  "app": "App",
+  "@app": {
+    "description": "General app label"
+  },
+  "notificationManagementUnderDevelopment": "Notification management is under development",
+  "@notificationManagementUnderDevelopment": {
+    "description": "Message shown when notification management is not yet implemented"
+  },
+  "helpAndSupportUnderDevelopment": "Help and support is under development",
+  "@helpAndSupportUnderDevelopment": {
+    "description": "Message shown when help and support is not yet implemented"
+  },
+  "addressManagementUnderDevelopment": "Address Management Under Development",
+  "@addressManagementUnderDevelopment": {
+    "description": "Message shown when address management is not yet implemented"
+  },
+  "yes": "Yes",
+  "@yes": {
+    "description": "Affirmative response"
+  },
+  "no": "No",
+  "@no": {
+    "description": "Negative response"
+  },
+  "servicesStatus": "Services Status",
+  "@servicesStatus": {
+    "description": "Title for Firebase services status section"
+  },
+  "connectedIfAppRunning": "Connected (if app running)",
+  "@connectedIfAppRunning": {
+    "description": "Status message for services that are connected when app is running"
+  },
+  "connectedIfConfigured": "Connected (if configured)",
+  "@connectedIfConfigured": {
+    "description": "Status text for services that are connected if configured"
+  },
+  "dataUpdateFailed": "Data update failed",
+  "@dataUpdateFailed": {
+    "description": "Error message when data update fails"
+  },
+  "errorLoadingProducts": "Error loading products: {error}",
+  "@errorLoadingProducts": {
+    "description": "Error message when products fail to load",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The error message"
+      }
+    }
+  },
+  "addedToCart": "added to cart",
+  "@addedToCart": {
+    "description": "Message when item is added to cart"
+  }
+}

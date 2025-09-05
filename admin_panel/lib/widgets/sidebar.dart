@@ -31,7 +31,7 @@ class Sidebar extends StatelessWidget {
             height: 64,
             padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: const BoxDecoration(
-              color: Color(0xFFB71C1C),
+              color: Colors.orange,
             ),
             child: const Row(
               children: [
@@ -112,7 +112,7 @@ class Sidebar extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: isSelected ? const Color(0xFFB71C1C) : Colors.transparent,
+        color: isSelected ? Colors.orange : Colors.transparent,
         borderRadius: BorderRadius.circular(8),
       ),
       child: ListTile(

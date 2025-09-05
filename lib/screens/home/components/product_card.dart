@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:gizmo_store/models/product.dart';
 import 'package:gizmo_store/providers/wishlist_provider.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -117,7 +118,7 @@ class ProductCard extends StatelessWidget {
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text('خطأ: $error'),
+                                  content: Text('${AppLocalizations.of(context)!.errorPrefix} $error'),
                                   backgroundColor: Colors.red,
                                 ),
                               );
@@ -135,7 +136,7 @@ class ProductCard extends StatelessWidget {
                                 ? Icons.favorite
                                 : Icons.favorite_border,
                             color: isInWishlist
-                                ? const Color(0xFFB71C1C)
+                                ? Color(0xFFB71C1C)
                                 : Colors.grey[600],
                             size: 18,
                           ),
@@ -196,7 +197,7 @@ class ProductCard extends StatelessWidget {
                       children: [
                         if (product.originalPrice != null)
                           Text(
-                            '${product.originalPrice!.toStringAsFixed(0)} جنيه',
+                            '${product.originalPrice!.toStringAsFixed(0)} ${AppLocalizations.of(context)!.currency}',
                             style: TextStyle(
                               color: Colors.grey[500],
                               fontSize: 11,
@@ -204,7 +205,7 @@ class ProductCard extends StatelessWidget {
                             ),
                           ),
                         Text(
-                          '${product.price.toStringAsFixed(0)} جنيه',
+                          '${product.price.toStringAsFixed(0)} ${AppLocalizations.of(context)!.currency}',
                           style: const TextStyle(
                             color: Color(0xFFB71C1C),
                             fontWeight: FontWeight.bold,
@@ -212,9 +213,9 @@ class ProductCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        // عنوان الخرطوم وتاريخ هذا الشهر
+                        // Location and date for this month
                         Text(
-                          'الخرطوم - ديسمبر 2024',
+                          AppLocalizations.of(context)!.locationAndDate,
                           style: TextStyle(
                             color: Colors.grey[600],
                             fontSize: 10,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
+import '../providers/auth_provider.dart' as auth;
 import '../providers/admin_provider.dart';
 import '../widgets/sidebar.dart';
 import '../widgets/dashboard_stats_cards.dart';
@@ -73,7 +73,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFFB71C1C),
+                          color: Colors.orange,
                         ),
                       ),
                       const Spacer(),
@@ -81,12 +81,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       // User menu
                       PopupMenuButton<String>(
                         icon: const CircleAvatar(
-                          backgroundColor: Color(0xFFB71C1C),
+                          backgroundColor: Colors.orange,
                           child: Icon(Icons.person, color: Colors.white),
                         ),
                         onSelected: (value) {
                           if (value == 'logout') {
-                            context.read<AuthProvider>().signOut();
+                            context.read<auth.AuthProvider>().signOut();
                           }
                         },
                         itemBuilder: (context) => [
@@ -96,7 +96,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               children: [
                                 const Icon(Icons.person),
                                 const SizedBox(width: 8),
-                                Text(context.read<AuthProvider>().user?.email ?? 'Admin'),
+                                Text(context.read<auth.AuthProvider>().user?.email ?? 'Admin'),
                               ],
                             ),
                           ),
@@ -147,27 +147,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildDashboardContent() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+    return const SingleChildScrollView(
+      padding: EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Stats cards
-          const DashboardStatsCards(),
-          const SizedBox(height: 24),
+          DashboardStatsCards(),
+          SizedBox(height: 24),
           
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Recent orders
-              const Expanded(
+              Expanded(
                 flex: 2,
                 child: RecentOrdersWidget(),
               ),
-              const SizedBox(width: 24),
+              SizedBox(width: 24),
               
               // Quick actions
-              const Expanded(
+              Expanded(
                 flex: 1,
                 child: QuickActionsWidget(),
               ),

@@ -1,10 +1,13 @@
 // lib/screens/product_detail/product_detail_screen.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:gizmo_store/models/product.dart';
 import 'package:gizmo_store/models/cart_item.dart';
 import 'package:gizmo_store/screens/cart/cart_screen.dart';
 import 'package:gizmo_store/services/cart_service.dart';
+import 'package:gizmo_store/providers/wishlist_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final Product product;
@@ -23,18 +26,26 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            const Text('تفاصيل المنتج', style: TextStyle(color: Colors.white)),
-        backgroundColor: const Color(0xFFB71C1C),
-        iconTheme: const IconThemeData(color: Colors.white),
+          title: Text(AppLocalizations.of(context)!.productDetails,
+              style: TextStyle(color: Theme.of(context).appBarTheme.foregroundColor)),
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+          iconTheme: IconThemeData(color: Theme.of(context).appBarTheme.foregroundColor),
         actions: [
           IconButton(
             icon: const Icon(Icons.share),
             onPressed: _shareProduct,
           ),
-          IconButton(
-            icon: const Icon(Icons.favorite_border),
-            onPressed: _addToFavorites,
+          Consumer<WishlistProvider>(
+            builder: (context, wishlistProvider, child) {
+              final isInWishlist = wishlistProvider.isInWishlist(widget.product.id);
+              return IconButton(
+                icon: Icon(
+                  isInWishlist ? Icons.favorite : Icons.favorite_border,
+                  color: isInWishlist ? Colors.red : null,
+                ),
+                onPressed: () => _toggleFavorites(wishlistProvider),
+              );
+            },
           ),
         ],
       ),
@@ -97,8 +108,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: _selectedImageIndex == index
-                        ? const Color(0xFFB71C1C)
-                        : Colors.grey.withOpacity(0.3),
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
                     width: 2,
                   ),
                   borderRadius: BorderRadius.circular(8),
@@ -108,7 +119,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   child: CachedNetworkImage(
                     imageUrl: images[index],
                     placeholder: (context, url) =>
-                        Container(color: Colors.grey[200]),
+                        Container(color: Theme.of(context).colorScheme.secondary),
                     errorWidget: (context, url, error) =>
                         const Icon(Icons.error),
                     fit: BoxFit.cover,
@@ -131,10 +142,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         children: [
           Text(
             widget.product.name,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF212121),
+              color: Theme.of(context).textTheme.headlineSmall?.color,
             ),
           ),
           const SizedBox(height: 8),
@@ -142,20 +153,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             children: [
               Text(
                 '\$${widget.product.price.toStringAsFixed(2)}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFFB71C1C),
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
               if (widget.product.originalPrice != null) ...[
                 const SizedBox(width: 12),
                 Text(
                   '\$${widget.product.originalPrice!.toStringAsFixed(2)}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     decoration: TextDecoration.lineThrough,
-                    color: Colors.grey,
+                    color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
                   ),
                 ),
               ],
@@ -165,13 +176,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Colors.green,
+                    color: Theme.of(context).colorScheme.tertiary,
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
-                    'خصم ${widget.product.discount}%',
-                    style: const TextStyle(
-                      color: Colors.white,
+                    '${AppLocalizations.of(context)!.discount} ${widget.product.discount}%',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onTertiary,
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
@@ -198,15 +209,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             children: List.generate(5, (index) {
               return Icon(
                 index < rating.floor() ? Icons.star : Icons.star_border,
-                color: Colors.amber,
+                color: Theme.of(context).colorScheme.tertiary,
                 size: 20,
               );
             }),
           ),
           const SizedBox(width: 8),
           Text(
-            '$rating ($reviewsCount تقييم)',
-            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+            '$rating ($reviewsCount ${AppLocalizations.of(context)!.reviews})',
+            style: TextStyle(fontSize: 14, color: Theme.of(context).textTheme.bodySmall?.color),
           ),
         ],
       ),
@@ -215,23 +226,23 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   // قسم الوصف
   Widget _buildDescriptionSection() {
-    final description = widget.product.description ?? 'لا يوجد وصف للمنتج.';
+    final description = widget.product.description ?? AppLocalizations.of(context)!.noProductDescription;
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'الوصف',
+          Text(
+            AppLocalizations.of(context)!.description,
             style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF212121)),
+                color: Theme.of(context).textTheme.titleLarge?.color),
           ),
           const SizedBox(height: 8),
           Text(description,
               style: TextStyle(
-                  fontSize: 14, color: Colors.grey[700], height: 1.5)),
+                  fontSize: 14, color: Theme.of(context).textTheme.bodyMedium?.color, height: 1.5)),
         ],
       ),
     );
@@ -247,11 +258,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('المواصفات',
+          Text(AppLocalizations.of(context)!.specifications,
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF212121))),
+                  color: Theme.of(context).textTheme.titleLarge?.color)),
           const SizedBox(height: 8),
           ...specs
               .map((spec) => Padding(
@@ -263,13 +274,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             width: 4,
                             height: 4,
                             margin: const EdgeInsets.only(top: 8, right: 8),
-                            decoration: const BoxDecoration(
-                                color: Color(0xFFB71C1C),
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary,
                                 shape: BoxShape.circle)),
                         Expanded(
                             child: Text(spec,
                                 style: TextStyle(
-                                    fontSize: 14, color: Colors.grey[700]))),
+                                    fontSize: 14, color: Theme.of(context).textTheme.bodyMedium?.color))),
                       ],
                     ),
                   ))
@@ -289,11 +300,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('المراجعات',
+          Text(AppLocalizations.of(context)!.reviewsSection,
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF212121))),
+                  color: Theme.of(context).textTheme.titleLarge?.color)),
           const SizedBox(height: 12),
           ...reviews
               .take(3)
@@ -301,7 +312,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     margin: const EdgeInsets.only(bottom: 12),
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                        color: Colors.grey[100],
+                        color: Theme.of(context).colorScheme.surface,
                         borderRadius: BorderRadius.circular(8)),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -319,7 +330,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                       index < review['rating']
                                           ? Icons.star
                                           : Icons.star_border,
-                                      color: Colors.amber,
+                                      color: Theme.of(context).colorScheme.tertiary,
                                       size: 16)),
                             ),
                           ],
@@ -327,7 +338,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         const SizedBox(height: 4),
                         Text(review['comment'],
                             style: TextStyle(
-                                fontSize: 13, color: Colors.grey[700])),
+                                fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color)),
                       ],
                     ),
                   ))
@@ -335,7 +346,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           if (reviews.length > 3)
             TextButton(
                 onPressed: _viewAllReviews,
-                child: const Text('عرض جميع المراجعات')),
+                child: Text(AppLocalizations.of(context)!.viewAllReviews)),
         ],
       ),
     );
@@ -347,12 +358,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          const Text('الكمية:',
+          Text(AppLocalizations.of(context)!.quantity,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           const SizedBox(width: 16),
           Container(
             decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey[300]!),
+                border: Border.all(color: Theme.of(context).colorScheme.outline),
                 borderRadius: BorderRadius.circular(8)),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -382,9 +393,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   Widget _buildBottomActionBar() {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [
+      decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor, boxShadow: [
         BoxShadow(
-            color: Colors.grey.withOpacity(0.2), spreadRadius: 1, blurRadius: 5)
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.2), spreadRadius: 1, blurRadius: 5)
       ]),
       child: Row(
         children: [
@@ -392,24 +403,24 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             child: ElevatedButton(
               onPressed: _addToCart,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFB71C1C),
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12)),
               ),
-              child: const Text('أضف إلى السلة',
-                  style: TextStyle(fontSize: 16, color: Colors.white)),
+              child: Text(AppLocalizations.of(context)!.addToCart,
+                  style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.onPrimary)),
             ),
           ),
           const SizedBox(width: 12),
           Container(
             decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xFFB71C1C)),
+                border: Border.all(color: Theme.of(context).colorScheme.primary),
                 borderRadius: BorderRadius.circular(12)),
             child: IconButton(
               onPressed: () => Navigator.push(context,
                   MaterialPageRoute(builder: (context) => const CartScreen())),
-              icon: const Icon(Icons.shopping_cart, color: Color(0xFFB71C1C)),
+              icon: Icon(Icons.shopping_cart, color: Theme.of(context).colorScheme.primary),
             ),
           ),
         ],
@@ -421,8 +432,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     CartService.addItem(CartItem(product: widget.product, quantity: _quantity));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${widget.product.name} تمت إضافته إلى السلة'),
-        backgroundColor: Colors.green,
+        content: Text('${widget.product.name} ${AppLocalizations.of(context)!.addedToCart}'),
+        backgroundColor: Color(0xFFB71C1C),
         duration: const Duration(seconds: 2),
       ),
     );
@@ -432,8 +443,26 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     // تنفيذ مشاركة المنتج
   }
 
-  void _addToFavorites() {
-    // تنفيذ إضافة المنتج إلى المفضلة
+  void _toggleFavorites(WishlistProvider wishlistProvider) {
+    if (wishlistProvider.isInWishlist(widget.product.id)) {
+      wishlistProvider.removeFromWishlist(widget.product.id);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${AppLocalizations.of(context)!.removedFromWishlist} ${widget.product.name} ${AppLocalizations.of(context)!.fromWishlist}'),
+          backgroundColor: Color(0xFFB71C1C),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } else {
+      wishlistProvider.addToWishlist(widget.product);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${AppLocalizations.of(context)!.addedToWishlist} ${widget.product.name} ${AppLocalizations.of(context)!.toWishlist}'),
+          backgroundColor: Color(0xFFB71C1C),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   void _viewAllReviews() {

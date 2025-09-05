@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
 
 class TestScreen extends StatelessWidget {
   const TestScreen({super.key});
@@ -8,21 +9,21 @@ class TestScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF1A1A1A),
       appBar: AppBar(
-        title: const Text('Gizmo Store - اختبار'),
-        backgroundColor: const Color(0xFFB71C1C),
+        title: Text('Gizmo Store - ${AppLocalizations.of(context)!.test}'),
+        backgroundColor: Color(0xFFB71C1C),
         foregroundColor: Colors.white,
       ),
-      body: const Center(
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.shopping_bag,
               size: 100,
               color: Color(0xFFB71C1C),
             ),
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               'Gizmo Store',
               style: TextStyle(
                 fontSize: 32,
@@ -30,27 +31,27 @@ class TestScreen extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
-              'متجر الإلكترونيات الذكي',
-              style: TextStyle(
+              AppLocalizations.of(context)!.smartElectronicsStore,
+              style: const TextStyle(
                 fontSize: 18,
                 color: Colors.white70,
               ),
             ),
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
             Text(
-              'التطبيق يعمل بنجاح! 🎉',
-              style: TextStyle(
+              AppLocalizations.of(context)!.appWorkingSuccessfully,
+              style: const TextStyle(
                 fontSize: 24,
                 color: Colors.green,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text(
-              'تم حل مشكلة تجميد الشاشة الحمراء',
-              style: TextStyle(
+              AppLocalizations.of(context)!.redScreenFreezeFixed,
+              style: const TextStyle(
                 fontSize: 16,
                 color: Colors.white70,
               ),
@@ -61,9 +62,9 @@ class TestScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // يمكن إضافة وظائف هنا لاحقاً
+          // Functions can be added here later
         },
-        backgroundColor: const Color(0xFFB71C1C),
+        backgroundColor: Color(0xFFB71C1C),
         child: const Icon(Icons.check, color: Colors.white),
       ),
     );

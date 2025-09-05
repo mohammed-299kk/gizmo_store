@@ -33,7 +33,7 @@ class QuickActionsWidget extends StatelessWidget {
               icon: Icons.category,
               title: 'Manage Categories',
               subtitle: 'Add or edit categories',
-              color: Colors.blue,
+              color: Color(0xFFB71C1C),
               onTap: () {
                 // Navigate to categories
               },
@@ -53,7 +53,7 @@ class QuickActionsWidget extends StatelessWidget {
               icon: Icons.analytics,
               title: 'View Reports',
               subtitle: 'Sales and analytics',
-              color: Colors.purple,
+              color: Colors.orange,
               onTap: () {
                 // Navigate to reports
               },

@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:gizmo_store/models/product.dart';
 import 'package:gizmo_store/services/database_setup_service.dart';
 import 'package:gizmo_store/screens/product_detail_screen.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
 
 class CategoryProductsScreen extends StatefulWidget {
   final String category;
@@ -90,7 +91,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
       print('Error loading products: $e');
       setState(() {
         _isLoading = false;
-        errorMessage = 'فشل في تحميل المنتجات';
+        errorMessage = AppLocalizations.of(context)!.failedToLoadProducts;
       });
     }
   }
@@ -99,16 +100,16 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('منتجات ${widget.category}'),
-        backgroundColor: const Color(0xFFB71C1C),
+        title: Text('${AppLocalizations.of(context)!.categoryProducts} ${widget.category}'),
+        backgroundColor: Color(0xFFB71C1C), // Changed from Color(0xFFB71C1C) to orange
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : categoryProducts.isEmpty
-              ? const Center(
+              ? Center(
                   child: Text(
-                    'لا توجد منتجات في هذا التصنيف',
-                    style: TextStyle(fontSize: 18),
+                    AppLocalizations.of(context)!.noProductsInCategory,
+                    style: const TextStyle(fontSize: 18),
                   ),
                 )
               : GridView.builder(
@@ -129,7 +130,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                           MaterialPageRoute(
                             builder: (context) => ProductDetailScreen(
                               product: product,
-                              cart: [], // Empty cart for now
+                              cart: const [], // Empty cart for now
                             ),
                           ),
                         );
@@ -184,7 +185,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                                       const Text(
                                         '\${product.price.toStringAsFixed(2)}',
                                         style: TextStyle(
-                                          color: Color(0xFFB71C1C),
+                                          color: Color(0xFFB71C1C), // Changed from Color(0xFFB71C1C) to orange
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),

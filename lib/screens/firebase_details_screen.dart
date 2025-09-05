@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:gizmo_store/firebase_options.dart'; // Import generated Firebase options
+import 'package:gizmo_store/firebase_options.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
 
 class FirebaseDetailsScreen extends StatelessWidget {
   const FirebaseDetailsScreen({super.key});
@@ -14,7 +15,7 @@ class FirebaseDetailsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
-        title: const Text('تفاصيل Firebase', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(AppLocalizations.of(context)!.firebaseDetails, style: const TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFF1F1F1F),
         foregroundColor: Colors.white,
         elevation: 0,
@@ -25,31 +26,31 @@ class FirebaseDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSectionTitle('معلومات التطبيق'),
+            _buildSectionTitle(AppLocalizations.of(context)!.appInfo),
             _buildDetailCard([
-              _buildDetailRow('اسم التطبيق:', app.name),
-              _buildDetailRow('معرف المشروع:', DefaultFirebaseOptions.currentPlatform.projectId),
-              _buildDetailRow('مفتاح API:', DefaultFirebaseOptions.currentPlatform.apiKey),
-              _buildDetailRow('معرف التطبيق:', DefaultFirebaseOptions.currentPlatform.appId),
-              _buildDetailRow('معرف حزمة Android:', DefaultFirebaseOptions.currentPlatform.androidClientId ?? 'غير متوفر'),
-              _buildDetailRow('معرف عميل iOS:', DefaultFirebaseOptions.currentPlatform.iosClientId ?? 'غير متوفر'),
+              _buildDetailRow('${AppLocalizations.of(context)!.appName}:', app.name),
+              _buildDetailRow('${AppLocalizations.of(context)!.projectId}:', DefaultFirebaseOptions.currentPlatform.projectId),
+              _buildDetailRow('${AppLocalizations.of(context)!.apiKey}:', DefaultFirebaseOptions.currentPlatform.apiKey),
+              _buildDetailRow('${AppLocalizations.of(context)!.appId}:', DefaultFirebaseOptions.currentPlatform.appId),
+              _buildDetailRow('${AppLocalizations.of(context)!.androidClientId}:', DefaultFirebaseOptions.currentPlatform.androidClientId ?? AppLocalizations.of(context)!.notAvailable),
+              _buildDetailRow('${AppLocalizations.of(context)!.iosClientId}:', DefaultFirebaseOptions.currentPlatform.iosClientId ?? AppLocalizations.of(context)!.notAvailable),
             ]),
             const SizedBox(height: 24),
-            _buildSectionTitle('حالة المصادقة'),
+            _buildSectionTitle(AppLocalizations.of(context)!.authStatus),
             _buildDetailCard([
-              _buildDetailRow('حالة تسجيل الدخول:', currentUser != null ? 'مسجل الدخول' : 'غير مسجل الدخول'),
+              _buildDetailRow('${AppLocalizations.of(context)!.loginStatus}:', currentUser != null ? AppLocalizations.of(context)!.loggedIn : AppLocalizations.of(context)!.notLoggedIn),
               if (currentUser != null) ...[
-                _buildDetailRow('معرف المستخدم (UID):', currentUser.uid),
-                _buildDetailRow('البريد الإلكتروني:', currentUser.email ?? 'غير متوفر'),
-                _buildDetailRow('اسم العرض:', currentUser.displayName ?? 'غير متوفر'),
-                _buildDetailRow('مجهول:', currentUser.isAnonymous ? 'نعم' : 'لا'),
+                _buildDetailRow('${AppLocalizations.of(context)!.userId} (UID):', currentUser.uid),
+                _buildDetailRow('${AppLocalizations.of(context)!.email}:', currentUser.email ?? AppLocalizations.of(context)!.notAvailable),
+                _buildDetailRow('${AppLocalizations.of(context)!.displayName}:', currentUser.displayName ?? AppLocalizations.of(context)!.notAvailable),
+                _buildDetailRow('${AppLocalizations.of(context)!.anonymous}:', currentUser.isAnonymous ? AppLocalizations.of(context)!.yes : AppLocalizations.of(context)!.no),
               ],
             ]),
             const SizedBox(height: 24),
-            _buildSectionTitle('حالة الخدمات (تقديري)'),
+            _buildSectionTitle(AppLocalizations.of(context)!.servicesStatus),
             _buildDetailCard([
-              _buildDetailRow('Firestore:', 'متصل (إذا كان التطبيق يعمل)'),
-              _buildDetailRow('Messaging:', 'متصل (إذا تم تهيئته)'),
+              _buildDetailRow('Firestore:', AppLocalizations.of(context)!.connectedIfAppRunning),
+              _buildDetailRow('Messaging:', AppLocalizations.of(context)!.connectedIfConfigured),
             ]),
           ],
         ),

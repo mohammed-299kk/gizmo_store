@@ -1,11 +1,15 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
 import '../models/product.dart';
+import 'image_upload_service.dart';
 
 class ProductService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static const String _collection = 'products';
 
-  // جلب جميع المنتجات
+  // Fetch all products
   static Future<List<Product>> getAllProducts() async {
     try {
       final querySnapshot = await _firestore.collection(_collection).get();
@@ -13,15 +17,36 @@ class ProductService {
           .map((doc) => Product.fromMap(doc.data(), doc.id))
           .toList();
     } catch (e) {
-      print('خطأ في جلب المنتجات: $e');
+      print('Error fetching products: $e');
       // In a real app, you might want to throw an exception or return a custom error object.
       // For now, we return an empty list.
       return [];
     }
   }
 
-  // جلب المنتجات المميزة
-  static Future<List<Product>> getFeaturedProducts() async {
+  // Get all products as Stream for management
+  static Stream<QuerySnapshot> getAllProductsStream() {
+    return _firestore
+        .collection(_collection)
+        .orderBy('name')
+        .snapshots();
+  }
+
+  // Search products as Stream
+  static Stream<QuerySnapshot> searchProductsStream(String searchTerm) {
+    if (searchTerm.isEmpty) {
+      return getAllProductsStream();
+    }
+    
+    return _firestore
+        .collection(_collection)
+        .where('name', isGreaterThanOrEqualTo: searchTerm)
+        .where('name', isLessThanOrEqualTo: searchTerm + '\uf8ff')
+        .snapshots();
+  }
+
+  // Get featured products
+  static Future<List<Product>> getFeaturedProducts(BuildContext context) async {
     try {
       final querySnapshot = await _firestore
           .collection(_collection)
@@ -33,13 +58,14 @@ class ProductService {
           .map((doc) => Product.fromMap(doc.data(), doc.id))
           .toList();
     } catch (e) {
-      print('خطأ في جلب المنتجات المميزة: $e');
+      final localizations = AppLocalizations.of(context)!;
+      print('${localizations.errorFetchingFeaturedProducts}: $e');
       return [];
     }
   }
 
-  // جلب المنتجات حسب الفئة
-  static Future<List<Product>> getProductsByCategory(String category) async {
+  // Get products by category
+  static Future<List<Product>> getProductsByCategory(String category, BuildContext context) async {
     try {
       final querySnapshot = await _firestore
           .collection(_collection)
@@ -50,13 +76,14 @@ class ProductService {
           .map((doc) => Product.fromMap(doc.data(), doc.id))
           .toList();
     } catch (e) {
-      print('خطأ في جلب منتجات الفئة: $e');
+      final localizations = AppLocalizations.of(context)!;
+      print('${localizations.errorFetchingCategoryProducts}: $e');
       return [];
     }
   }
 
-  // البحث في المنتجات
-  static Future<List<Product>> searchProducts(String query) async {
+  // Search products
+  static Future<List<Product>> searchProducts(String query, BuildContext context) async {
     try {
       final querySnapshot = await _firestore.collection(_collection).get();
       
@@ -68,190 +95,248 @@ class ProductService {
               (product.category?.toLowerCase().contains(query.toLowerCase()) ?? false))
           .toList();
     } catch (e) {
-      print('خطأ في البحث: $e');
+      final localizations = AppLocalizations.of(context)!;
+      print('${localizations.errorSearching}: $e');
       return [];
     }
   }
 
-  // إضافة منتج جديد
-  static Future<void> addProduct(Product product) async {
+  // Add new product
+  static Future<void> addProduct(Product product, BuildContext context) async {
     try {
       await _firestore.collection(_collection).add(product.toMap());
     } catch (e) {
-      print('خطأ في إضافة المنتج: $e');
-      throw Exception('فشل في إضافة المنتج');
+      final localizations = AppLocalizations.of(context)!;
+      print('${localizations.errorAddingProduct}: $e');
+      throw Exception(localizations.failedToAddProduct);
     }
   }
 
-  // تحديث منتج
-  static Future<void> updateProduct(String id, Product product) async {
+  // Update product
+  static Future<void> updateProduct(String id, Product product, BuildContext context) async {
     try {
       await _firestore.collection(_collection).doc(id).update(product.toMap());
     } catch (e) {
-      print('خطأ في تحديث المنتج: $e');
-      throw Exception('فشل في تحديث المنتج');
+      final localizations = AppLocalizations.of(context)!;
+      print('${localizations.errorUpdatingProduct}: $e');
+      throw Exception(localizations.failedToUpdateProduct);
     }
   }
 
-  // حذف منتج
-  static Future<void> deleteProduct(String id) async {
+  // Delete product
+  static Future<void> deleteProduct(String id, BuildContext context) async {
     try {
       await _firestore.collection(_collection).doc(id).delete();
     } catch (e) {
-      print('خطأ في حذف المنتج: $e');
-      throw Exception('فشل في حذف المنتج');
+      final localizations = AppLocalizations.of(context)!;
+      print('${localizations.errorDeletingProduct}: $e');
+      throw Exception(localizations.failedToDeleteProduct);
     }
   }
 
-  // إنشاء بيانات تجريبية
+  // Upload image using Cloudinary
+  static Future<String> uploadProductImage(File imageFile, String productId, BuildContext context) async {
+    try {
+      final urls = await ImageUploadService.uploadProductImages([imageFile]);
+      return urls.first;
+    } catch (e) {
+      final localizations = AppLocalizations.of(context)!;
+      print('${localizations.errorUploadingImage}: $e');
+      throw Exception(localizations.failedToUploadImage);
+    }
+  }
+
+  // Delete image (Cloudinary images don't need manual deletion)
+  static Future<void> deleteProductImage(String imageUrl, BuildContext context) async {
+    try {
+      // Cloudinary images are managed automatically
+      // No manual deletion needed for basic usage
+      print('Image deletion not required for Cloudinary: $imageUrl');
+    } catch (e) {
+      final localizations = AppLocalizations.of(context)!;
+      print('${localizations.errorDeletingImage}: $e');
+      throw Exception(localizations.failedToDeleteImage);
+    }
+  }
+
+  // Toggle product availability status
+  static Future<void> toggleProductAvailability(String id, bool isAvailable, BuildContext context) async {
+    try {
+      await _firestore.collection(_collection).doc(id).update({
+        'isAvailable': isAvailable,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      final localizations = AppLocalizations.of(context)!;
+      print('${localizations.errorUpdatingProductStatus}: $e');
+      throw Exception(localizations.failedToUpdateProductStatus);
+    }
+  }
+
+  // Get single product by ID
+  static Future<Product?> getProductById(String id, BuildContext context) async {
+    try {
+      final doc = await _firestore.collection(_collection).doc(id).get();
+      if (doc.exists) {
+        return Product.fromMap(doc.data()!, doc.id);
+      }
+      return null;
+    } catch (e) {
+      final localizations = AppLocalizations.of(context)!;
+      print('${localizations.errorFetchingProduct}: $e');
+      return null;
+    }
+  }
+
+  // Create sample data
   static Future<void> _createSampleProducts() async {
     final sampleProducts = [
       Product(
         id: 'iphone_15_pro',
         name: 'iPhone 15 Pro',
-        description: 'أحدث هاتف من آبل مع معالج A17 Pro وكاميرا متطورة',
+        description: 'Latest iPhone from Apple with A17 Pro processor and advanced camera',
         price: 4999.0,
         originalPrice: 5499.0,
         image: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400',
-        category: 'هواتف',
+        category: 'Phones',
         rating: 4.8,
         reviewsCount: 1250,
         featured: true,
         specifications: [
-          'معالج A17 Pro',
-          'ذاكرة 128GB',
-          'كاميرا 48MP',
-          'شاشة 6.1 بوصة',
-          'مقاوم للماء IP68'
+          'A17 Pro processor',
+          '128GB storage',
+          '48MP camera',
+          '6.1-inch display',
+          'IP68 water resistant'
         ],
       ),
       Product(
         id: 'macbook_pro_m3',
         name: 'MacBook Pro M3',
-        description: 'لابتوب احترافي بمعالج M3 للمطورين والمصممين',
+        description: 'Professional laptop with M3 processor for developers and designers',
         price: 8999.0,
         originalPrice: 9999.0,
         image: 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400',
-        category: 'حاسوب',
+        category: 'Computer',
         rating: 4.9,
         reviewsCount: 890,
         featured: true,
         specifications: [
-          'معالج Apple M3',
-          'ذاكرة 16GB RAM',
-          'تخزين 512GB SSD',
-          'شاشة Retina 14 بوصة',
-          'بطارية تدوم 18 ساعة'
+          'Apple M3 processor',
+          '16GB RAM',
+          '512GB SSD storage',
+          '14-inch Retina display',
+          '18-hour battery life'
         ],
       ),
       Product(
         id: 'airpods_pro_2',
-        name: 'AirPods Pro الجيل الثاني',
-        description: 'سماعات لاسلكية مع إلغاء الضوضاء النشط',
+        name: 'AirPods Pro 2nd Generation',
+        description: 'Wireless earphones with active noise cancellation',
         price: 899.0,
         originalPrice: 999.0,
         image: 'https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=400',
-        category: 'سماعات',
+        category: 'Headphones',
         rating: 4.7,
         reviewsCount: 2100,
         featured: true,
         specifications: [
-          'إلغاء الضوضاء النشط',
-          'شريحة H2',
-          'مقاومة للماء IPX4',
-          'بطارية تدوم 30 ساعة',
-          'شحن لاسلكي'
+          'Active noise cancellation',
+          'H2 chip',
+          'IPX4 water resistant',
+          '30-hour battery life',
+          'Wireless charging'
         ],
       ),
       Product(
         id: 'ipad_air_5',
-        name: 'iPad Air الجيل الخامس',
-        description: 'تابلت قوي ومتعدد الاستخدامات للعمل والترفيه',
+        name: 'iPad Air 5th Generation',
+        description: 'Powerful and versatile tablet for work and entertainment',
         price: 2499.0,
         image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400',
-        category: 'تابلت',
+        category: 'Tablet',
         rating: 4.6,
         reviewsCount: 750,
         featured: false,
         specifications: [
-          'معالج M1',
-          'شاشة Liquid Retina 10.9 بوصة',
-          'كاميرا 12MP',
-          'دعم Apple Pencil',
-          'متوفر بألوان متعددة'
+          'M1 processor',
+          '10.9-inch Liquid Retina display',
+          '12MP camera',
+          'Apple Pencil support',
+          'Available in multiple colors'
         ],
       ),
       Product(
         id: 'apple_watch_9',
         name: 'Apple Watch Series 9',
-        description: 'ساعة ذكية متطورة لتتبع الصحة واللياقة',
+        description: 'Advanced smartwatch for health and fitness tracking',
         price: 1599.0,
         image: 'https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=400',
-        category: 'ساعات',
+        category: 'Watches',
         rating: 4.5,
         reviewsCount: 1800,
         featured: false,
         specifications: [
-          'معالج S9 SiP',
-          'شاشة Always-On Retina',
-          'مقاومة للماء 50 متر',
-          'تتبع معدل ضربات القلب',
-          'GPS مدمج'
+          'S9 SiP processor',
+          'Always-On Retina display',
+          '50-meter water resistant',
+          'Heart rate tracking',
+          'Built-in GPS'
         ],
       ),
       Product(
         id: 'samsung_tv_75',
-        name: 'Samsung QLED 75 بوصة',
-        description: 'تلفزيون ذكي بدقة 4K وتقنية QLED',
+        name: 'Samsung QLED 75-inch',
+        description: 'Smart TV with 4K resolution and QLED technology',
         price: 3299.0,
         originalPrice: 3799.0,
         image: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400',
-        category: 'تلفزيون',
+        category: 'Television',
         rating: 4.4,
         reviewsCount: 650,
         featured: false,
         specifications: [
-          'دقة 4K UHD',
-          'تقنية QLED',
-          'نظام Tizen الذكي',
+          '4K UHD resolution',
+          'QLED technology',
+          'Tizen smart system',
           'HDR10+',
-          'أربعة منافذ HDMI'
+          'Four HDMI ports'
         ],
       ),
       Product(
         id: 'sony_headphones',
         name: 'Sony WH-1000XM5',
-        description: 'سماعات رأس لاسلكية مع إلغاء الضوضاء الرائد في الصناعة',
+        description: 'Wireless headphones with industry-leading noise cancellation',
         price: 1299.0,
         image: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400',
-        category: 'سماعات',
+        category: 'Headphones',
         rating: 4.8,
         reviewsCount: 920,
         featured: true,
         specifications: [
-          'إلغاء الضوضاء الرائد',
-          'بطارية 30 ساعة',
-          'شحن سريع',
-          'صوت عالي الدقة',
-          'مكالمات واضحة'
+          'Industry-leading noise cancellation',
+          '30-hour battery',
+          'Quick charge',
+          'High-resolution audio',
+          'Clear calls'
         ],
       ),
       Product(
         id: 'dell_laptop',
         name: 'Dell XPS 13',
-        description: 'لابتوب نحيف وخفيف مثالي للأعمال والدراسة',
+        description: 'Slim and lightweight laptop perfect for business and study',
         price: 4599.0,
         image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400',
-        category: 'حاسوب',
+        category: 'Computer',
         rating: 4.3,
         reviewsCount: 540,
         featured: false,
         specifications: [
-          'معالج Intel Core i7',
-          'ذاكرة 16GB RAM',
-          'تخزين 512GB SSD',
-          'شاشة InfinityEdge 13.3 بوصة',
-          'وزن 1.2 كيلو فقط'
+          'Intel Core i7 processor',
+          '16GB RAM',
+          '512GB SSD storage',
+          '13.3-inch InfinityEdge display',
+          'Only 1.2kg weight'
         ],
       ),
     ];
@@ -265,43 +350,43 @@ class ProductService {
       }
       
       await batch.commit();
-      print('✅ تم إنشاء البيانات التجريبية بنجاح');
+      print('✅ Sample data created successfully');
     } catch (e) {
-      print('❌ خطأ في إنشاء البيانات التجريبية: $e');
+      print('❌ Error creating sample data: $e');
     }
   }
 
-  // بيانات افتراضية في حالة عدم توفر الاتصال
+  // Default data in case of no connection
   static List<Product> _getDefaultProducts() {
     return [
       Product(
         id: 'default_1',
         name: 'iPhone 15 Pro',
-        description: 'أحدث هاتف من آبل',
+        description: 'Latest iPhone from Apple',
         price: 4999.0,
-        category: 'هواتف',
+        category: 'Phones',
         featured: true,
       ),
       Product(
         id: 'default_2',
         name: 'MacBook Pro',
-        description: 'لابتوب احترافي',
+        description: 'Professional laptop',
         price: 8999.0,
-        category: 'حاسوب',
+        category: 'Computer',
         featured: true,
       ),
       Product(
         id: 'default_3',
         name: 'AirPods Pro',
-        description: 'سماعات لاسلكية',
+        description: 'Wireless earphones',
         price: 899.0,
-        category: 'سماعات',
+        category: 'Headphones',
         featured: false,
       ),
     ];
   }
 
-  // التحقق من الاتصال بـ Firestore
+  // Check Firestore connection
   static Future<bool> checkConnection() async {
     try {
       await _firestore.collection('test').doc('connection').get();

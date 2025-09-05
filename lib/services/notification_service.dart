@@ -11,13 +11,13 @@ class NotificationService {
   final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
-  // تهيئة الإشعارات
+  // Initialize notifications
   Future<void> initialize() async {
     await _initializeLocalNotifications();
     await _initializeFirebaseMessaging();
   }
 
-  // تهيئة الإشعارات المحلية
+  // Initialize local notifications
   Future<void> _initializeLocalNotifications() async {
     const AndroidInitializationSettings androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
     
@@ -38,9 +38,9 @@ class NotificationService {
     );
   }
 
-  // تهيئة Firebase Messaging
+  // Initialize Firebase Messaging
   Future<void> _initializeFirebaseMessaging() async {
-    // طلب الإذن للإشعارات
+    // Request notification permission
     NotificationSettings settings = await _firebaseMessaging.requestPermission(
       alert: true,
       badge: true,
@@ -51,33 +51,33 @@ class NotificationService {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      debugPrint('✅ تم منح إذن الإشعارات');
+      debugPrint('✅ Notification permission granted');
     } else {
-      debugPrint('❌ تم رفض إذن الإشعارات');
+      debugPrint('❌ Notification permission denied');
     }
 
-    // الحصول على FCM Token
+    // Get FCM Token
     String? token = await _firebaseMessaging.getToken();
     debugPrint('FCM Token: $token');
 
-    // الاستماع للإشعارات في المقدمة
+    // Listen for foreground notifications
     FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
 
-    // الاستماع للإشعارات عند النقر عليها
+    // Listen for notification taps
     FirebaseMessaging.onMessageOpenedApp.listen(_handleNotificationTap);
 
-    // التعامل مع الإشعارات عند فتح التطبيق من إشعار
+    // Handle notifications when opening app from notification
     RemoteMessage? initialMessage = await _firebaseMessaging.getInitialMessage();
     if (initialMessage != null) {
       _handleNotificationTap(initialMessage);
     }
   }
 
-  // التعامل مع الإشعارات في المقدمة
+  // Handle foreground notifications
   void _handleForegroundMessage(RemoteMessage message) {
-    debugPrint('تم استلام إشعار في المقدمة: ${message.notification?.title}');
+    debugPrint('Received foreground notification: ${message.notification?.title}');
     
-    // عرض الإشعار المحلي
+    // Show local notification
     _showLocalNotification(
       title: message.notification?.title ?? 'Gizmo Store',
       body: message.notification?.body ?? '',
@@ -85,19 +85,19 @@ class NotificationService {
     );
   }
 
-  // التعامل مع النقر على الإشعار
+  // Handle notification tap
   void _handleNotificationTap(RemoteMessage message) {
-    debugPrint('تم النقر على إشعار: ${message.notification?.title}');
-    // يمكن إضافة منطق التنقل هنا
+    debugPrint('Notification tapped: ${message.notification?.title}');
+    // Navigation logic can be added here
   }
 
-  // التعامل مع النقر على الإشعار المحلي
+  // Handle local notification tap
   void _onNotificationTapped(NotificationResponse response) {
-    debugPrint('تم النقر على إشعار محلي: ${response.payload}');
-    // يمكن إضافة منطق التنقل هنا
+    debugPrint('Local notification tapped: ${response.payload}');
+    // Navigation logic can be added here
   }
 
-  // عرض إشعار محلي
+  // Show local notification
   Future<void> _showLocalNotification({
     required String title,
     required String body,
@@ -106,7 +106,7 @@ class NotificationService {
     const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
       'gizmo_store_channel',
       'Gizmo Store Notifications',
-      channelDescription: 'إشعارات متجر Gizmo Store',
+      channelDescription: 'Gizmo Store Notifications',
       importance: Importance.high,
       priority: Priority.high,
       showWhen: true,
@@ -132,26 +132,26 @@ class NotificationService {
     );
   }
 
-  // إشعار طلب جديد
+  // New order notification
   Future<void> showOrderNotification({
     required String orderId,
     required String status,
   }) async {
-    String title = 'تحديث الطلب';
+    String title = 'Order Update';
     String body = '';
 
     switch (status) {
-      case 'قيد التحضير':
-        body = 'طلبك #$orderId قيد التحضير';
+      case 'preparing':
+        body = 'Your order #$orderId is being prepared';
         break;
-      case 'قيد الشحن':
-        body = 'طلبك #$orderId في الطريق إليك';
+      case 'shipping':
+        body = 'Your order #$orderId is on its way to you';
         break;
-      case 'تم التوصيل':
-        body = 'تم توصيل طلبك #$orderId بنجاح';
+      case 'delivered':
+        body = 'Your order #$orderId has been delivered successfully';
         break;
       default:
-        body = 'تحديث على طلبك #$orderId';
+        body = 'Update on your order #$orderId';
     }
 
     await _showLocalNotification(
@@ -161,7 +161,7 @@ class NotificationService {
     );
   }
 
-  // إشعار عرض خاص
+  // Special offer notification
   Future<void> showOfferNotification({
     required String title,
     required String description,
@@ -174,75 +174,75 @@ class NotificationService {
     );
   }
 
-  // إشعار منتج جديد
+  // New product notification
   Future<void> showNewProductNotification({
     required String productName,
     required String productId,
   }) async {
     await _showLocalNotification(
-      title: 'منتج جديد!',
-      body: 'تم إضافة $productName إلى المتجر',
+      title: 'New Product!',
+      body: '$productName has been added to the store',
       payload: 'product:$productId',
     );
   }
 
-  // إشعار تذكير السلة
+  // Cart reminder notification
   Future<void> showCartReminderNotification() async {
     await _showLocalNotification(
-      title: 'لا تنس سلة التسوق!',
-      body: 'لديك منتجات في السلة في انتظار الشراء',
+      title: 'Don\'t forget your cart!',
+      body: 'You have items in your cart waiting to be purchased',
       payload: 'cart_reminder',
     );
   }
 
-  // إشعار نفاد المخزون
+  // Out of stock notification
   Future<void> showStockNotification({
     required String productName,
     required String productId,
   }) async {
     await _showLocalNotification(
-      title: 'المنتج متوفر الآن!',
-      body: '$productName أصبح متوفراً في المخزون',
+      title: 'Product now available!',
+      body: '$productName is now available in stock',
       payload: 'product:$productId',
     );
   }
 
-  // جدولة إشعار
+  // Schedule notification
   Future<void> scheduleNotification({
     required String title,
     required String body,
     required DateTime scheduledTime,
     String? payload,
   }) async {
-    // يمكن تنفيذ الجدولة هنا باستخدام timezone package
-    // للآن سنتركه كـ placeholder
-    debugPrint('تم جدولة إشعار: $title في $scheduledTime');
+    // Scheduling can be implemented here using timezone package
+    // For now we'll leave it as placeholder
+    debugPrint('Notification scheduled: $title at $scheduledTime');
   }
 
-  // إلغاء جميع الإشعارات
+  // Cancel all notifications
   Future<void> cancelAllNotifications() async {
     await _localNotifications.cancelAll();
   }
 
-  // إلغاء إشعار محدد
+  // Cancel specific notification
   Future<void> cancelNotification(int id) async {
     await _localNotifications.cancel(id);
   }
 
-  // الحصول على FCM Token
+  // Get FCM Token
   Future<String?> getFCMToken() async {
     return await _firebaseMessaging.getToken();
   }
 
-  // الاشتراك في موضوع
+  // Subscribe to topic
   Future<void> subscribeToTopic(String topic) async {
     await _firebaseMessaging.subscribeToTopic(topic);
-    debugPrint('تم الاشتراك في موضوع: $topic');
+    debugPrint('Subscribed to topic: $topic');
   }
 
-  // إلغاء الاشتراك في موضوع
+  // Unsubscribe from topic
   Future<void> unsubscribeFromTopic(String topic) async {
     await _firebaseMessaging.unsubscribeFromTopic(topic);
-    debugPrint('تم إلغاء الاشتراك في موضوع: $topic');
+    debugPrint('Unsubscribed from topic: $topic');
   }
 }

@@ -10,14 +10,18 @@ import 'package:gizmo_store/screens/search/search_screen.dart';
 import 'package:gizmo_store/screens/auth/auth_screen.dart';
 import 'package:gizmo_store/screens/product/products_screen.dart';
 import 'package:gizmo_store/screens/product/product_detail_screen.dart';
+import 'package:gizmo_store/screens/admin/admin_login_screen.dart';
+import 'package:gizmo_store/screens/admin/admin_panel.dart';
 import 'package:gizmo_store/models/product.dart';
 import 'package:gizmo_store/screens/splash_screen.dart';
+import 'package:gizmo_store/screens/auth/auth_gate.dart';
+import 'package:gizmo_store/debug/image_debug_screen.dart';
 
 class AppRoutes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => const SplashScreen());
+        return MaterialPageRoute(builder: (_) => const AuthGate());
       case '/home':
         return MaterialPageRoute(builder: (_) => const HomeScreen());
       case '/profile':
@@ -38,6 +42,10 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const ShippingScreen());
       case '/addresses':
         return MaterialPageRoute(builder: (_) => const AddressScreen());
+      case '/admin_login':
+        return MaterialPageRoute(builder: (_) => const AdminLoginScreen());
+      case '/admin_panel':
+        return MaterialPageRoute(builder: (_) => const AdminPanel());
       case '/product_detail':
         final product = settings.arguments as Product;
         return MaterialPageRoute(

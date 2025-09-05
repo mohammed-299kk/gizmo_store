@@ -1,6 +1,7 @@
 // lib/screens/search/advanced_search_screen.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
 import '../../providers/search_provider.dart';
 import '../../providers/wishlist_provider.dart';
 import '../../providers/cart_provider.dart';
@@ -19,21 +20,21 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
   final FocusNode _searchFocusNode = FocusNode();
   bool _showFilters = false;
 
-  final List<String> _categories = [
-    'الكل',
-    'الهواتف الذكية',
-    'أجهزة الكمبيوتر',
-    'الأجهزة اللوحية',
-    'الساعات الذكية',
-    'السماعات',
-    'الملحقات',
+  List<String> get _categories => [
+    AppLocalizations.of(context)!.all,
+    AppLocalizations.of(context)!.smartphones,
+    AppLocalizations.of(context)!.computers,
+    AppLocalizations.of(context)!.tablets,
+    AppLocalizations.of(context)!.smartwatches,
+    AppLocalizations.of(context)!.headphones,
+    AppLocalizations.of(context)!.accessories,
   ];
 
-  final List<String> _sortOptions = [
-    'الأحدث',
-    'السعر: من الأقل للأعلى',
-    'السعر: من الأعلى للأقل',
-    'التقييم',
+  List<String> get _sortOptions => [
+    AppLocalizations.of(context)!.newest,
+    AppLocalizations.of(context)!.priceLowToHigh,
+    AppLocalizations.of(context)!.priceHighToLow,
+    AppLocalizations.of(context)!.topRated,
   ];
 
   @override
@@ -52,10 +53,10 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFB71C1C),
-        foregroundColor: Colors.white,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
         elevation: 0,
         title: _buildSearchBar(),
         actions: [
@@ -86,27 +87,27 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
         return Container(
           height: 40,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).cardTheme.color,
             borderRadius: BorderRadius.circular(20),
           ),
           child: TextField(
             controller: _searchController,
             focusNode: _searchFocusNode,
             decoration: InputDecoration(
-              hintText: 'ابحث عن المنتجات...',
-              prefixIcon: const Icon(Icons.search, color: Colors.grey),
+              hintText: AppLocalizations.of(context)!.searchForProducts,
+              prefixIcon: Icon(Icons.search, color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.6)),
               suffixIcon: _searchController.text.isNotEmpty
                   ? IconButton(
-                      icon: const Icon(Icons.clear, color: Colors.grey),
+                      icon: Icon(Icons.clear, color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.6)),
                       onPressed: () {
                         _searchController.clear();
                         searchProvider.clearSearchResults();
                       },
                     )
                   : IconButton(
-                      icon: const Icon(Icons.mic, color: Colors.grey),
+                      icon: Icon(Icons.mic, color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.6)),
                       onPressed: () {
-                        // البحث الصوتي
+                        // Voice search
                         searchProvider.startVoiceSearch();
                       },
                     ),
@@ -138,37 +139,37 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
       builder: (context, searchProvider, child) {
         return Container(
           padding: const EdgeInsets.all(16),
-          color: const Color(0xFF2A2A2A),
+          color: Theme.of(context).cardTheme.color,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'الفلاتر',
+              Text(
+                AppLocalizations.of(context)!.filters,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Theme.of(context).textTheme.titleLarge?.color,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 16),
 
-              // فلتر الفئة
+              // Category filter
               _buildCategoryFilter(searchProvider),
               const SizedBox(height: 16),
 
-              // فلتر السعر
+              // Price filter
               _buildPriceFilter(searchProvider),
               const SizedBox(height: 16),
 
-              // فلتر التقييم
+              // Rating filter
               _buildRatingFilter(searchProvider),
               const SizedBox(height: 16),
 
-              // خيارات الترتيب
+              // Sort options
               _buildSortOptions(searchProvider),
               const SizedBox(height: 16),
 
-              // أزرار الفلاتر
+              // Filter buttons
               Row(
                 children: [
                   Expanded(
@@ -180,10 +181,10 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[700],
-                        foregroundColor: Colors.white,
+                        backgroundColor: Theme.of(context).colorScheme.secondary,
+                        foregroundColor: Theme.of(context).colorScheme.onSecondary,
                       ),
-                      child: const Text('إعادة تعيين'),
+                      child: Text(AppLocalizations.of(context)!.reset),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -198,10 +199,10 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                         });
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFB71C1C),
-                        foregroundColor: Colors.white,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        foregroundColor: Theme.of(context).colorScheme.onPrimary,
                       ),
-                      child: const Text('تطبيق'),
+                      child: Text(AppLocalizations.of(context)!.apply),
                     ),
                   ),
                 ],
@@ -217,9 +218,9 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'الفئة',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+        Text(
+          AppLocalizations.of(context)!.category,
+          style: TextStyle(color: Theme.of(context).textTheme.titleMedium?.color, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 8),
         Wrap(
@@ -235,10 +236,10 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                   category: category,
                 );
               },
-              selectedColor: const Color(0xFFB71C1C),
-              backgroundColor: Colors.grey[700],
+              selectedColor: Theme.of(context).colorScheme.primary,
+              backgroundColor: Theme.of(context).colorScheme.secondary,
               labelStyle: TextStyle(
-                color: isSelected ? Colors.white : Colors.grey[300],
+                color: isSelected ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).textTheme.bodyMedium?.color,
               ),
             );
           }).toList(),
@@ -251,9 +252,9 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'نطاق السعر (جنيه)',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+        Text(
+          AppLocalizations.of(context)!.priceRange,
+          style: TextStyle(color: Theme.of(context).textTheme.titleMedium?.color, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 8),
         RangeSlider(
@@ -261,8 +262,8 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
           min: 0,
           max: 10000000,
           divisions: 100,
-          activeColor: const Color(0xFFB71C1C),
-          inactiveColor: Colors.grey[600],
+          activeColor: Theme.of(context).colorScheme.primary,
+          inactiveColor: Theme.of(context).colorScheme.secondary,
           labels: RangeLabels(
             '${searchProvider.minPrice.toInt()}',
             '${searchProvider.maxPrice.toInt()}',
@@ -279,12 +280,12 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              '${searchProvider.minPrice.toInt()} جنيه',
-              style: const TextStyle(color: Colors.grey),
+              '${searchProvider.minPrice.toInt()} ${AppLocalizations.of(context)!.currency}',
+              style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
             ),
             Text(
-              '${searchProvider.maxPrice.toInt()} جنيه',
-              style: const TextStyle(color: Colors.grey),
+              '${searchProvider.maxPrice.toInt()} ${AppLocalizations.of(context)!.currency}',
+              style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
             ),
           ],
         ),
@@ -296,9 +297,9 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'التقييم الأدنى',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+        Text(
+          AppLocalizations.of(context)!.minimumRating,
+          style: TextStyle(color: Theme.of(context).textTheme.titleMedium?.color, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 8),
         Row(
@@ -314,7 +315,7 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
               },
               child: Icon(
                 Icons.star,
-                color: isSelected ? Colors.amber : Colors.grey[600],
+                color: isSelected ? Theme.of(context).colorScheme.tertiary : Theme.of(context).colorScheme.secondary,
                 size: 30,
               ),
             );
@@ -328,15 +329,15 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'ترتيب حسب',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+        Text(
+          AppLocalizations.of(context)!.sortBy,
+          style: TextStyle(color: Theme.of(context).textTheme.titleMedium?.color, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 8),
         DropdownButton<String>(
           value: searchProvider.sortBy,
-          dropdownColor: const Color(0xFF2A2A2A),
-          style: const TextStyle(color: Colors.white),
+          dropdownColor: Theme.of(context).cardTheme.color,
+          style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
           items: _sortOptions.map((option) {
             return DropdownMenuItem(
               value: option,
@@ -375,7 +376,7 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                   const Text(
                     'عمليات البحث السابقة',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Theme.of(context).textTheme.titleMedium?.color,
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
@@ -386,7 +387,7 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                     },
                     child: const Text(
                       'مسح الكل',
-                      style: TextStyle(color: Color(0xFFB71C1C)),
+                      style: TextStyle(color: Theme.of(context).colorScheme.primary),
                     ),
                   ),
                 ],
@@ -405,9 +406,9 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                     onDeleted: () {
                       searchProvider.removeFromSearchHistory(query);
                     },
-                    backgroundColor: Colors.grey[700],
-                    labelStyle: const TextStyle(color: Colors.white),
-                    deleteIconColor: Colors.grey[400],
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    labelStyle: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+                    deleteIconColor: Theme.of(context).iconTheme.color,
                   );
                 }).toList(),
               ),
@@ -424,7 +425,7 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
         if (searchProvider.isLoading) {
           return const Center(
             child: CircularProgressIndicator(
-              color: Color(0xFFB71C1C),
+              color: Theme.of(context).colorScheme.primary,
             ),
           );
         }
@@ -443,20 +444,20 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
   }
 
   Widget _buildEmptyState() {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             Icons.search,
             size: 80,
-            color: Colors.grey,
+            color: Theme.of(context).iconTheme.color,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
-            'ابحث عن المنتجات',
+            AppLocalizations.of(context)!.searchForProducts,
             style: TextStyle(
-              color: Colors.grey,
+              color: Theme.of(context).textTheme.bodyLarge?.color,
               fontSize: 18,
             ),
           ),
@@ -466,28 +467,28 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
   }
 
   Widget _buildNoResults() {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             Icons.search_off,
             size: 80,
-            color: Colors.grey,
+            color: Theme.of(context).iconTheme.color,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
-            'لا توجد نتائج',
+            AppLocalizations.of(context)!.noResults,
             style: TextStyle(
-              color: Colors.grey,
+              color: Theme.of(context).textTheme.bodyLarge?.color,
               fontSize: 18,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
-            'جرب كلمات بحث أخرى أو قم بتعديل الفلاتر',
+            AppLocalizations.of(context)!.tryDifferentKeywords,
             style: TextStyle(
-              color: Colors.grey,
+              color: Theme.of(context).textTheme.bodyMedium?.color,
               fontSize: 14,
             ),
           ),
@@ -515,7 +516,7 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
 
   Widget _buildProductCard(product) {
     return Card(
-      color: const Color(0xFF2A2A2A),
+      color: Theme.of(context).cardTheme.color,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
@@ -534,7 +535,7 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // صورة المنتج مع أيقونة المفضلة
+            // Product image with wishlist icon
             Expanded(
               flex: 3,
               child: Stack(
@@ -544,7 +545,7 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                         const BorderRadius.vertical(top: Radius.circular(12)),
                     child: Container(
                       width: double.infinity,
-                      color: Colors.grey[300],
+                      color: Theme.of(context).colorScheme.secondary,
                       child: product.image != null && product.image!.isNotEmpty
                           ? Image.network(
                               product.image!,
@@ -552,19 +553,19 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                               errorBuilder: (context, error, stackTrace) {
                                 return const Icon(
                                   Icons.image_not_supported,
-                                  color: Colors.grey,
+                                  color: Theme.of(context).iconTheme.color,
                                   size: 40,
                                 );
                               },
                             )
                           : const Icon(
                               Icons.image_not_supported,
-                              color: Colors.grey,
+                              color: Theme.of(context).iconTheme.color,
                               size: 40,
                             ),
                     ),
                   ),
-                  // أيقونة المفضلة
+                  // Wishlist icon
                   Positioned(
                     top: 8,
                     right: 8,
@@ -580,7 +581,7 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text('خطأ: $error'),
+                                    content: Text('${AppLocalizations.of(context)!.error}: $error'),
                                     backgroundColor: Colors.red,
                                   ),
                                 );
@@ -590,7 +591,7 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                           child: Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.9),
+                              color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
@@ -598,8 +599,8 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                                   ? Icons.favorite
                                   : Icons.favorite_border,
                               color: isInWishlist
-                                  ? const Color(0xFFB71C1C)
-                                  : Colors.grey[600],
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Theme.of(context).iconTheme.color,
                               size: 16,
                             ),
                           ),
@@ -610,7 +611,7 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                 ],
               ),
             ),
-            // تفاصيل المنتج
+            // Product details
             Expanded(
               flex: 2,
               child: Padding(
@@ -623,7 +624,7 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                       style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -638,7 +639,7 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                                 i < product.rating!.floor()
                                     ? Icons.star
                                     : Icons.star_border,
-                                color: Colors.amber,
+                                color: Theme.of(context).colorScheme.tertiary,
                                 size: 10,
                               );
                             }),
@@ -647,7 +648,7 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                           Text(
                             '(${product.reviewsCount ?? 0})',
                             style: TextStyle(
-                              color: Colors.grey[400],
+                              color: Theme.of(context).textTheme.bodySmall?.color,
                               fontSize: 8,
                             ),
                           ),
@@ -655,9 +656,9 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                       ),
                     const Spacer(),
                     Text(
-                      '${product.price.toStringAsFixed(0)} جنيه',
+                      '${product.price.toStringAsFixed(0)} ${AppLocalizations.of(context)!.currency}',
                       style: const TextStyle(
-                        color: Color(0xFFB71C1C),
+                        color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.bold,
                         fontSize: 12,
                       ),

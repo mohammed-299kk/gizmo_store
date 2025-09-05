@@ -35,7 +35,7 @@ class DashboardStatsCards extends StatelessWidget {
               title: 'Total Users',
               value: stats.totalUsers.toString(),
               icon: Icons.people,
-              color: Colors.blue,
+              color: Color(0xFFB71C1C),
             ),
             _buildStatCard(
               title: 'Total Products',

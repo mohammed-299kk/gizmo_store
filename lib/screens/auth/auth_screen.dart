@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:gizmo_store/providers/auth_provider.dart' as auth;
 import 'package:firebase_auth/firebase_auth.dart';
+import '../../providers/theme_provider.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -22,14 +24,15 @@ class _AuthScreenState extends State<AuthScreen> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
-  // دالة تسجيل الدخول أو إنشاء حساب
+  // Login or create account function
   Future<void> _submit() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('يرجى ملء جميع الحقول المطلوبة')),
+        SnackBar(
+            content: Text(AppLocalizations.of(context)!.fillAllRequiredFields)),
       );
       return;
     }
@@ -41,22 +44,25 @@ class _AuthScreenState extends State<AuthScreen> {
 
       if (firstName.isEmpty || lastName.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('يرجى إدخال الاسم الأول والأخير')),
+          SnackBar(
+              content:
+                  Text(AppLocalizations.of(context)!.enterFirstAndLastName)),
         );
         return;
       }
 
       if (password != confirmPassword) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('كلمات المرور غير متطابقة')),
+          SnackBar(
+              content: Text(AppLocalizations.of(context)!.passwordsDoNotMatch)),
         );
         return;
       }
 
       if (password.length < 6) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('كلمة المرور يجب أن تكون 6 أحرف على الأقل')),
+          SnackBar(
+              content: Text(AppLocalizations.of(context)!.passwordMinLength)),
         );
         return;
       }
@@ -77,6 +83,7 @@ class _AuthScreenState extends State<AuthScreen> {
           _confirmPasswordController.text.trim(),
           firstName: _firstNameController.text.trim(),
           lastName: _lastNameController.text.trim(),
+          context: context,
         );
       }
     } catch (e) {
@@ -108,203 +115,261 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 40),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return Scaffold(
+          backgroundColor:
+              themeProvider.isDarkMode ? const Color(0xFF1A1A1A) : Colors.white,
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Theme toggle button
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: themeProvider.isDarkMode
+                              ? Colors.grey[800]
+                              : Colors.grey[200],
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        child: IconButton(
+                          onPressed: () {
+                            themeProvider.toggleTheme();
+                          },
+                          icon: Icon(
+                            themeProvider.isDarkMode
+                                ? Icons.wb_sunny
+                                : Icons.nightlight_round,
+                            color: themeProvider.isDarkMode
+                                ? Colors.yellow
+                                : Colors.grey[700],
+                            size: 24,
+                          ),
+                          tooltip: themeProvider.isDarkMode
+                              ? 'الوضع الفاتح'
+                              : 'الوضع المظلم',
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
 
-              // شعار التطبيق
-              Container(
-                height: 100,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFB71C1C),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Center(
-                  child: Text(
-                    'Gizmo Store',
+                  // شعار التطبيق
+                  Container(
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFB71C1C), // Red color
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Gizmo Store',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 40),
+
+                  // Title
+                  Text(
+                    isLogin
+                        ? AppLocalizations.of(context)!.welcomeBack
+                        : AppLocalizations.of(context)!.createNewAccount,
                     style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 32,
+                      color: themeProvider.isDarkMode
+                          ? Colors.white
+                          : Colors.black,
+                      fontSize: 28,
                       fontWeight: FontWeight.bold,
                     ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-              ),
 
-              const SizedBox(height: 40),
-
-              // العنوان
-              Text(
-                isLogin ? "مرحباً بعودتك!" : "إنشاء حساب جديد",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-
-              Text(
-                isLogin ? "سجل دخولك للمتابعة" : "انضم إلى عائلة Gizmo Store",
-                style: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 16,
-                ),
-                textAlign: TextAlign.center,
-              ),
-
-              const SizedBox(height: 40),
-
-              // حقول الإدخال
-              if (!isLogin) ...[
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildTextField(
-                        controller: _firstNameController,
-                        label: "الاسم الأول",
-                        icon: Icons.person,
-                      ),
+                  Text(
+                    isLogin
+                        ? AppLocalizations.of(context)!.signInToContinue
+                        : AppLocalizations.of(context)!.joinGizmoFamily,
+                    style: TextStyle(
+                      color: themeProvider.isDarkMode
+                          ? Colors.white70
+                          : Colors.black54,
+                      fontSize: 16,
                     ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: _buildTextField(
-                        controller: _lastNameController,
-                        label: "الاسم الأخير",
-                        icon: Icons.person_outline,
-                      ),
+                    textAlign: TextAlign.center,
+                  ),
+
+                  const SizedBox(height: 40),
+
+                  // Input fields
+                  if (!isLogin) ...[
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildTextField(
+                            controller: _firstNameController,
+                            label: AppLocalizations.of(context)!.firstName,
+                            icon: Icons.person,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: _buildTextField(
+                            controller: _lastNameController,
+                            label: AppLocalizations.of(context)!.lastName,
+                            icon: Icons.person_outline,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+
+                  _buildTextField(
+                    controller: _emailController,
+                    label: AppLocalizations.of(context)!.email,
+                    icon: Icons.email,
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  _buildTextField(
+                    controller: _passwordController,
+                    label: AppLocalizations.of(context)!.password,
+                    icon: Icons.lock,
+                    isPassword: true,
+                    isPasswordVisible: !_obscurePassword,
+                    onToggleVisibility: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                  ),
+
+                  if (!isLogin) ...[
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      controller: _confirmPasswordController,
+                      label: AppLocalizations.of(context)!.confirmPassword,
+                      icon: Icons.lock_outline,
+                      isPassword: true,
+                      isPasswordVisible: !_obscureConfirmPassword,
+                      onToggleVisibility: () {
+                        setState(() {
+                          _obscureConfirmPassword = !_obscureConfirmPassword;
+                        });
+                      },
                     ),
                   ],
-                ),
-                const SizedBox(height: 16),
-              ],
 
-              _buildTextField(
-                controller: _emailController,
-                label: "البريد الإلكتروني",
-                icon: Icons.email,
-                keyboardType: TextInputType.emailAddress,
-              ),
+                  const SizedBox(height: 32),
 
-              const SizedBox(height: 16),
-
-              _buildTextField(
-                controller: _passwordController,
-                label: "كلمة المرور",
-                icon: Icons.lock,
-                isPassword: true,
-                isPasswordVisible: !_obscurePassword,
-                onToggleVisibility: () {
-                  setState(() {
-                    _obscurePassword = !_obscurePassword;
-                  });
-                },
-              ),
-
-
-
-              if (!isLogin) ...[
-                const SizedBox(height: 16),
-                _buildTextField(
-                  controller: _confirmPasswordController,
-                  label: "تأكيد كلمة المرور",
-                  icon: Icons.lock_outline,
-                  isPassword: true,
-                  isPasswordVisible: !_obscureConfirmPassword,
-                  onToggleVisibility: () {
-                    setState(() {
-                      _obscureConfirmPassword = !_obscureConfirmPassword;
-                    });
-                  },
-                ),
-              ],
-
-              const SizedBox(height: 32),
-
-              // زر التسجيل/الدخول
-              if (isLoading)
-                const Center(
-                  child: CircularProgressIndicator(color: Color(0xFFB71C1C)),
-                )
-              else
-                ElevatedButton(
-                  onPressed: _submit,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFB71C1C),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                  // Sign in/register button
+                  if (isLoading)
+                    const Center(
+                      child:
+                          CircularProgressIndicator(color: Color(0xFFB71C1C)),
+                    )
+                  else
+                    ElevatedButton(
+                      onPressed: _submit,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFB71C1C),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(
+                        isLogin
+                            ? AppLocalizations.of(context)!.signIn
+                            : AppLocalizations.of(context)!.createAccount,
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  ),
-                  child: Text(
-                    isLogin ? "تسجيل الدخول" : "إنشاء حساب",
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ),
 
-              const SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
-              // زر التبديل
-              TextButton(
-                onPressed: () => setState(() => isLogin = !isLogin),
-                child: Text(
-                  isLogin
-                      ? "ليس لديك حساب؟ إنشاء حساب جديد"
-                      : "لديك حساب؟ تسجيل الدخول",
-                  style: const TextStyle(
-                    color: Color(0xFFB71C1C),
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              // خط فاصل
-              const Row(
-                children: [
-                  Expanded(child: Divider(color: Colors.white24)),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
+                  // زر التبديل
+                  TextButton(
+                    onPressed: () => setState(() => isLogin = !isLogin),
                     child: Text(
-                      "أو",
-                      style: TextStyle(color: Colors.white70),
+                      isLogin
+                          ? AppLocalizations.of(context)!.noAccountCreateNew
+                          : AppLocalizations.of(context)!.haveAccountSignIn,
+                      style: const TextStyle(
+                        color: Color(0xFFB71C1C),
+                        fontSize: 16,
+                      ),
                     ),
                   ),
-                  Expanded(child: Divider(color: Colors.white24)),
+
+                  const SizedBox(height: 24),
+
+                  // خط فاصل
+                  Row(
+                    children: [
+                      Expanded(
+                          child: Divider(
+                              color: themeProvider.isDarkMode
+                                  ? Colors.white24
+                                  : Colors.black26)),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Text(
+                          AppLocalizations.of(context)!.or,
+                          style: TextStyle(
+                              color: themeProvider.isDarkMode
+                                  ? Colors.white70
+                                  : Colors.black54),
+                        ),
+                      ),
+                      Expanded(
+                          child: Divider(
+                              color: themeProvider.isDarkMode
+                                  ? Colors.white24
+                                  : Colors.black26)),
+                    ],
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // زر الدخول كضيف
+                  OutlinedButton(
+                    onPressed: _continueAsGuest,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: themeProvider.isDarkMode
+                          ? Colors.white
+                          : Colors.black,
+                      side: const BorderSide(color: Color(0xFFB71C1C)),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      AppLocalizations.of(context)!.continueAsGuest,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
                 ],
               ),
-
-              const SizedBox(height: 24),
-
-              // زر الدخول كضيف
-              OutlinedButton(
-                onPressed: _continueAsGuest,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  side: const BorderSide(color: Color(0xFFB71C1C)),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Text(
-                  "الدخول كضيف",
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -319,38 +384,58 @@ class _AuthScreenState extends State<AuthScreen> {
     VoidCallback? onToggleVisibility,
     bool? isPasswordVisible,
   }) {
-    return TextField(
-      controller: controller,
-      obscureText: isPassword ? !(isPasswordVisible ?? false) : obscureText,
-      keyboardType: keyboardType,
-      style: const TextStyle(color: Colors.white),
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: const TextStyle(color: Colors.white70),
-        prefixIcon: Icon(icon, color: Colors.white70),
-        suffixIcon: isPassword && onToggleVisibility != null
-            ? IconButton(
-                icon: Icon(
-                  (isPasswordVisible ?? false) ? Icons.visibility : Icons.visibility_off,
-                  color: Colors.white,
-                  size: 24,
-                ),
-                onPressed: onToggleVisibility,
-                tooltip: (isPasswordVisible ?? false) ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور',
-                splashRadius: 20,
-              )
-            : null,
-        filled: true,
-        fillColor: const Color(0xFF2A2A2A),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFB71C1C), width: 2),
-        ),
-      ),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return TextField(
+          controller: controller,
+          obscureText: isPassword ? !(isPasswordVisible ?? false) : obscureText,
+          keyboardType: keyboardType,
+          style: TextStyle(
+            color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+          ),
+          decoration: InputDecoration(
+            labelText: label,
+            labelStyle: TextStyle(
+              color: themeProvider.isDarkMode ? Colors.white70 : Colors.black54,
+            ),
+            prefixIcon: Icon(
+              icon,
+              color: themeProvider.isDarkMode ? Colors.white70 : Colors.black54,
+            ),
+            suffixIcon: isPassword && onToggleVisibility != null
+                ? IconButton(
+                    icon: Icon(
+                      (isPasswordVisible ?? false)
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: themeProvider.isDarkMode
+                          ? Colors.white
+                          : Colors.black,
+                      size: 24,
+                    ),
+                    onPressed: onToggleVisibility,
+                    tooltip: (isPasswordVisible ?? false)
+                        ? AppLocalizations.of(context)!.hidePassword
+                        : AppLocalizations.of(context)!.showPassword,
+                    splashRadius: 20,
+                  )
+                : null,
+            filled: true,
+            fillColor: themeProvider.isDarkMode
+                ? const Color(0xFF2A2A2A)
+                : Colors.grey[100],
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(
+                  color: Color(0xFFB71C1C), width: 2), // Red color
+            ),
+          ),
+        );
+      },
     );
   }
 }

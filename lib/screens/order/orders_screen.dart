@@ -1,38 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // تم استيراد حزمة intl
-import 'package:cached_network_image/cached_network_image.dart'; // تم استيراد حزمة الصور
-
-class Order {
-  final String id;
-  final DateTime date;
-  final String status;
-  final double total;
-  final List<OrderItem> items;
-
-  Order({
-    required this.id,
-    required this.date,
-    required this.status,
-    required this.total,
-    required this.items,
-  });
-}
-
-class OrderItem {
-  final String id;
-  final String name;
-  final String image;
-  final int quantity;
-  final double price;
-
-  OrderItem({
-    required this.id,
-    required this.name,
-    required this.image,
-    required this.quantity,
-    required this.price,
-  });
-}
+import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../models/order.dart' as order_model;
+import '../../services/firestore_service.dart';
+import '../../utils/app_exceptions.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -42,6 +14,10 @@ class OrdersScreen extends StatefulWidget {
 }
 
 class _OrdersScreenState extends State<OrdersScreen> {
+  final FirestoreService _firestoreService = FirestoreService();
+  String _selectedStatus = 'الكل';
+  String? _currentUserId;
+
   final List<String> _statusFilters = [
     'الكل',
     'قيد التحضير',
@@ -49,12 +25,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
     'تم التوصيل',
     'ملغي'
   ];
-  String _selectedStatus = 'الكل';
-  bool _isLoading = false;
-
-  // بيانات الطلبات (عادة ما تأتي من API)
-  List<Order> _orders = [];
-  List<Order> _filteredOrders = [];
 
   // دالة مساعدة لتحديد نوع الصورة وعرضها بشكل صحيح
   Widget _buildImageWidget(String? imagePath,
@@ -108,78 +78,22 @@ class _OrdersScreenState extends State<OrdersScreen> {
   @override
   void initState() {
     super.initState();
-    _loadOrders();
+    _getCurrentUser();
   }
 
-  void _loadOrders() async {
-    setState(() => _isLoading = true);
-
-    // محاكاة جلب البيانات من API
-    await Future.delayed(const Duration(seconds: 1));
-
-    setState(() {
-      _orders = [
-        Order(
-          id: '#12345',
-          date: DateTime(2024, 12, 15),
-          status: 'تم التوصيل',
-          total: 1299.99,
-          items: [
-            OrderItem(
-              id: '1',
-              name: 'iPhone 15 Pro Max',
-              image: 'assets/images/VKy5jNI8bXPK.jpg',
-              quantity: 1,
-              price: 1299.99,
-            ),
-          ],
-        ),
-        Order(
-          id: '#12344',
-          date: DateTime(2024, 12, 10),
-          status: 'قيد الشحن',
-          total: 849.98,
-          items: [
-            OrderItem(
-                name: 'Samsung Galaxy S24 Ultra',
-                id: '2',
-                image: 'assets/images/qKQgpMAdtwg6.jpg',
-                quantity: 1,
-                price: 699.99),
-            OrderItem(
-                name: 'AirPods Pro',
-                id: '3',
-                image: 'assets/images/d7xOEiY2GQmU.jpg',
-                quantity: 1,
-                price: 149.99),
-          ],
-        ),
-        Order(
-          id: '#12343',
-          date: DateTime(2024, 12, 5),
-          status: 'قيد التحضير',
-          total: 2199.99,
-          items: [
-            OrderItem(
-                name: 'MacBook Pro 16"',
-                id: '4',
-                image: 'assets/images/a3RdtOgqMZcB.jpg',
-                quantity: 1,
-                price: 2199.99)
-          ],
-        ),
-      ];
-      _applyFilters();
-      _isLoading = false;
-    });
+  /// جلب معرف المستخدم الحالي
+  void _getCurrentUser() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        _currentUserId = user.uid;
+      });
+    }
   }
 
-  void _applyFilters() {
-    setState(() {
-      _filteredOrders = _orders.where((order) {
-        return _selectedStatus == 'الكل' || order.status == _selectedStatus;
-      }).toList();
-    });
+  /// تصفية الطلبات حسب الحالة المحددة
+  String? get _statusFilter {
+    return _selectedStatus == 'الكل' ? null : _selectedStatus;
   }
 
   @override
@@ -187,12 +101,29 @@ class _OrdersScreenState extends State<OrdersScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('طلباتي'),
-        backgroundColor: const Color(0xFFB71C1C),
-        foregroundColor: Colors.white,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
         actions: [
           IconButton(
+            icon: const Icon(Icons.add_box),
+            onPressed: () async {
+              if (_currentUserId != null) {
+                await _firestoreService.addSampleOrders(_currentUserId!);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('تم إضافة طلبات تجريبية بنجاح'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              }
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: _loadOrders,
+            onPressed: () {
+              // Force rebuild to refresh the stream
+              setState(() {});
+            },
           ),
         ],
       ),
@@ -202,7 +133,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
           Padding(
             padding: const EdgeInsets.all(16),
             child: DropdownButtonFormField<String>(
-              initialValue: _selectedStatus,
+              value: _selectedStatus,
               decoration: const InputDecoration(
                 labelText: 'فلتر حسب الحالة',
                 border: OutlineInputBorder(),
@@ -217,62 +148,169 @@ class _OrdersScreenState extends State<OrdersScreen> {
               onChanged: (value) {
                 setState(() {
                   _selectedStatus = value!;
-                  _applyFilters();
                 });
               },
             ),
           ),
 
-          // قائمة الطلبات
+          // قائمة الطلبات مع StreamBuilder
           Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _filteredOrders.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.receipt_long_outlined,
-                              size: 64,
-                              color: Colors.grey,
-                            ),
-                            const SizedBox(height: 16),
-                            const Text(
-                              'لا توجد طلبات',
-                              style:
-                                  TextStyle(fontSize: 18, color: Colors.grey),
-                            ),
-                            const SizedBox(height: 16),
-                            ElevatedButton(
-                              onPressed: _loadOrders,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFFB71C1C),
-                                foregroundColor: Colors.white,
-                              ),
-                              child: const Text('إعادة تحميل'),
-                            ),
-                          ],
-                        ),
-                      )
-                    : RefreshIndicator(
-                        onRefresh: () async => _loadOrders(),
+            child: _currentUserId == null
+                ? _buildNotLoggedInView()
+                : StreamBuilder<List<order_model.Order>>(
+                    stream: _firestoreService.getUserOrdersStream(
+                      _currentUserId!,
+                      status: _statusFilter,
+                    ),
+                    builder: (context, snapshot) {
+                      // حالة التحميل
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      
+                      // حالة الخطأ
+                      if (snapshot.hasError) {
+                        return _buildErrorView(snapshot.error.toString());
+                      }
+                      
+                      // حالة عدم وجود بيانات
+                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return _buildEmptyView();
+                      }
+                      
+                      // عرض الطلبات
+                      final orders = snapshot.data!;
+                      return RefreshIndicator(
+                        onRefresh: () async {
+                          // إعادة تحميل البيانات عن طريق إعادة بناء الـ Stream
+                          setState(() {});
+                        },
                         child: ListView.builder(
                           padding: const EdgeInsets.only(bottom: 16),
-                          itemCount: _filteredOrders.length,
+                          itemCount: orders.length,
                           itemBuilder: (context, index) {
-                            final order = _filteredOrders[index];
+                            final order = orders[index];
                             return _buildOrderCard(order);
                           },
                         ),
-                      ),
+                      );
+                    },
+                  ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildOrderCard(Order order) {
+  /// عرض رسالة للمستخدم غير المسجل
+  Widget _buildNotLoggedInView() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.person_off,
+            size: 64,
+            color: Colors.grey[400],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'يجب تسجيل الدخول لعرض الطلبات',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey[600],
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// عرض رسالة الخطأ
+  Widget _buildErrorView(String error) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.error_outline,
+            size: 64,
+            color: Colors.grey[400],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'حدث خطأ أثناء تحميل الطلبات',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey[600],
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            error,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey[500],
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {}); // إعادة بناء الـ StreamBuilder
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+            ),
+            child: const Text('إعادة المحاولة'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// عرض رسالة عدم وجود طلبات
+  Widget _buildEmptyView() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.shopping_bag_outlined,
+            size: 64,
+            color: Colors.grey[400],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            _selectedStatus == 'الكل'
+                ? 'لا توجد طلبات بعد'
+                : 'لا توجد طلبات بحالة "$_selectedStatus"',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey[600],
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'ابدأ التسوق لإنشاء طلبك الأول',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[500],
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOrderCard(order_model.Order order) {
     final dateFormat = DateFormat('yyyy-MM-dd'); // استخدام DateFormat بشكل صحيح
 
     return Card(
@@ -303,10 +341,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
         subtitle: Text('تاريخ: ${dateFormat.format(order.date)}'),
         trailing: Text(
           '${order.total.toStringAsFixed(0)} جنيه',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Color(0xFFB71C1C),
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         children: [
@@ -320,17 +358,17 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 OutlinedButton(
                   onPressed: () => _viewOrderDetails(order),
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFFB71C1C)),
+                    side: BorderSide(color: Theme.of(context).colorScheme.primary),
                   ),
-                  child: const Text('تفاصيل الطلب',
-                      style: TextStyle(color: Color(0xFFB71C1C))),
+                  child: Text('تفاصيل الطلب',
+                      style: TextStyle(color: Theme.of(context).colorScheme.primary)),
                 ),
                 if (order.status == 'قيد الشحن')
                   ElevatedButton(
                     onPressed: () => _trackOrder(order),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFB71C1C),
-                      foregroundColor: Colors.white,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     ),
                     child: const Text('تتبع الطلب'),
                   ),
@@ -342,7 +380,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
     );
   }
 
-  Widget _buildOrderItem(OrderItem item) {
+  Widget _buildOrderItem(order_model.OrderItem item) {
     return ListTile(
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(8),
@@ -356,7 +394,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
       title: Text(item.name),
       subtitle: Text('الكمية: ${item.quantity}'),
       trailing: Text(
-        '\$${(item.price * item.quantity).toStringAsFixed(2)}',
+        '${(item.price * item.quantity).toStringAsFixed(0)} جنيه',
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
     );
@@ -367,9 +405,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
       case 'تم التوصيل':
         return Colors.green;
       case 'قيد الشحن':
-        return Colors.blue;
+        return Color(0xFFB71C1C);
       case 'قيد التحضير':
-        return Colors.orange;
+        return Color(0xFFB71C1C);
       case 'ملغي':
         return Colors.red;
       default:
@@ -377,7 +415,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
     }
   }
 
-  void _viewOrderDetails(Order order) {
+  void _viewOrderDetails(order_model.Order order) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -385,13 +423,13 @@ class _OrdersScreenState extends State<OrdersScreen> {
     );
   }
 
-  void _trackOrder(Order order) {
+  void _trackOrder(order_model.Order order) {
     // تنقل إلى شاشة تتبع الطلب
   }
 }
 
 class OrderDetailsScreen extends StatelessWidget {
-  final Order order;
+  final order_model.Order order;
 
   const OrderDetailsScreen({super.key, required this.order});
 
@@ -539,10 +577,10 @@ class OrderDetailsScreen extends StatelessWidget {
               ),
               Text(
                 '${(order.total + 10 + (order.total * 0.15)).toStringAsFixed(0)} جنيه',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFFB71C1C),
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
             ],
@@ -551,8 +589,8 @@ class OrderDetailsScreen extends StatelessWidget {
           ElevatedButton(
             onPressed: () => Navigator.pop(context),
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFB71C1C),
-              foregroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
               minimumSize: const Size(double.infinity, 50),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -565,7 +603,7 @@ class OrderDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildOrderItem(OrderItem item) {
+  Widget _buildOrderItem(order_model.OrderItem item) {
     return ListTile(
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(8),
@@ -578,7 +616,7 @@ class OrderDetailsScreen extends StatelessWidget {
       ),
       title: Text(item.name),
       subtitle: Text('الكمية: ${item.quantity}'),
-      trailing: Text('\$${(item.price * item.quantity).toStringAsFixed(2)}'),
+      trailing: Text('${(item.price * item.quantity).toStringAsFixed(0)} جنيه'),
     );
   }
 }

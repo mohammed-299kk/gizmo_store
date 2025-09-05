@@ -1,31 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:gizmo_store/models/product.dart';
 import 'package:gizmo_store/screens/order/checkout_screen.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
 
-// نموذج بيانات المنتجات لاختبار CartScreen
+// Sample product data for testing CartScreen
 final List<Product> featuredProducts = [
   Product(
     id: 'some-id', // provide a value for the id parameter
     name: 'iPhone 15 Pro Max',
     price: 1200.0,
-    description: 'هاتف iPhone 15 Pro Max مع شريحة A17 Pro المتطورة.',
+    description: 'iPhone 15 Pro Max with advanced A17 Pro chip.',
     image: 'https://example.com/iphone15pro.jpg',
     discount: 10,
     originalPrice: 1330.0,
     rating: 4.5,
     reviewsCount: 25,
-    specifications: ['شاشة 6.7 بوصة', 'كاميرا 48MP', 'ذاكرة 256GB'],
+    specifications: ['6.7 inch display', '48MP camera', '256GB storage'],
     reviews: [
       {
-        'name': 'محمد - الخرطوم',
+        'name': 'Mohammed - Khartoum',
         'rating': 5,
-        'comment': 'منتج ممتاز!',
+        'comment': 'Excellent product!',
         'date': '2024-12-15'
       },
       {
-        'name': 'سارة - الخرطوم بحري',
+        'name': 'Sara - Khartoum North',
         'rating': 4,
-        'comment': 'جيد جدًا لكن غالي السعر',
+        'comment': 'Very good but expensive',
         'date': '2024-12-12'
       },
     ],
@@ -34,15 +35,15 @@ final List<Product> featuredProducts = [
     id: 'some_id', // replace with a valid id
     name: 'iPhone 15 Pro Max',
     price: 1200.0,
-    description: 'هاتف iPhone 15 Pro Max مع شريحة A17 Pro المتطورة.',
+    description: 'iPhone 15 Pro Max with advanced A17 Pro chip.',
     image: 'https://example.com/iphone15pro.jpg',
     discount: 10,
     originalPrice: 1330.0,
     rating: 4.5,
     reviewsCount: 25,
-    specifications: ['شاشة 6.7 بوصة', 'كاميرا 48MP', 'ذاكرة 256GB'],
+    specifications: ['6.7 inch display', '48MP camera', '256GB storage'],
     reviews: [
-      {'name': 'أحمد', 'rating': 4, 'comment': 'جيد جدًا'},
+      {'name': 'Ahmed', 'rating': 4, 'comment': 'Very good'},
     ],
   ),
 ];
@@ -67,7 +68,7 @@ class _CartScreenState extends State<CartScreen> {
   @override
   void initState() {
     super.initState();
-    // تهيئة عناصر السلة باستخدام featuredProducts
+    // Initialize cart items using featuredProducts
     cartItems = [
       CartItem(product: featuredProducts[0], quantity: 1),
       CartItem(product: featuredProducts[1], quantity: 2),
@@ -84,7 +85,7 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('سلة المشتريات')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.shoppingCart)),
       body: cartItems.isEmpty
           ? Center(
               child: Column(
@@ -93,12 +94,12 @@ class _CartScreenState extends State<CartScreen> {
                   const Icon(Icons.shopping_cart_outlined,
                       size: 64, color: Colors.grey),
                   const SizedBox(height: 16),
-                  const Text('سلة المشتريات فارغة',
+                  Text(AppLocalizations.of(context)!.cartEmpty,
                       style: TextStyle(fontSize: 18, color: Colors.grey)),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text('تسوق الآن'),
+                    child: Text(AppLocalizations.of(context)!.shopNow),
                   ),
                 ],
               ),
@@ -135,8 +136,14 @@ class _CartScreenState extends State<CartScreen> {
                                 image: DecorationImage(
                                   image: NetworkImage(item.product.image ?? ''),
                                   fit: BoxFit.cover,
+                                  onError: (exception, stackTrace) {
+                                    // Handle image loading error silently
+                                  },
                                 ),
                               ),
+                              child: item.product.image == null || item.product.image!.isEmpty
+                                  ? const Icon(Icons.image_not_supported, color: Colors.grey)
+                                  : null,
                             ),
                             const SizedBox(width: 12),
                             Expanded(
@@ -154,11 +161,11 @@ class _CartScreenState extends State<CartScreen> {
                                       style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
-                                          color: Color(0xFFB71C1C))),
+                                          color: Color(0xFFB71C1C)),
                                   const SizedBox(height: 8),
                                   Row(
                                     children: [
-                                      const Text('الكمية: '),
+                                      Text('${AppLocalizations.of(context)!.quantity}: '),
                                       Container(
                                         decoration: BoxDecoration(
                                           border: Border.all(
@@ -241,7 +248,7 @@ class _CartScreenState extends State<CartScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('المجموع الفرعي:'),
+                          Text(AppLocalizations.of(context)!.subtotal),
                           Text('\$${subtotal.toStringAsFixed(2)}'),
                         ],
                       ),
@@ -249,9 +256,9 @@ class _CartScreenState extends State<CartScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('الشحن:'),
+                          Text(AppLocalizations.of(context)!.shipping),
                           Text(shipping == 0
-                              ? 'مجاني'
+                              ? AppLocalizations.of(context)!.free
                               : '\$${shipping.toStringAsFixed(2)}'),
                         ],
                       ),
@@ -259,14 +266,14 @@ class _CartScreenState extends State<CartScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('المجموع الكلي:',
+                          Text(AppLocalizations.of(context)!.total,
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.bold)),
                           Text('\$${total.toStringAsFixed(2)}',
                               style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFFB71C1C))),
+                                  color: Color(0xFFB71C1C)),
                         ],
                       ),
                       const SizedBox(height: 16),
@@ -286,7 +293,7 @@ class _CartScreenState extends State<CartScreen> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: const Text('متابعة للدفع',
+                          child: Text(AppLocalizations.of(context)!.proceedToCheckout,
                               style: TextStyle(fontSize: 16)),
                         ),
                       ),

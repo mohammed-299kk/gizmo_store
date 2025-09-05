@@ -33,7 +33,7 @@ class CategoryIconsRow extends StatelessWidget {
                     borderRadius: BorderRadius.circular(35),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
+                        color: Colors.grey.withValues(alpha: 0.2),
                         spreadRadius: 2,
                         blurRadius: 5,
                       ),
@@ -42,7 +42,7 @@ class CategoryIconsRow extends StatelessWidget {
                   child: Icon(
                     iconResolver(index),
                     size: 30,
-                    color: const Color(0xFFB71C1C),
+                    color: Color(0xFFB71C1C),
                   ),
                 ),
                 const SizedBox(height: 8),

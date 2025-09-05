@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
 import '../../models/product.dart';
 import '../../models/cart_item.dart';
 import '../../services/cart_service.dart';
@@ -11,12 +13,11 @@ class ProductDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cartService = Provider.of<CartService>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(product.name),
-        backgroundColor: const Color(0xFFB71C1C),
+        backgroundColor: Color(0xFFB71C1C),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -36,7 +37,7 @@ class ProductDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'السعر: \$${product.price.toStringAsFixed(2)}',
+              '${AppLocalizations.of(context)!.priceLabel}: \$${product.price.toStringAsFixed(2)}',
               style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -48,20 +49,20 @@ class ProductDetailScreen extends StatelessWidget {
                 CartService.addItem(CartItem(product: product));
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('${product.name} تمت إضافته إلى السلة'),
+                    content: Text('${product.name} ${AppLocalizations.of(context)!.addedToCart}'),
                     duration: const Duration(seconds: 1),
                   ),
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFB71C1C),
+                backgroundColor: Color(0xFFB71C1C),
                 foregroundColor: Colors.white,
                 minimumSize: const Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: const Text('إضافة للسلة'),
+              child: Text(AppLocalizations.of(context)!.addToCart),
             ),
           ],
         ),
@@ -75,22 +76,22 @@ class ProductDetailScreen extends StatelessWidget {
       return const Icon(Icons.image_not_supported,
           size: 200, color: Colors.grey);
     }
-    return Image.network(
-      imageUrl,
+    return CachedNetworkImage(
+      imageUrl: imageUrl,
       width: double.infinity,
       height: 200,
       fit: BoxFit.cover,
-      errorBuilder: (context, error, stackTrace) =>
-          const Icon(Icons.error, size: 200, color: Colors.grey),
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) return child;
-        return Container(
-          width: double.infinity,
-          height: 200,
-          alignment: Alignment.center,
-          child: const CircularProgressIndicator(strokeWidth: 2),
-        );
-      },
+      placeholder: (context, url) => Container(
+        width: double.infinity,
+        height: 200,
+        alignment: Alignment.center,
+        child: const CircularProgressIndicator(strokeWidth: 2),
+      ),
+      errorWidget: (context, url, error) => const Icon(
+        Icons.error,
+        size: 200,
+        color: Colors.grey,
+      ),
     );
   }
 }

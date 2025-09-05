@@ -38,12 +38,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // معلومات الشحن
-              const Text(
+              Text(
                 'معلومات الشحن',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF212121),
+                  color: Theme.of(context).textTheme.headlineSmall?.color,
                 ),
               ),
               const SizedBox(height: 16),
@@ -122,12 +122,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               const SizedBox(height: 30),
 
               // طريقة الدفع
-              const Text(
+              Text(
                 'طريقة الدفع',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF212121),
+                  color: Theme.of(context).textTheme.headlineSmall?.color,
                 ),
               ),
               const SizedBox(height: 16),
@@ -142,7 +142,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           _selectedPaymentMethod = value!;
                         });
                       },
-                      activeColor: const Color(0xFFB71C1C),
+                      activeColor: Theme.of(context).colorScheme.primary,
                     ),
                   )
                   .toList()),
@@ -153,7 +153,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.grey[100],
+                  color: Theme.of(context).cardTheme.color,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Column(
@@ -164,7 +164,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF212121),
+                        color: Theme.of(context).textTheme.titleLarge?.color,
                       ),
                     ),
                     SizedBox(height: 12),
@@ -198,7 +198,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFFB71C1C),
+                            color: Theme.of(context).colorScheme.primary,
                           ),
                         ),
                       ],

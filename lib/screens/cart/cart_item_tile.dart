@@ -8,6 +8,24 @@ class CartItemTile extends StatelessWidget {
 
   const CartItemTile({super.key, required this.cartItem});
 
+  String _formatPrice(double price) {
+    String priceStr = price.toStringAsFixed(2);
+    List<String> parts = priceStr.split('.');
+    String integerPart = parts[0];
+    String decimalPart = parts[1];
+    
+    // Add thousand separators
+    String formattedInteger = '';
+    for (int i = 0; i < integerPart.length; i++) {
+      if (i > 0 && (integerPart.length - i) % 3 == 0) {
+        formattedInteger += ',';
+      }
+      formattedInteger += integerPart[i];
+    }
+    
+    return '$formattedInteger.$decimalPart';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -15,7 +33,7 @@ class CartItemTile extends StatelessWidget {
       child: ListTile(
         leading: const Icon(Icons.shopping_bag),
         title: Text(cartItem.product.name),
-        subtitle: Text('السعر: \$${cartItem.product.price.toStringAsFixed(2)}'),
+        subtitle: Text('السعر: \$${_formatPrice(cartItem.product.price)}'),
         trailing: SizedBox(
           width: 120,
           child: Row(

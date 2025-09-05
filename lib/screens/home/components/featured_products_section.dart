@@ -1,5 +1,7 @@
 // lib/screens/home/components/featured_products_section.dart
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
 import 'package:gizmo_store/models/product.dart';
 import 'package:gizmo_store/screens/home/components/product_card.dart';
 import 'package:gizmo_store/screens/product_detail_screen.dart';
@@ -89,31 +91,26 @@ class FeaturedProductsSection extends StatelessWidget {
                     width: double.infinity,
                     color: Colors.grey[100],
                     child: product.image != null && product.image!.isNotEmpty
-                        ? Image.network(
-                            product.image!,
+                        ? CachedNetworkImage(
+                            imageUrl: product.image!,
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                color: Colors.grey[200],
-                                child: const Icon(
-                                  Icons.image_not_supported,
-                                  color: Colors.grey,
-                                  size: 40,
+                            placeholder: (context, url) => Container(
+                              color: Colors.grey[200],
+                              child: const Center(
+                                child: CircularProgressIndicator(
+                                  color: Color(0xFFB71C1C),
+                                  strokeWidth: 2,
                                 ),
-                              );
-                            },
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Container(
-                                color: Colors.grey[200],
-                                child: const Center(
-                                  child: CircularProgressIndicator(
-                                    color: Color(0xFFB71C1C),
-                                    strokeWidth: 2,
-                                  ),
-                                ),
-                              );
-                            },
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => Container(
+                              color: Colors.grey[200],
+                              child: const Icon(
+                                Icons.image_not_supported,
+                                color: Colors.grey,
+                                size: 40,
+                              ),
+                            ),
                           )
                         : const Icon(
                             Icons.image_not_supported,
@@ -195,7 +192,7 @@ class FeaturedProductsSection extends StatelessWidget {
                       children: [
                         if (product.originalPrice != null)
                           Text(
-                            '${product.originalPrice!.toStringAsFixed(0)} جنيه',
+                            '${product.originalPrice!.toStringAsFixed(0)} ${AppLocalizations.of(context)!.currency}',
                             style: TextStyle(
                               color: Colors.grey[500],
                               fontSize: 9,
@@ -203,7 +200,7 @@ class FeaturedProductsSection extends StatelessWidget {
                             ),
                           ),
                         Text(
-                          '${product.price.toStringAsFixed(0)} جنيه',
+                          '${product.price.toStringAsFixed(0)} ${AppLocalizations.of(context)!.currency}',
                           style: const TextStyle(
                             color: Color(0xFFB71C1C),
                             fontWeight: FontWeight.bold,
@@ -213,7 +210,7 @@ class FeaturedProductsSection extends StatelessWidget {
                         const SizedBox(height: 2),
                         // عنوان الخرطوم وتاريخ هذا الشهر
                         Text(
-                          'الخرطوم - ديسمبر 2024',
+                          AppLocalizations.of(context)!.locationAndDate,
                           style: TextStyle(
                             color: Colors.grey[600],
                             fontSize: 8,

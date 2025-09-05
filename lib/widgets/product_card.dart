@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../models/product.dart';
 import '../screens/product/product_detail_screen.dart';
 
@@ -24,7 +25,7 @@ class ProductCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withValues(alpha: 0.2),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -47,23 +48,23 @@ class ProductCard extends StatelessWidget {
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.2),
+          color: Colors.black.withValues(alpha: 0.2),
           borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
         ),
         child: ClipRRect(
           borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
           child: product.image != null && product.image!.isNotEmpty
-              ? Image.network(
-                  product.image!,
+              ? CachedNetworkImage(
+                  imageUrl: product.image!,
                   fit: BoxFit.cover,
-                  loadingBuilder: (context, child, progress) {
-                    return progress == null
-                        ? child
-                        : const Center(child: CircularProgressIndicator(color: Color(0xFFB71C1C)));
-                  },
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Icon(Icons.broken_image, size: 40, color: Colors.white38);
-                  },
+                  placeholder: (context, url) => const Center(
+                    child: CircularProgressIndicator(color: Color(0xFFB71C1C)),
+                  ),
+                  errorWidget: (context, url, error) => const Icon(
+                    Icons.broken_image,
+                    size: 40,
+                    color: Colors.white38,
+                  ),
                 )
               : const Icon(Icons.shopping_bag_outlined, size: 40, color: Colors.white38),
         ),

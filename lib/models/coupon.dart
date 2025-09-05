@@ -1,4 +1,7 @@
 // lib/models/coupon.dart
+import 'package:flutter/material.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
+
 enum CouponType {
   percentage,  // نسبة مئوية
   fixed,       // مبلغ ثابت
@@ -13,6 +16,18 @@ enum CouponStatus {
 }
 
 class Coupon {
+  /// Safe conversion to double with error handling
+  static double _safeToDouble(dynamic value) {
+    if (value == null) return 0.0;
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
+    if (value is String) {
+      final parsed = double.tryParse(value);
+      return parsed ?? 0.0;
+    }
+    return 0.0;
+  }
+  
   final String id;
   final String code;
   final String title;
@@ -85,10 +100,10 @@ class Coupon {
         (type) => type.name == map['type'],
         orElse: () => CouponType.percentage,
       ),
-      value: (map['value'] ?? 0.0).toDouble(),
-      minOrderAmount: (map['minOrderAmount'] ?? 0.0).toDouble(),
+      value: _safeToDouble(map['value']),
+      minOrderAmount: _safeToDouble(map['minOrderAmount']),
       maxDiscount: map['maxDiscount'] != null 
-          ? (map['maxDiscount'] as num).toDouble()
+          ? _safeToDouble(map['maxDiscount'])
           : double.infinity,
       startDate: DateTime.parse(map['startDate'] ?? DateTime.now().toIso8601String()),
       endDate: DateTime.parse(map['endDate'] ?? DateTime.now().add(const Duration(days: 30)).toIso8601String()),
@@ -125,28 +140,30 @@ class Coupon {
   }
 
   // الحصول على نص نوع الكوبون
-  String get typeText {
+  String getTypeText(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     switch (type) {
       case CouponType.percentage:
-        return 'خصم ${value.toInt()}%';
+        return localizations.couponTypePercentage(value.toInt());
       case CouponType.fixed:
-        return 'خصم ${value.toStringAsFixed(0)} جنيه';
+        return localizations.couponTypeFixed(value.toStringAsFixed(0));
       case CouponType.freeShipping:
-        return 'شحن مجاني';
+        return localizations.couponTypeFreeShipping;
     }
   }
 
   // الحصول على نص الحالة
-  String get statusText {
+  String getStatusText(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     switch (status) {
       case CouponStatus.active:
-        return 'نشط';
+        return localizations.couponStatusActive;
       case CouponStatus.expired:
-        return 'منتهي الصلاحية';
+        return localizations.couponStatusExpired;
       case CouponStatus.used:
-        return 'مستخدم';
+        return localizations.couponStatusUsed;
       case CouponStatus.disabled:
-        return 'معطل';
+        return localizations.couponStatusDisabled;
     }
   }
 

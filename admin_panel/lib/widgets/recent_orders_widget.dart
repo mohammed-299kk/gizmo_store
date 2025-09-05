@@ -131,7 +131,7 @@ class _RecentOrdersWidgetState extends State<RecentOrdersWidget> {
       case 'pending':
         return Colors.orange;
       case 'shipped':
-        return Colors.blue;
+        return Color(0xFFB71C1C);
       case 'delivered':
         return Colors.green;
       case 'canceled':

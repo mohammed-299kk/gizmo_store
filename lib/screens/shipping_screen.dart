@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 
 class ShippingScreen extends StatelessWidget {
   const ShippingScreen({super.key});
@@ -8,23 +9,23 @@ class ShippingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('الشحن'),
+        title: Text(AppLocalizations.of(context)!.shipping),
       ),
       body: ListView(
         children: [
           ListTile(
-            title: const Text('الشحن العادي'),
-            subtitle: const Text('يستغرق من 5-7 أيام عمل'),
+            title: Text(AppLocalizations.of(context)!.standardShipping),
+            subtitle: Text(AppLocalizations.of(context)!.standardShippingDesc),
             trailing: Radio(value: 'standard', groupValue: 'shipping', onChanged: (value) {}),
           ),
           ListTile(
-            title: const Text('الشحن السريع'),
-            subtitle: const Text('يستغرق من 2-3 أيام عمل'),
+            title: Text(AppLocalizations.of(context)!.expressShipping),
+            subtitle: Text(AppLocalizations.of(context)!.expressShippingDesc),
             trailing: Radio(value: 'express', groupValue: 'shipping', onChanged: (value) {}),
           ),
           ListTile(
-            title: const Text('الشحن في نفس اليوم'),
-            subtitle: const Text('يصلك طلبك في نفس اليوم'),
+            title: Text(AppLocalizations.of(context)!.sameDayShipping),
+            subtitle: Text(AppLocalizations.of(context)!.sameDayShippingDesc),
             trailing: Radio(value: 'same_day', groupValue: 'shipping', onChanged: (value) {}),
           ),
         ],

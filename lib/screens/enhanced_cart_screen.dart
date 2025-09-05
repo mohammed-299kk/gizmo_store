@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/cart_service.dart';
 import '../models/cart_item.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
 
 class EnhancedCartScreen extends StatefulWidget {
   const EnhancedCartScreen({super.key});
@@ -29,8 +30,8 @@ class _EnhancedCartScreenState extends State<EnhancedCartScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFF1A1A1A),
       appBar: AppBar(
-        title: const Text('سلة التسوق'),
-        backgroundColor: const Color(0xFFB71C1C),
+        title: Text(AppLocalizations.of(context)!.cart),
+        backgroundColor: Color(0xFFB71C1C),
         foregroundColor: Colors.white,
         centerTitle: true,
         actions: [
@@ -38,7 +39,7 @@ class _EnhancedCartScreenState extends State<EnhancedCartScreen> {
             IconButton(
               icon: const Icon(Icons.delete_sweep),
               onPressed: _showClearCartDialog,
-              tooltip: 'مسح السلة',
+              tooltip: AppLocalizations.of(context)!.clearCart,
             ),
         ],
       ),
@@ -70,8 +71,8 @@ class _EnhancedCartScreenState extends State<EnhancedCartScreen> {
             color: Colors.white.withValues(alpha: 0.3),
           ),
           const SizedBox(height: 30),
-          const Text(
-            'سلة التسوق فارغة',
+          Text(
+            AppLocalizations.of(context)!.cartEmpty,
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -79,8 +80,8 @@ class _EnhancedCartScreenState extends State<EnhancedCartScreen> {
             ),
           ),
           const SizedBox(height: 15),
-          const Text(
-            'ابدأ بإضافة منتجات إلى سلتك',
+          Text(
+            AppLocalizations.of(context)!.startAddingProducts,
             style: TextStyle(
               fontSize: 16,
               color: Colors.white70,
@@ -90,15 +91,15 @@ class _EnhancedCartScreenState extends State<EnhancedCartScreen> {
           ElevatedButton(
             onPressed: () => Navigator.pop(context),
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFB71C1C),
+              backgroundColor: Color(0xFFB71C1C),
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(25),
               ),
             ),
-            child: const Text(
-              'تصفح المنتجات',
+            child: Text(
+              AppLocalizations.of(context)!.browseProducts,
               style: TextStyle(fontSize: 16),
             ),
           ),
@@ -138,12 +139,12 @@ class _EnhancedCartScreenState extends State<EnhancedCartScreen> {
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            // صورة المنتج
+            // Product image
             Container(
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: const Color(0xFFB71C1C).withValues(alpha: 0.1),
+                color: Color(0xFFB71C1C).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
@@ -154,7 +155,7 @@ class _EnhancedCartScreenState extends State<EnhancedCartScreen> {
             ),
             const SizedBox(width: 16),
             
-            // معلومات المنتج
+            // Product information
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,7 +172,7 @@ class _EnhancedCartScreenState extends State<EnhancedCartScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '${item.product.price.toStringAsFixed(2)} ر.س',
+                    '${item.product.price.toStringAsFixed(2)} ${AppLocalizations.of(context)!.currency}',
                     style: const TextStyle(
                       fontSize: 16,
                       color: Color(0xFFB71C1C),
@@ -180,7 +181,7 @@ class _EnhancedCartScreenState extends State<EnhancedCartScreen> {
                   ),
                   const SizedBox(height: 12),
                   
-                  // أزرار التحكم في الكمية
+                  // Quantity control buttons
                   Row(
                     children: [
                       _buildQuantityButton(
@@ -212,14 +213,14 @@ class _EnhancedCartScreenState extends State<EnhancedCartScreen> {
                       ),
                       const Spacer(),
                       
-                      // زر الحذف
+                      // Delete button
                       IconButton(
                         onPressed: () => _removeItem(item.product.id),
                         icon: const Icon(
                           Icons.delete_outline,
                           color: Colors.red,
                         ),
-                        tooltip: 'حذف',
+                        tooltip: AppLocalizations.of(context)!.delete,
                       ),
                     ],
                   ),
@@ -227,12 +228,12 @@ class _EnhancedCartScreenState extends State<EnhancedCartScreen> {
               ),
             ),
             
-            // السعر الإجمالي
+            // Total price
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                const Text(
-                  'المجموع',
+                Text(
+                    AppLocalizations.of(context)!.total,
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.white70,
@@ -240,7 +241,7 @@ class _EnhancedCartScreenState extends State<EnhancedCartScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '${item.totalPrice.toStringAsFixed(2)} ر.س',
+                  '${item.totalPrice.toStringAsFixed(2)} ${AppLocalizations.of(context)!.currency}',
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -263,7 +264,7 @@ class _EnhancedCartScreenState extends State<EnhancedCartScreen> {
       width: 36,
       height: 36,
       decoration: BoxDecoration(
-        color: const Color(0xFFB71C1C),
+        color: Color(0xFFB71C1C),
         borderRadius: BorderRadius.circular(8),
       ),
       child: IconButton(
@@ -289,12 +290,12 @@ class _EnhancedCartScreenState extends State<EnhancedCartScreen> {
       ),
       child: Column(
         children: [
-          _buildSummaryRow('المجموع الفرعي', summary['subtotal']),
-          _buildSummaryRow('الضرائب (15%)', summary['tax']),
-          _buildSummaryRow('الشحن', summary['shipping']),
+          _buildSummaryRow(AppLocalizations.of(context)!.subtotal, summary['subtotal']),
+          _buildSummaryRow(AppLocalizations.of(context)!.taxLabel, summary['tax']),
+          _buildSummaryRow(AppLocalizations.of(context)!.shippingLabel, summary['shipping']),
           const Divider(color: Colors.white24, height: 30),
           _buildSummaryRow(
-            'المجموع النهائي',
+            AppLocalizations.of(context)!.finalTotal,
             summary['total'],
             isTotal: true,
           ),
@@ -305,7 +306,7 @@ class _EnhancedCartScreenState extends State<EnhancedCartScreen> {
             child: ElevatedButton(
               onPressed: _proceedToCheckout,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFB71C1C),
+                backgroundColor: Color(0xFFB71C1C),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
@@ -313,8 +314,8 @@ class _EnhancedCartScreenState extends State<EnhancedCartScreen> {
                 ),
                 elevation: 3,
               ),
-              child: const Text(
-                'متابعة الدفع',
+              child: Text(
+                AppLocalizations.of(context)!.proceedToCheckout,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -342,11 +343,11 @@ class _EnhancedCartScreenState extends State<EnhancedCartScreen> {
             ),
           ),
           Text(
-            '${amount.toStringAsFixed(2)} ر.س',
+            '${amount.toStringAsFixed(2)} ${AppLocalizations.of(context)!.currency}',
             style: TextStyle(
               fontSize: isTotal ? 18 : 16,
               fontWeight: isTotal ? FontWeight.bold : FontWeight.w600,
-              color: isTotal ? const Color(0xFFB71C1C) : Colors.white,
+              color: isTotal ? Color(0xFFB71C1C) : Colors.white,
             ),
           ),
         ],
@@ -369,8 +370,8 @@ class _EnhancedCartScreenState extends State<EnhancedCartScreen> {
     setState(() {});
     
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('تم حذف المنتج من السلة'),
+      SnackBar(
+        content: Text(AppLocalizations.of(context)!.productRemovedFromCart),
         backgroundColor: Colors.green,
       ),
     );
@@ -381,19 +382,19 @@ class _EnhancedCartScreenState extends State<EnhancedCartScreen> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xFF2A2A2A),
-        title: const Text(
-          'مسح السلة',
+        title: Text(
+          AppLocalizations.of(context)!.clearCart,
           style: TextStyle(color: Colors.white),
         ),
-        content: const Text(
-          'هل أنت متأكد من مسح جميع المنتجات من السلة؟',
+        content: Text(
+          AppLocalizations.of(context)!.confirmClearCart,
           style: TextStyle(color: Colors.white70),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text(
-              'إلغاء',
+            child: Text(
+              AppLocalizations.of(context)!.cancel,
               style: TextStyle(color: Colors.white70),
             ),
           ),
@@ -404,8 +405,8 @@ class _EnhancedCartScreenState extends State<EnhancedCartScreen> {
               setState(() {});
               
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('تم مسح السلة بنجاح'),
+                SnackBar(
+                  content: Text(AppLocalizations.of(context)!.cartClearedSuccessfully),
                   backgroundColor: Colors.green,
                 ),
               );
@@ -414,7 +415,7 @@ class _EnhancedCartScreenState extends State<EnhancedCartScreen> {
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
             ),
-            child: const Text('مسح'),
+            child: Text(AppLocalizations.of(context)!.clear),
           ),
         ],
       ),
@@ -423,8 +424,8 @@ class _EnhancedCartScreenState extends State<EnhancedCartScreen> {
 
   void _proceedToCheckout() {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('صفحة الدفع ستتوفر قريباً!'),
+      SnackBar(
+        content: Text(AppLocalizations.of(context)!.checkoutComingSoon),
         backgroundColor: Color(0xFFB71C1C),
       ),
     );

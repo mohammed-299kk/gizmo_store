@@ -113,7 +113,7 @@ class _FirebaseConnectionTestState extends State<FirebaseConnectionTest> {
   Future<void> _addSampleData() async {
     try {
       final sampleDataService = SampleDataService();
-      await sampleDataService.addAllSampleData();
+      await sampleDataService.addAllSampleData(context);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -143,7 +143,7 @@ class _FirebaseConnectionTestState extends State<FirebaseConnectionTest> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('اختبار اتصال Firebase'),
-        backgroundColor: const Color(0xFFB71C1C),
+        backgroundColor: Color(0xFFB71C1C),
         foregroundColor: Colors.white,
       ),
       body: Padding(
@@ -199,7 +199,7 @@ class _FirebaseConnectionTestState extends State<FirebaseConnectionTest> {
                   ElevatedButton(
                     onPressed: _addSampleData,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFB71C1C),
+                      backgroundColor: Color(0xFFB71C1C),
                       foregroundColor: Colors.white,
                     ),
                     child: const Text('إضافة بيانات تجريبية'),

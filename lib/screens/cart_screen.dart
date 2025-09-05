@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/cart_item.dart';
 import '../models/order.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
+import 'checkout_screen.dart';
 
 class CartScreen extends StatefulWidget {
   final List<CartItem> cartItems;
@@ -22,16 +24,27 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   void _checkout() {
-    // يمكن الانتقال لشاشة الدفع لاحقًا
-    Navigator.pushNamed(context, '/checkout', arguments: widget.cartItems);
+    if (widget.cartItems.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.cartEmpty)),
+      );
+      return;
+    }
+    
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CheckoutScreen(cartItems: widget.cartItems),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('سلة المشتريات')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.shoppingCart)),
       body: widget.cartItems.isEmpty
-          ? const Center(child: Text('السلة فارغة'))
+          ? Center(child: Text(AppLocalizations.of(context)!.cartEmpty))
           : Column(
               children: [
                 Expanded(
@@ -42,7 +55,7 @@ class _CartScreenState extends State<CartScreen> {
                       return ListTile(
                         title: Text(item.product.name),
                         subtitle: Text(
-                            'الكمية: ${item.quantity} - \$${item.totalPrice}'),
+                            '${AppLocalizations.of(context)!.quantity}: ${item.quantity} - ${item.product.currency}${item.totalPrice.toStringAsFixed(2)}'),
                         trailing: IconButton(
                           icon: const Icon(Icons.delete),
                           onPressed: () => _removeItem(index),
@@ -55,11 +68,16 @@ class _CartScreenState extends State<CartScreen> {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      Text('المجموع: \$${totalPrice.toStringAsFixed(2)}'),
+                      Text('${AppLocalizations.of(context)!.total}: ${widget.cartItems.isNotEmpty ? widget.cartItems.first.product.currency : ''}${totalPrice.toStringAsFixed(2)}'),
                       const SizedBox(height: 12),
                       ElevatedButton(
-                        onPressed: _checkout,
-                        child: const Text('الدفع'),
+                        onPressed: widget.cartItems.isNotEmpty ? _checkout : null,
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(double.infinity, 50),
+                          backgroundColor: Theme.of(context).primaryColor,
+                          foregroundColor: Colors.white,
+                        ),
+                        child: Text(AppLocalizations.of(context)!.checkout),
                       ),
                     ],
                   ),

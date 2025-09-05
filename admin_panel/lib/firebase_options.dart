@@ -41,48 +41,48 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'YOUR_WEB_API_KEY',
-    appId: 'YOUR_WEB_APP_ID',
-    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
-    projectId: 'YOUR_PROJECT_ID',
-    authDomain: 'YOUR_PROJECT_ID.firebaseapp.com',
-    storageBucket: 'YOUR_PROJECT_ID.appspot.com',
-    measurementId: 'YOUR_MEASUREMENT_ID',
+    apiKey: 'AIzaSyAo4-Ge1dC4LnIyG_wUjYgWc9KHCxEYUxM',
+    appId: '1:32902740595:web:7de8f1273a64f9f28fc806',
+    messagingSenderId: '32902740595',
+    projectId: 'gizmostore-2a3ff',
+    authDomain: 'gizmostore-2a3ff.firebaseapp.com',
+    storageBucket: 'gizmostore-2a3ff.firebasestorage.app',
+    measurementId: 'G-WF0Z8EKYMX',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'YOUR_ANDROID_API_KEY',
-    appId: 'YOUR_ANDROID_APP_ID',
-    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
-    projectId: 'YOUR_PROJECT_ID',
-    storageBucket: 'YOUR_PROJECT_ID.appspot.com',
+    apiKey: 'AIzaSyA_iLiUfhwwkgcWjnM_mUqiKrmotqtdoX0',
+    appId: '1:32902740595:android:bec80d1f18d70dfb8fc806',
+    messagingSenderId: '32902740595',
+    projectId: 'gizmostore-2a3ff',
+    storageBucket: 'gizmostore-2a3ff.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'YOUR_IOS_API_KEY',
-    appId: 'YOUR_IOS_APP_ID',
-    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
-    projectId: 'YOUR_PROJECT_ID',
-    storageBucket: 'YOUR_PROJECT_ID.appspot.com',
-    iosBundleId: 'com.example.gizmoStoreAdmin',
+    apiKey: 'AIzaSyA_iLiUfhwwkgcWjnM_mUqiKrmotqtdoX0',
+    appId: '1:32902740595:ios:bec80d1f18d70dfb8fc806',
+    messagingSenderId: '32902740595',
+    projectId: 'gizmostore-2a3ff',
+    storageBucket: 'gizmostore-2a3ff.firebasestorage.app',
+    iosBundleId: 'com.example.gizmoStore',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'YOUR_MACOS_API_KEY',
-    appId: 'YOUR_MACOS_APP_ID',
-    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
-    projectId: 'YOUR_PROJECT_ID',
-    storageBucket: 'YOUR_PROJECT_ID.appspot.com',
-    iosBundleId: 'com.example.gizmoStoreAdmin',
+    apiKey: 'AIzaSyA_iLiUfhwwkgcWjnM_mUqiKrmotqtdoX0',
+    appId: '1:32902740595:ios:bec80d1f18d70dfb8fc806',
+    messagingSenderId: '32902740595',
+    projectId: 'gizmostore-2a3ff',
+    storageBucket: 'gizmostore-2a3ff.firebasestorage.app',
+    iosBundleId: 'com.example.gizmoStore',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'YOUR_WINDOWS_API_KEY',
-    appId: 'YOUR_WINDOWS_APP_ID',
-    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
-    projectId: 'YOUR_PROJECT_ID',
-    authDomain: 'YOUR_PROJECT_ID.firebaseapp.com',
-    storageBucket: 'YOUR_PROJECT_ID.appspot.com',
-    measurementId: 'YOUR_MEASUREMENT_ID',
+    apiKey: 'AIzaSyAo4-Ge1dC4LnIyG_wUjYgWc9KHCxEYUxM',
+    appId: '1:32902740595:web:7de8f1273a64f9f28fc806',
+    messagingSenderId: '32902740595',
+    projectId: 'gizmostore-2a3ff',
+    authDomain: 'gizmostore-2a3ff.firebaseapp.com',
+    storageBucket: 'gizmostore-2a3ff.firebasestorage.app',
+    measurementId: 'G-WF0Z8EKYMX',
   );
 }

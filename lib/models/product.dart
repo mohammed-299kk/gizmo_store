@@ -1,4 +1,7 @@
 // lib/models/product.dart
+import 'package:flutter/material.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
+
 class Product {
   final String id;
   final String name;
@@ -16,6 +19,7 @@ class Product {
   final bool featured;
   final String currency;
   final String location;
+  final int? stock;
 
   Product({
     required this.id,
@@ -32,8 +36,9 @@ class Product {
     this.specifications,
     this.reviews,
     this.featured = false,
-    this.currency = 'جنيه سوداني',
-    this.location = 'الخرطوم، السودان',
+    this.currency = '',
+    this.location = '',
+    this.stock,
   });
 
   // تحويل من Map إلى Product
@@ -55,8 +60,9 @@ class Product {
           ?.map((e) => Map<String, dynamic>.from(e))
           .toList(),
       featured: map['featured'] ?? false,
-      currency: map['currency'] ?? 'جنيه سوداني',
-      location: map['location'] ?? 'الخرطوم، السودان',
+      currency: map['currency'] ?? '',
+      location: map['location'] ?? '',
+      stock: map['stock'],
     );
   }
 
@@ -78,6 +84,7 @@ class Product {
       'featured': featured,
       'currency': currency,
       'location': location,
+      'stock': stock,
     };
   }
 }

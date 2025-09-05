@@ -1,0 +1,16 @@
+{
+  "name": "firebase-admin-tools",
+  "version": "1.0.0",
+  "description": "Firebase admin user management tools",
+  "main": "create_admin_user.js",
+  "scripts": {
+    "create-admin": "node create_admin_user.js",
+    "verify-admin": "node verify_admin_user.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.0.0"
+  },
+  "keywords": ["firebase", "admin", "authentication"],
+  "author": "Gizmo Store",
+  "license": "MIT"
+}

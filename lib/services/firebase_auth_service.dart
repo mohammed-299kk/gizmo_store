@@ -1,21 +1,24 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
 
 class FirebaseAuthService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // الحصول على المستخدم الحالي
+  // Get current user
   static User? get currentUser => _auth.currentUser;
 
-  // تدفق حالة المصادقة
+  // Authentication state stream
   static Stream<User?> get authStateChanges => _auth.authStateChanges();
 
-  // تسجيل الدخول بالبريد الإلكتروني وكلمة المرور
+  // Login with email and password
   static Future<UserCredential?> signInWithEmailAndPassword({
     required String email,
     required String password,
+    required BuildContext context,
   }) async {
     try {
       final credential = await _auth.signInWithEmailAndPassword(
@@ -23,20 +26,21 @@ class FirebaseAuthService {
         password: password,
       );
       
-      // تحديث آخر تسجيل دخول
+      // Update last login
       if (credential.user != null) {
-        await _updateUserLastLogin(credential.user!.uid);
+        await _updateUserLastLogin(credential.user!.uid, context);
       }
       
       return credential;
     } on FirebaseAuthException catch (e) {
-      throw _handleAuthException(e);
+      throw _handleAuthException(e, context);
     } catch (e) {
-      throw Exception('حدث خطأ غير متوقع: $e');
+      final localizations = AppLocalizations.of(context)!;
+      throw Exception('${localizations.unexpectedError}: $e');
     }
   }
 
-  // إنشاء حساب جديد
+  // Create new account
   static Future<UserCredential?> createUserWithEmailAndPassword({
     required String email,
     required String password,
@@ -44,6 +48,7 @@ class FirebaseAuthService {
     String? firstName,
     String? middleName,
     String? lastName,
+    required BuildContext context,
   }) async {
     try {
       final credential = await _auth.createUserWithEmailAndPassword(
@@ -52,10 +57,10 @@ class FirebaseAuthService {
       );
 
       if (credential.user != null) {
-        // تحديث اسم المستخدم
+        // Update username
         await credential.user!.updateDisplayName(name);
 
-        // إنشاء ملف المستخدم في Firestore
+        // Create user profile in Firestore
         await _createUserProfile(
           uid: credential.user!.uid,
           email: email,
@@ -63,52 +68,57 @@ class FirebaseAuthService {
           firstName: firstName,
           middleName: middleName,
           lastName: lastName,
+          context: context,
         );
       }
 
       return credential;
     } on FirebaseAuthException catch (e) {
-      throw _handleAuthException(e);
+      throw _handleAuthException(e, context);
     } catch (e) {
-      throw Exception('حدث خطأ غير متوقع: $e');
+      final localizations = AppLocalizations.of(context)!;
+      throw Exception('${localizations.unexpectedError}: $e');
     }
   }
 
-  // تسجيل الدخول كضيف
-  static Future<UserCredential?> signInAnonymously() async {
+  // Sign in as guest
+  static Future<UserCredential?> signInAnonymously(BuildContext context) async {
     try {
       final credential = await _auth.signInAnonymously();
       
       if (credential.user != null) {
-        // إنشاء ملف ضيف في Firestore
-        await _createGuestProfile(credential.user!.uid);
+        // Create guest profile in Firestore
+        await _createGuestProfile(credential.user!.uid, context);
       }
       
       return credential;
     } on FirebaseAuthException catch (e) {
-      throw _handleAuthException(e);
+      throw _handleAuthException(e, context);
     } catch (e) {
-      throw Exception('حدث خطأ غير متوقع: $e');
+      final localizations = AppLocalizations.of(context)!;
+      throw Exception('${localizations.unexpectedError}: $e');
     }
   }
 
-  // تسجيل الخروج
-  static Future<void> signOut() async {
+  // Sign out
+  static Future<void> signOut(BuildContext context) async {
     try {
       await _auth.signOut();
     } catch (e) {
-      throw Exception('فشل في تسجيل الخروج: $e');
+      final localizations = AppLocalizations.of(context)!;
+      throw Exception('${localizations.signOutFailed}: $e');
     }
   }
 
-  // إرسال رابط إعادة تعيين كلمة المرور
-  static Future<void> sendPasswordResetEmail(String email) async {
+  // Send password reset email
+  static Future<void> sendPasswordResetEmail(String email, BuildContext context) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (e) {
-      throw _handleAuthException(e);
+      throw _handleAuthException(e, context);
     } catch (e) {
-      throw Exception('فشل في إرسال رابط إعادة التعيين: $e');
+      final localizations = AppLocalizations.of(context)!;
+      throw Exception('${localizations.passwordResetFailed}: $e');
     }
   }
 
@@ -120,6 +130,7 @@ class FirebaseAuthService {
     String? firstName,
     String? middleName,
     String? lastName,
+    required BuildContext context,
   }) async {
     try {
       await _firestore.collection('users').doc(uid).set({
@@ -152,18 +163,19 @@ class FirebaseAuthService {
         }
       });
     } catch (e) {
-      // Use debugPrint instead of print for production
-      debugPrint('خطأ في إنشاء ملف المستخدم: $e');
+      final localizations = AppLocalizations.of(context)!;
+      debugPrint('${localizations.errorCreatingUserProfile}: $e');
     }
   }
 
-  // إنشاء ملف الضيف في Firestore
-  static Future<void> _createGuestProfile(String uid) async {
+  // Create guest profile in Firestore
+  static Future<void> _createGuestProfile(String uid, BuildContext context) async {
     try {
+      final localizations = AppLocalizations.of(context)!;
       await _firestore.collection('users').doc(uid).set({
         'uid': uid,
         'email': null,
-        'name': 'ضيف',
+        'name': localizations.guestName,
         'userType': 'guest',
         'createdAt': FieldValue.serverTimestamp(),
         'lastLoginAt': FieldValue.serverTimestamp(),
@@ -174,76 +186,85 @@ class FirebaseAuthService {
           'theme': 'dark',
         },
         'stats': {
+          'totalOrders': 0,
+          'totalSpent': 0,
+          'favoriteProducts': [],
           'cartItems': [],
         }
       });
     } catch (e) {
-      debugPrint('خطأ في إنشاء ملف الضيف: $e');
+      final localizations = AppLocalizations.of(context)!;
+      debugPrint('${localizations.errorCreatingGuestProfile}: $e');
     }
   }
 
-  // تحديث آخر تسجيل دخول
-  static Future<void> _updateUserLastLogin(String uid) async {
+  // Update last login
+  static Future<void> _updateUserLastLogin(String uid, BuildContext context) async {
     try {
       await _firestore.collection('users').doc(uid).update({
         'lastLoginAt': FieldValue.serverTimestamp(),
       });
     } catch (e) {
-      debugPrint('خطأ في تحديث آخر تسجيل دخول: $e');
+      final localizations = AppLocalizations.of(context)!;
+      debugPrint('${localizations.errorUpdatingLastLogin}: $e');
     }
   }
 
-  // الحصول على بيانات المستخدم من Firestore
-  static Future<Map<String, dynamic>?> getUserData(String uid) async {
+  // Get user data from Firestore
+  static Future<Map<String, dynamic>?> getUserData(String uid, BuildContext context) async {
     try {
       final doc = await _firestore.collection('users').doc(uid).get();
       return doc.exists ? doc.data() : null;
     } catch (e) {
-      debugPrint('خطأ في جلب بيانات المستخدم: $e');
+      final localizations = AppLocalizations.of(context)!;
+      debugPrint('${localizations.errorFetchingUserData}: $e');
       return null;
     }
   }
 
-  // تحديث بيانات المستخدم
-  static Future<void> updateUserData(String uid, Map<String, dynamic> data) async {
+  // Update user data
+  static Future<void> updateUserData(String uid, Map<String, dynamic> data, BuildContext context) async {
     try {
       await _firestore.collection('users').doc(uid).update(data);
     } catch (e) {
-      throw Exception('فشل في تحديث البيانات: $e');
+      final localizations = AppLocalizations.of(context)!;
+      throw Exception('${localizations.dataUpdateFailed}: $e');
     }
   }
 
-  // معالجة أخطاء Firebase Auth
-  static String _handleAuthException(FirebaseAuthException e) {
+  // Handle Firebase Auth exceptions
+  static Exception _handleAuthException(FirebaseAuthException e, BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+    
     switch (e.code) {
       case 'user-not-found':
-        return 'لا يوجد مستخدم بهذا البريد الإلكتروني';
+        return Exception(localizations.userNotFound);
       case 'wrong-password':
-        return 'كلمة المرور غير صحيحة';
+        return Exception(localizations.wrongPassword);
       case 'email-already-in-use':
-        return 'البريد الإلكتروني مستخدم بالفعل';
+        return Exception(localizations.emailAlreadyInUse);
       case 'weak-password':
-        return 'كلمة المرور ضعيفة جداً';
+        return Exception(localizations.weakPassword);
       case 'invalid-email':
-        return 'البريد الإلكتروني غير صحيح';
+        return Exception(localizations.invalidEmail);
       case 'user-disabled':
-        return 'تم تعطيل هذا الحساب';
+        return Exception(localizations.userDisabled);
       case 'too-many-requests':
-        return 'محاولات كثيرة جداً. حاول لاحقاً';
+        return Exception(localizations.tooManyRequests);
       case 'operation-not-allowed':
-        return 'هذه العملية غير مسموحة';
+        return Exception(localizations.operationNotAllowed);
       case 'invalid-credential':
-        return 'بيانات الاعتماد غير صحيحة';
+        return Exception(localizations.invalidCredential);
       case 'network-request-failed':
-        return 'فشل في الاتصال بالشبكة';
+        return Exception(localizations.networkRequestFailed);
       case 'requires-recent-login':
-        return 'يتطلب تسجيل دخول حديث';
+        return Exception(localizations.requiresRecentLogin);
       default:
-        return 'حدث خطأ في المصادقة: ${e.message}';
+        return Exception('${localizations.authenticationError}: ${e.message}');
     }
   }
 
-  // التحقق من حالة الاتصال
+  // Check connection status
   static Future<bool> checkConnection() async {
     try {
       await _firestore.collection('test').doc('connection').get();
@@ -253,7 +274,7 @@ class FirebaseAuthService {
     }
   }
 
-  // إحصائيات المستخدم
+  // User statistics
   static Future<Map<String, dynamic>> getUserStats(String uid) async {
     try {
       final doc = await _firestore.collection('users').doc(uid).get();
@@ -263,19 +284,20 @@ class FirebaseAuthService {
       }
       return {};
     } catch (e) {
-      debugPrint('خطأ في جلب إحصائيات المستخدم: $e');
+      debugPrint('Error fetching user statistics: $e');
       return {};
     }
   }
 
-  // تحديث إحصائيات المستخدم
-  static Future<void> updateUserStats(String uid, Map<String, dynamic> stats) async {
+  // Update user statistics
+  static Future<void> updateUserStats(String uid, Map<String, dynamic> stats, BuildContext context) async {
     try {
       await _firestore.collection('users').doc(uid).update({
         'stats': stats,
       });
     } catch (e) {
-      debugPrint('خطأ في تحديث إحصائيات المستخدم: $e');
+      final localizations = AppLocalizations.of(context)!;
+      debugPrint('${localizations.errorUpdatingUserStats}: $e');
     }
   }
 }

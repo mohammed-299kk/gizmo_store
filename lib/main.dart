@@ -1,10 +1,13 @@
 import 'package:gizmo_store/providers/checkout_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:gizmo_store/providers/app_state.dart';
 import 'package:gizmo_store/providers/auth_provider.dart';
 import 'package:gizmo_store/providers/cart_provider.dart';
 import 'package:gizmo_store/providers/coupon_provider.dart';
+import 'package:gizmo_store/providers/language_provider.dart';
+import 'package:gizmo_store/providers/theme_provider.dart'; 
 import 'package:gizmo_store/providers/notification_provider.dart';
 import 'package:gizmo_store/providers/review_provider.dart';
 import 'package:gizmo_store/providers/search_provider.dart';
@@ -13,6 +16,7 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'routes.dart';
 import 'constants/app_colors.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
 
 /*************  ✨ Windsurf Command ⭐  *************/
 /// The main entry point of the application. It initializes Firebase
@@ -45,18 +49,33 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => CouponProvider()),
+        ChangeNotifierProvider(create: (_) => LanguageProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => NotificationProvider()),
         ChangeNotifierProvider(create: (_) => ReviewProvider()),
         ChangeNotifierProvider(create: (_) => SearchProvider()),
         ChangeNotifierProvider(create: (_) => WishlistProvider()),
         ChangeNotifierProvider(create: (_) => CheckoutProvider()),
       ],
-      child: MaterialApp(
-        title: 'Gizmo Store',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.darkTheme,
-        initialRoute: '/',
-        onGenerateRoute: AppRoutes.generateRoute,
+      child: Consumer2<ThemeProvider, LanguageProvider>(
+        builder: (context, themeProvider, languageProvider, child) {
+          return MaterialApp(
+            title: 'Gizmo Store',
+            debugShowCheckedModeBanner: false,
+            theme: themeProvider.themeData,
+            locale: languageProvider.currentLocale,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            initialRoute: '/',
+            onGenerateRoute: AppRoutes.generateRoute,
+            builder: (context, child) {
+              return Directionality(
+                textDirection: languageProvider.textDirection,
+                child: child!,
+              );
+            },
+          );
+        },
       ),
     );
   }

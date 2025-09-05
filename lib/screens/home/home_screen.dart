@@ -2,6 +2,8 @@ import 'package:gizmo_store/screens/categories_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
 import '../../services/product_service.dart';
 import '../../services/cart_service.dart';
 import '../../models/product.dart';
@@ -14,6 +16,8 @@ import '../search/search_screen.dart';
 import '../profile/profile_screen.dart';
 import '../firebase_options_screen.dart';
 import '../../providers/auth_provider.dart' as auth;
+import '../../providers/wishlist_provider.dart';
+import '../../services/database_setup_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -31,15 +35,20 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _loadProducts();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadProducts();
+    });
   }
 
   Future<void> _loadProducts() async {
     try {
       setState(() => _isLoading = true);
       
+      // Initialize database with new products if needed
+      await DatabaseSetupService.initializeDatabase(context);
+      
       final products = await ProductService.getAllProducts();
-      final featured = await ProductService.getFeaturedProducts();
+      final featured = await ProductService.getFeaturedProducts(context);
       
       setState(() {
         _products = products;
@@ -51,8 +60,8 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('خطأ في تحميل المنتجات: $e'),
-            backgroundColor: Colors.red,
+            content: Text(AppLocalizations.of(context)!.errorLoadingProducts('$e')),
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
@@ -62,11 +71,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text('Gizmo Store'),
-        backgroundColor: const Color(0xFFB71C1C),
-        foregroundColor: Colors.white,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
         centerTitle: true,
         actions: [
           IconButton(
@@ -77,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 MaterialPageRoute(builder: (context) => const OrdersScreen()),
               );
             },
-            tooltip: 'طلباتي',
+            tooltip: AppLocalizations.of(context)!.myOrders,
           ),
           Stack(
             children: [
@@ -102,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Container(
                       padding: const EdgeInsets.all(2),
                       decoration: BoxDecoration(
-                        color: Colors.red,
+                        color: Theme.of(context).colorScheme.error,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       constraints: const BoxConstraints(
@@ -111,8 +120,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       child: Text(
                         '$count',
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onError,
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
@@ -132,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 MaterialPageRoute(builder: (context) => const SearchScreen()),
               );
             },
-            tooltip: 'البحث',
+            tooltip: AppLocalizations.of(context)!.search,
           ),
           IconButton(
             icon: const Icon(Icons.developer_mode),
@@ -142,12 +151,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 MaterialPageRoute(builder: (context) => const FirebaseOptionsScreen()),
               );
             },
-            tooltip: 'إعدادات Firebase',
+            tooltip: AppLocalizations.of(context)!.firebaseSettings,
           ),
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: _showLogoutDialog,
-            tooltip: 'تسجيل الخروج',
+            tooltip: AppLocalizations.of(context)!.logoutButton,
           ),
         ],
       ),
@@ -155,26 +164,26 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) => setState(() => _selectedIndex = index),
-        backgroundColor: const Color(0xFF2A2A2A),
-        selectedItemColor: const Color(0xFFB71C1C),
-        unselectedItemColor: Colors.white70,
+        backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+        selectedItemColor: Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
+        unselectedItemColor: Theme.of(context).bottomNavigationBarTheme.unselectedItemColor,
         type: BottomNavigationBarType.fixed,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'الرئيسية',
+            icon: const Icon(Icons.home),
+            label: AppLocalizations.of(context)!.homeTab,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.category),
-            label: 'الفئات',
+            icon: const Icon(Icons.category),
+            label: AppLocalizations.of(context)!.categoriesTab,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'المفضلة',
+            icon: const Icon(Icons.favorite),
+            label: AppLocalizations.of(context)!.favoritesTab,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'الحساب',
+            icon: const Icon(Icons.person),
+            label: AppLocalizations.of(context)!.accountTab,
           ),
         ],
       ),
@@ -198,16 +207,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildHomeTab() {
     if (_isLoading) {
-      return const Center(
+      return Center(
         child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFB71C1C)),
+          valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primary),
         ),
       );
     }
 
     return RefreshIndicator(
       onRefresh: _loadProducts,
-      color: const Color(0xFFB71C1C),
+      color: Theme.of(context).colorScheme.primary,
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -220,28 +229,28 @@ class _HomeScreenState extends State<HomeScreen> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    const Color(0xFFB71C1C),
-                    const Color(0xFFB71C1C).withValues(alpha: 0.8),
+                    Theme.of(context).colorScheme.primary,
+                    Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(15),
               ),
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'مرحباً بك في Gizmo Store!',
+                    AppLocalizations.of(context)!.welcomeToGizmoStore,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onPrimary,
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Text(
-                    'اكتشف أحدث المنتجات التقنية',
+                    AppLocalizations.of(context)!.discoverLatestTechProducts,
                     style: TextStyle(
-                      color: Colors.white70,
+                      color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.7),
                       fontSize: 16,
                     ),
                   ),
@@ -252,10 +261,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
             // Featured Products
             if (_featuredProducts.isNotEmpty) ...[
-              const Text(
-                'المنتجات المميزة',
+              Text(
+                AppLocalizations.of(context)!.featuredProducts,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Theme.of(context).textTheme.headlineMedium?.color,
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
@@ -279,10 +288,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
 
             // All Products
-            const Text(
-              'جميع المنتجات',
+            Text(
+              AppLocalizations.of(context)!.allProducts,
               style: TextStyle(
-                color: Colors.white,
+                color: Theme.of(context).textTheme.headlineMedium?.color,
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
               ),
@@ -310,6 +319,21 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  String _formatPrice(double price) {
+    String priceStr = price.toStringAsFixed(0);
+    
+    // Add thousand separators
+    String formattedPrice = '';
+    for (int i = 0; i < priceStr.length; i++) {
+      if (i > 0 && (priceStr.length - i) % 3 == 0) {
+        formattedPrice += ',';
+      }
+      formattedPrice += priceStr[i];
+    }
+    
+    return formattedPrice;
+  }
+
   Widget _buildProductCard(Product product) {
     return GestureDetector(
       onTap: () {
@@ -322,11 +346,11 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFF2A2A2A),
+          color: Theme.of(context).cardTheme.color,
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.3),
+              color: Theme.of(context).shadowColor.withValues(alpha: 0.3),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -335,37 +359,77 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Product Image
+            // Product Image with Favorites Button
             Expanded(
               flex: 3,
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFB71C1C).withValues(alpha: 0.1),
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(15)),
-                ),
-                child: product.image != null && product.image!.isNotEmpty
-                    ? ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(15)),
-                        child: Image.network(
-                          product.image!,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return const Icon(
-                              Icons.image_not_supported,
-                              size: 60,
-                              color: Color(0xFFB71C1C),
-                            );
-                          },
-                        ),
-                      )
-                    : const Icon(
-                        Icons.phone_android,
-                        size: 60,
-                        color: Color(0xFFB71C1C),
-                      ),
+              child: Stack(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(15)),
+                    ),
+                    child: product.image != null && product.image!.isNotEmpty
+                        ? ClipRRect(
+                            borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(15)),
+                            child: CachedNetworkImage(
+                              imageUrl: product.image!,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => Container(
+                                alignment: Alignment.center,
+                                child: CircularProgressIndicator(
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => Icon(
+                                Icons.image_not_supported,
+                                size: 60,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                          )
+                        : Icon(
+                            Icons.phone_android,
+                            size: 60,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                  ),
+                  // Favorites Button
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: Consumer<WishlistProvider>(
+                      builder: (context, wishlistProvider, child) {
+                        final isInWishlist = wishlistProvider.isInWishlist(product.id);
+                        return GestureDetector(
+                          onTap: () => _toggleFavorite(product, wishlistProvider),
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.9),
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.1),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Icon(
+                              isInWishlist ? Icons.favorite : Icons.favorite_border,
+                              color: isInWishlist ? Colors.red : Colors.grey[600],
+                              size: 18,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
 
@@ -379,8 +443,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Text(
                       product.name,
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.titleMedium?.color,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -389,9 +453,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      product.category ?? 'عام',
-                      style: const TextStyle(
-                        color: Colors.white70,
+                      product.category ?? AppLocalizations.of(context)!.general,
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodySmall?.color,
                         fontSize: 12,
                       ),
                     ),
@@ -403,9 +467,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '${product.price.toStringAsFixed(0)} ج.س',
-                              style: const TextStyle(
-                                color: Color(0xFFB71C1C),
+                              '${_formatPrice(product.price)} ج.س',
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -413,9 +477,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             if (product.originalPrice != null &&
                                 product.originalPrice! > product.price)
                               Text(
-                                '${product.originalPrice!.toStringAsFixed(0)} ر.س',
-                                style: const TextStyle(
-                                  color: Colors.white54,
+                                '${_formatPrice(product.originalPrice!)} ${AppLocalizations.of(context)!.currency}',
+                                style: TextStyle(
+                                  color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.6),
                                   fontSize: 12,
                                   decoration: TextDecoration.lineThrough,
                                 ),
@@ -427,12 +491,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFB71C1C),
+                              color: Theme.of(context).colorScheme.primary,
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.add_shopping_cart,
-                              color: Colors.white,
+                              color: Theme.of(context).colorScheme.onPrimary,
                               size: 18,
                             ),
                           ),
@@ -452,33 +516,57 @@ class _HomeScreenState extends State<HomeScreen> {
   
 
   Widget _buildFavoritesTab() {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.favorite_outline,
-            size: 80,
-            color: Colors.white54,
-          ),
-          SizedBox(height: 20),
-          Text(
-            'لا توجد منتجات مفضلة بعد',
-            style: TextStyle(
-              color: Colors.white70,
-              fontSize: 18,
+    return Consumer<WishlistProvider>(
+      builder: (context, wishlistProvider, child) {
+        final favoriteProducts = wishlistProvider.items;
+        
+        if (favoriteProducts.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.favorite_outline,
+                  size: 80,
+                  color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.6),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  AppLocalizations.of(context)!.noFavoriteProductsYet,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
+                    fontSize: 18,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  AppLocalizations.of(context)!.tapHeartToAddFavorites,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.6),
+                    fontSize: 14,
+                  ),
+                ),
+              ],
             ),
-          ),
-          SizedBox(height: 10),
-          Text(
-            'اضغط على ♡ لإضافة منتجات للمفضلة',
-            style: TextStyle(
-              color: Colors.white54,
-              fontSize: 14,
+          );
+        }
+        
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 0.8,
             ),
+            itemCount: favoriteProducts.length,
+            itemBuilder: (context, index) {
+              return _buildProductCard(favoriteProducts[index].product);
+            },
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -491,17 +579,17 @@ class _HomeScreenState extends State<HomeScreen> {
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.check_circle, color: Colors.white),
+            Icon(Icons.check_circle, color: Theme.of(context).colorScheme.onPrimary),
             const SizedBox(width: 8),
             Expanded(
-              child: Text('تم إضافة ${product.name} للسلة!'),
+              child: Text('${product.name} ${AppLocalizations.of(context)!.addedToCart}'),
             ),
           ],
         ),
         backgroundColor: Colors.green,
         action: SnackBarAction(
-          label: 'عرض السلة',
-          textColor: Colors.white,
+          label: AppLocalizations.of(context)!.viewCart,
+          textColor: Theme.of(context).colorScheme.onPrimary,
           onPressed: () {
             Navigator.push(
               context,
@@ -513,25 +601,45 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _toggleFavorite(Product product, WishlistProvider wishlistProvider) {
+    if (wishlistProvider.isInWishlist(product.id)) {
+      wishlistProvider.removeFromWishlist(product.id);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.removedFromFavorites(product.name)),
+          backgroundColor: Color(0xFFB71C1C),
+        ),
+      );
+    } else {
+      wishlistProvider.addToWishlist(product);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.addedToFavorites(product.name)),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
+  }
+
   void _showLogoutDialog() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF2A2A2A),
-        title: const Text(
-          'تسجيل الخروج',
-          style: TextStyle(color: Colors.white),
+        backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
+        title: Text(
+          AppLocalizations.of(context)!.logout,
+          style: TextStyle(color: Theme.of(context).textTheme.titleLarge?.color),
         ),
-        content: const Text(
-          'هل أنت متأكد من أنك تريد تسجيل الخروج؟',
-          style: TextStyle(color: Colors.white70),
+        content: Text(
+          AppLocalizations.of(context)!.logoutConfirmation,
+          style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text(
-              'إلغاء',
-              style: TextStyle(color: Colors.white70),
+            child: Text(
+              AppLocalizations.of(context)!.cancel,
+              style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
             ),
           ),
           TextButton(
@@ -540,9 +648,9 @@ class _HomeScreenState extends State<HomeScreen> {
               final authProvider = Provider.of<auth.AuthProvider>(context, listen: false);
               await authProvider.signOut();
             },
-            child: const Text(
-              'تسجيل الخروج',
-              style: TextStyle(color: Colors.red),
+            child: Text(
+              AppLocalizations.of(context)!.logout,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
           ),
         ],

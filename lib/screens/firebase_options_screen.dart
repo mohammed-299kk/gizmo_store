@@ -77,7 +77,7 @@ class _FirebaseOptionsScreenState extends State<FirebaseOptionsScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.green,
+        backgroundColor: Color(0xFFB71C1C),
       ),
     );
   }
@@ -115,19 +115,15 @@ class _FirebaseOptionsScreenState extends State<FirebaseOptionsScreen> {
                   _buildSectionHeader('Firebase Authentication'),
                   _buildConfigSection('auth'),
                   const SizedBox(height: 24),
-                  
                   _buildSectionHeader('Cloud Firestore'),
                   _buildConfigSection('firestore'),
                   const SizedBox(height: 24),
-                  
                   _buildSectionHeader('Firebase Storage'),
                   _buildConfigSection('storage'),
                   const SizedBox(height: 24),
-                  
                   _buildSectionHeader('Firebase Messaging'),
                   _buildConfigSection('messaging'),
                   const SizedBox(height: 24),
-                  
                   _buildActionsSection(),
                 ],
               ),
@@ -140,8 +136,8 @@ class _FirebaseOptionsScreenState extends State<FirebaseOptionsScreen> {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFFB71C1C), Color(0xFF8E0000)],
+        gradient: LinearGradient(
+          colors: [Color(0xFFB71C1C), Color(0xFFB71C1C)],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),
@@ -160,7 +156,7 @@ class _FirebaseOptionsScreenState extends State<FirebaseOptionsScreen> {
 
   Widget _buildConfigSection(String section) {
     final config = _firebaseConfig[section] as Map<String, dynamic>? ?? {};
-    
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -222,28 +218,24 @@ class _FirebaseOptionsScreenState extends State<FirebaseOptionsScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          
           _buildActionButton(
             'تحديث رمز FCM',
             Icons.notifications,
             _refreshFCMToken,
           ),
           const SizedBox(height: 8),
-          
           _buildActionButton(
             'مسح ذاكرة التخزين المؤقت',
             Icons.clear_all,
             _clearCache,
           ),
           const SizedBox(height: 8),
-          
           _buildActionButton(
             'اختبار الاتصال',
             Icons.network_check,
             _testConnection,
           ),
           const SizedBox(height: 8),
-
           _buildActionButton(
             'تهيئة قاعدة البيانات',
             Icons.storage,
@@ -254,7 +246,8 @@ class _FirebaseOptionsScreenState extends State<FirebaseOptionsScreen> {
     );
   }
 
-  Widget _buildActionButton(String title, IconData icon, VoidCallback onPressed) {
+  Widget _buildActionButton(
+      String title, IconData icon, VoidCallback onPressed) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton.icon(
@@ -278,11 +271,11 @@ class _FirebaseOptionsScreenState extends State<FirebaseOptionsScreen> {
       final messaging = FirebaseMessaging.instance;
       await messaging.deleteToken();
       final newToken = await messaging.getToken();
-      
+
       setState(() {
         _firebaseConfig['messaging']['token'] = newToken ?? 'غير متوفر';
       });
-      
+
       _showSuccessMessage('تم تحديث رمز FCM بنجاح');
     } catch (e) {
       _showErrorMessage('فشل في تحديث رمز FCM: $e');

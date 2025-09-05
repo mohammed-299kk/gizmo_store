@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
 
 class SimpleHomeScreen extends StatelessWidget {
   final String userType;
@@ -11,7 +12,7 @@ class SimpleHomeScreen extends StatelessWidget {
       backgroundColor: const Color(0xFF1A1A1A),
       appBar: AppBar(
         title: const Text('Gizmo Store'),
-        backgroundColor: const Color(0xFFB71C1C),
+        backgroundColor: Color(0xFFB71C1C), // Changed from Color(0xFFB71C1C) to orange
         foregroundColor: Colors.white,
         centerTitle: true,
       ),
@@ -24,11 +25,11 @@ class SimpleHomeScreen extends StatelessWidget {
               width: 120,
               height: 120,
               decoration: BoxDecoration(
-                color: const Color(0xFFB71C1C),
+                color: Color(0xFFB71C1C), // Changed from Color(0xFFB71C1C) to orange
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.black.withValues(alpha: 0.3),
                     blurRadius: 15,
                     offset: const Offset(0, 8),
                   ),
@@ -44,7 +45,7 @@ class SimpleHomeScreen extends StatelessWidget {
 
             // رسالة ترحيب
             Text(
-              userType == 'guest' ? 'مرحباً بك كضيف!' : 'مرحباً بك!',
+              userType == 'guest' ? AppLocalizations.of(context)!.welcomeGuest : AppLocalizations.of(context)!.welcome,
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 28,
@@ -52,8 +53,8 @@ class SimpleHomeScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 15),
-            const Text(
-              'تم تشغيل التطبيق بنجاح!',
+            Text(
+              AppLocalizations.of(context)!.appLaunchedSuccessfully,
               style: TextStyle(
                 color: Colors.white70,
                 fontSize: 18,
@@ -76,12 +77,12 @@ class SimpleHomeScreen extends StatelessWidget {
                     children: [
                       Icon(
                         userType == 'guest' ? Icons.person_outline : Icons.person,
-                        color: const Color(0xFFB71C1C),
+                        color: Color(0xFFB71C1C),
                         size: 24,
                       ),
                       const SizedBox(width: 10),
                       Text(
-                        'نوع المستخدم: ${userType == 'guest' ? 'ضيف' : 'مستخدم مسجل'}',
+                        '${AppLocalizations.of(context)!.userType}: ${userType == 'guest' ? AppLocalizations.of(context)!.guest : AppLocalizations.of(context)!.registeredUser}',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -91,8 +92,8 @@ class SimpleHomeScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 15),
-                  const Text(
-                    'التطبيق يعمل بشكل طبيعي الآن!',
+                  Text(
+                    AppLocalizations.of(context)!.appWorkingNormally,
                     style: TextStyle(
                       color: Colors.green,
                       fontSize: 14,
@@ -110,11 +111,11 @@ class SimpleHomeScreen extends StatelessWidget {
               children: [
                 _buildActionButton(
                   icon: Icons.shopping_cart,
-                  label: 'السلة',
+                  label: AppLocalizations.of(context)!.cart,
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('السلة تعمل!'),
+                      SnackBar(
+                        content: Text(AppLocalizations.of(context)!.cartWorks),
                         backgroundColor: Colors.green,
                       ),
                     );
@@ -122,11 +123,11 @@ class SimpleHomeScreen extends StatelessWidget {
                 ),
                 _buildActionButton(
                   icon: Icons.favorite,
-                  label: 'المفضلة',
+                  label: AppLocalizations.of(context)!.wishlist,
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('المفضلة تعمل!'),
+                      SnackBar(
+                        content: Text(AppLocalizations.of(context)!.favoritesWork),
                         backgroundColor: Colors.green,
                       ),
                     );
@@ -134,11 +135,11 @@ class SimpleHomeScreen extends StatelessWidget {
                 ),
                 _buildActionButton(
                   icon: Icons.settings,
-                  label: 'الإعدادات',
+                  label: AppLocalizations.of(context)!.settings,
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('الإعدادات تعمل!'),
+                      SnackBar(
+                        content: Text(AppLocalizations.of(context)!.settingsWork),
                         backgroundColor: Colors.green,
                       ),
                     );
@@ -163,7 +164,7 @@ class SimpleHomeScreen extends StatelessWidget {
           width: 60,
           height: 60,
           decoration: BoxDecoration(
-            color: const Color(0xFFB71C1C),
+            color: Color(0xFFB71C1C),
             borderRadius: BorderRadius.circular(15),
           ),
           child: IconButton(

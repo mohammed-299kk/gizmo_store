@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../models/product.dart';
 import '../../models/cart_item.dart';
 import '../../services/cart_service.dart';
@@ -48,7 +49,7 @@ class ProductTile extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFB71C1C),
+                backgroundColor: Color(0xFFB71C1C),
                 foregroundColor: Colors.white,
                 minimumSize: const Size(80, 36),
               ),
@@ -66,22 +67,22 @@ class ProductTile extends StatelessWidget {
       return const Icon(Icons.image_not_supported,
           size: 60, color: Colors.grey);
     }
-    return Image.network(
-      imageUrl,
+    return CachedNetworkImage(
+      imageUrl: imageUrl,
       width: 60,
       height: 60,
       fit: BoxFit.cover,
-      errorBuilder: (context, error, stackTrace) =>
-          const Icon(Icons.error, size: 60, color: Colors.grey),
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) return child;
-        return Container(
-          width: 60,
-          height: 60,
-          alignment: Alignment.center,
-          child: const CircularProgressIndicator(strokeWidth: 2),
-        );
-      },
+      placeholder: (context, url) => Container(
+        width: 60,
+        height: 60,
+        alignment: Alignment.center,
+        child: const CircularProgressIndicator(strokeWidth: 2),
+      ),
+      errorWidget: (context, url, error) => const Icon(
+        Icons.error,
+        size: 60,
+        color: Colors.grey,
+      ),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
 
 class FirebaseDashboard extends StatefulWidget {
   const FirebaseDashboard({super.key});
@@ -15,7 +16,7 @@ class _FirebaseDashboardState extends State<FirebaseDashboard> {
   int _totalUsers = 0;
   int _totalProducts = 0;
   int _totalOrders = 0;
-  String _connectionStatus = 'جاري الفحص...';
+  String _connectionStatus = 'Checking...'; // Will be localized in initState
   List<Map<String, dynamic>> _recentActivities = [];
 
   @override
@@ -113,7 +114,7 @@ class _FirebaseDashboardState extends State<FirebaseDashboard> {
       backgroundColor: const Color(0xFF1A1A1A),
       appBar: AppBar(
         title: const Text('لوحة تحكم Firebase'),
-        backgroundColor: const Color(0xFFB71C1C),
+        backgroundColor: Color(0xFFB71C1C),
         foregroundColor: Colors.white,
         actions: [
           IconButton(
@@ -148,7 +149,7 @@ class _FirebaseDashboardState extends State<FirebaseDashboard> {
             
             Row(
               children: [
-                Expanded(child: _buildStatCard('المستخدمين', _totalUsers.toString(), Icons.people, Colors.blue)),
+                Expanded(child: _buildStatCard('المستخدمين', _totalUsers.toString(), Icons.people, Color(0xFFB71C1C))),
                 const SizedBox(width: 12),
                 Expanded(child: _buildStatCard('المنتجات', _totalProducts.toString(), Icons.inventory, Colors.green)),
               ],
@@ -158,9 +159,9 @@ class _FirebaseDashboardState extends State<FirebaseDashboard> {
             
             Row(
               children: [
-                Expanded(child: _buildStatCard('الطلبات', _totalOrders.toString(), Icons.shopping_cart, Colors.orange)),
+                Expanded(child: _buildStatCard('الطلبات', _totalOrders.toString(), Icons.shopping_cart, Color(0xFFB71C1C))),
                 const SizedBox(width: 12),
-                Expanded(child: _buildStatCard('المبيعات', '${(_totalOrders * 150000).toString()} جنيه', Icons.monetization_on, Colors.purple)),
+                Expanded(child: _buildStatCard(AppLocalizations.of(context)!.sales, '${(_totalOrders * 150000).toString()} ${AppLocalizations.of(context)!.currency}', Icons.monetization_on, Color(0xFFB71C1C))),
               ],
             ),
             
@@ -204,7 +205,7 @@ class _FirebaseDashboardState extends State<FirebaseDashboard> {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: _isConnected ? Colors.green.withOpacity(0.1) : Colors.red.withOpacity(0.1),
+        color: _isConnected ? Colors.green.withValues(alpha: 0.1) : Colors.red.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: _isConnected ? Colors.green : Colors.red,
@@ -253,7 +254,7 @@ class _FirebaseDashboardState extends State<FirebaseDashboard> {
       decoration: BoxDecoration(
         color: const Color(0xFF2A2A2A),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -355,7 +356,7 @@ class _FirebaseDashboardState extends State<FirebaseDashboard> {
           'تصدير البيانات',
           'تصدير قاعدة البيانات كملف JSON',
           Icons.download,
-          Colors.blue,
+          Color(0xFFB71C1C),
           () => _exportData(),
         ),
       ],
@@ -370,7 +371,7 @@ class _FirebaseDashboardState extends State<FirebaseDashboard> {
         decoration: BoxDecoration(
           color: const Color(0xFF2A2A2A),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: color.withOpacity(0.3)),
+          border: Border.all(color: color.withValues(alpha: 0.3)),
         ),
         child: Row(
           children: [

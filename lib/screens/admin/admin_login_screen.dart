@@ -20,8 +20,8 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
   void initState() {
     super.initState();
     // Pre-fill admin credentials for convenience
-    _emailController.text = 'admin@gmail.com';
-    _passwordController.text = 'mohammed1234#';
+    _emailController.text = 'admin@gizmo.com';
+    _passwordController.text = 'gizmo1234';
   }
 
   Future<void> _login() async {
@@ -35,7 +35,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
 
     try {
       // Check if the email is the admin email
-      if (_emailController.text.trim() != 'admin@gmail.com') {
+      if (_emailController.text.trim() != 'admin@gizmo.com') {
         throw Exception('غير مصرح لك بالدخول إلى لوحة الإدارة');
       }
 
@@ -241,6 +241,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                               ),
                       ),
                     ),
+
                     const SizedBox(height: 16),
                     
                     // Admin Info

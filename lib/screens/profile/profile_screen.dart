@@ -16,6 +16,7 @@ import 'package:gizmo_store/screens/profile/address_management_screen.dart';
 import 'package:gizmo_store/screens/profile/notifications_screen.dart';
 import 'package:gizmo_store/screens/profile/help_support_screen.dart';
 import 'package:gizmo_store/screens/wishlist/wishlist_screen.dart';
+import 'package:gizmo_store/utils/image_helper.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -30,13 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final authProvider =
-          Provider.of<auth.AuthProvider>(context, listen: false);
-      if (authProvider.user != null) {
-        Provider.of<WishlistProvider>(context, listen: false).loadWishlist();
-      }
-    });
+    // WishlistProvider now uses real-time listener, no need to manually load
   }
 
   @override
@@ -70,7 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               color: Theme.of(context)
                   .colorScheme
                   .onSurface
-                  .withValues(alpha: 0.4)),
+                  .withOpacity(0.4)),
           const SizedBox(height: 20),
           Text(
             AppLocalizations.of(context)!.youAreGuestNow,
@@ -86,7 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 color: Theme.of(context)
                     .colorScheme
                     .onSurface
-                    .withValues(alpha: 0.7),
+                    .withOpacity(0.7),
                 fontSize: 16),
             textAlign: TextAlign.center,
             strutStyle: const StrutStyle(height: 1.5),
@@ -122,13 +117,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildUserInfoCard(user),
+          _buildUserInfo(context, user),
+            const SizedBox(height: 24),
+            _buildStatsRow(context, user, wishlistProvider),
           const SizedBox(height: 24),
-          _buildStatsRow(user, wishlistProvider),
+          _buildSettingsSection(context),
           const SizedBox(height: 24),
-          _buildSettingsSection(),
-          const SizedBox(height: 24),
-          _buildInfoSection(),
+          _buildInfoSection(context),
           const SizedBox(height: 32),
           Center(
             child: TextButton.icon(
@@ -147,12 +142,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildUserInfoCard(User user) {
+
+
+  String _formatDate(BuildContext context, dynamic timestamp) {
+    if (timestamp == null) return AppLocalizations.of(context)!.notSpecified;
+    try {
+      final date = timestamp.toDate();
+      return '${date.day}/${date.month}/${date.year}';
+    } catch (e) {
+      return AppLocalizations.of(context)!.notSpecified;
+    }
+  }
+
+  Widget _buildUserInfo(BuildContext context, User user) {
     return FutureBuilder<Map<String, dynamic>?>(
       future: FirebaseAuthService.getUserData(user.uid, context),
       builder: (context, snapshot) {
         final userData = snapshot.data;
-
+        
         return Material(
           color: Colors.transparent,
           child: InkWell(
@@ -164,15 +171,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
               );
             },
             borderRadius: BorderRadius.circular(20),
-            splashColor: Colors.white.withValues(alpha: 0.1),
-            highlightColor: Colors.white.withValues(alpha: 0.05),
+            splashColor: Colors.white.withOpacity(0.1),
+            highlightColor: Colors.white.withOpacity(0.05),
             child: Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
                     Theme.of(context).colorScheme.primary,
-                    Theme.of(context).colorScheme.primary.withValues(alpha: 0.8)
+                    Theme.of(context).colorScheme.primary.withOpacity(0.8)
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -180,7 +187,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
+                    color: Colors.black.withOpacity(0.3),
                     spreadRadius: 2,
                     blurRadius: 10,
                     offset: const Offset(0, 5),
@@ -196,26 +203,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.3),
+                              color: Colors.black.withOpacity(0.3),
                               spreadRadius: 2,
                               blurRadius: 8,
                               offset: const Offset(0, 4),
                             ),
                           ],
                         ),
-                        child: CircleAvatar(
-                          radius: 40,
-                          backgroundColor: Colors.white.withValues(alpha: 0.2),
-                          backgroundImage: user.photoURL != null
-                              ? NetworkImage(user.photoURL!)
-                              : null,
-                          onBackgroundImageError: user.photoURL != null
-                              ? (exception, stackTrace) {
-                                  // Handle image loading error silently
-                                }
-                              : null,
-                          child: user.photoURL == null
-                              ? Text(
+                        child: user.photoURL != null && user.photoURL!.isNotEmpty
+                            ? ClipOval(
+                                child: ImageHelper.buildCachedImage(
+                                  imageUrl: user.photoURL!,
+                                  width: 80,
+                                  height: 80,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : CircleAvatar(
+                                radius: 40,
+                                backgroundColor: Colors.white.withOpacity(0.2),
+                                child: Text(
                                   user.displayName
                                           ?.substring(0, 1)
                                           .toUpperCase() ??
@@ -224,9 +231,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       fontSize: 32,
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold),
-                                )
-                              : null,
-                        ),
+                                ),
+                              ),
                       ),
                       const SizedBox(width: 20),
                       Expanded(
@@ -290,54 +296,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.1),
+                        color: Colors.white.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Row(
+                      child: Column(
                         children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.userId,
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      color:
-                                          Colors.white.withValues(alpha: 0.7)),
-                                ),
-                                Text(
-                                  '${user.uid.substring(0, 8)}...',
-                                  style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!
-                                      .registrationDate,
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      color:
-                                          Colors.white.withValues(alpha: 0.7)),
-                                ),
-                                Text(
-                                  _formatDate(userData['createdAt']),
-                                  style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ],
-                            ),
+                          Row(
+                            children: [
+                              const Icon(Icons.calendar_today,
+                                  color: Colors.white70, size: 16),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Member since',
+                                style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.white70,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              const Spacer(),
+                              Text(
+                                _formatDate(context, userData['createdAt']),
+                                style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -352,21 +336,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  String _formatDate(dynamic timestamp) {
-    if (timestamp == null) return AppLocalizations.of(context)!.notSpecified;
-    try {
-      final date = timestamp.toDate();
-      return '${date.day}/${date.month}/${date.year}';
-    } catch (e) {
-      return AppLocalizations.of(context)!.notSpecified;
-    }
-  }
-
-  Widget _buildStatsRow(User user, WishlistProvider wishlistProvider) {
+  Widget _buildStatsRow(BuildContext context, User user, WishlistProvider wishlistProvider) {
     return Row(
       children: [
         Expanded(
-          child: _buildStatCard(AppLocalizations.of(context)!.orders, '',
+          child: _buildStatCard(context, AppLocalizations.of(context)!.orders, '',
               Icons.shopping_cart_outlined, () {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const OrdersScreen()));
@@ -374,7 +348,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         const SizedBox(width: 12),
         Expanded(
-          child: _buildStatCard(AppLocalizations.of(context)!.favorites, '',
+          child: _buildStatCard(context, AppLocalizations.of(context)!.favorites, '',
               Icons.favorite_border, () {
             Navigator.push(
                 context,
@@ -386,7 +360,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildStatCard(
+  Widget _buildStatCard(BuildContext context,
       String title, String value, IconData icon, VoidCallback? onTap) {
     return Material(
       color: Colors.transparent,
@@ -416,11 +390,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildSettingsSection() {
+  Widget _buildSettingsSection(BuildContext context) {
     return _buildSectionContainer(
+      context,
       AppLocalizations.of(context)!.myAccount,
       [
         _buildSettingsOption(
+            context,
             icon: Icons.person_outline,
             title: AppLocalizations.of(context)!.editProfile,
             onTap: () {
@@ -430,6 +406,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       builder: (context) => const EditProfileScreen()));
             }),
         _buildSettingsOption(
+            context,
             icon: Icons.shopping_cart_outlined,
             title: AppLocalizations.of(context)!.myOrders,
             onTap: () {
@@ -439,6 +416,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       builder: (context) => const OrdersScreen()));
             }),
         _buildSettingsOption(
+            context,
             icon: Icons.favorite_border,
             title: AppLocalizations.of(context)!.favorites,
             onTap: () {
@@ -448,6 +426,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       builder: (context) => const WishlistScreen()));
             }),
         _buildSettingsOption(
+            context,
             icon: Icons.location_on_outlined,
             title: AppLocalizations.of(context)!.addresses,
             onTap: () {
@@ -457,6 +436,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       builder: (context) => const AddressManagementScreen()));
             }),
         _buildSettingsOption(
+            context,
             icon: Icons.settings,
             title: AppLocalizations.of(context)!.settings,
             onTap: () {
@@ -470,11 +450,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildInfoSection() {
+  Widget _buildInfoSection(BuildContext context) {
     return _buildSectionContainer(
+      context,
       AppLocalizations.of(context)!.app,
       [
         _buildSettingsOption(
+            context,
             icon: Icons.notifications_none,
             title: AppLocalizations.of(context)!.notifications,
             onTap: () {
@@ -484,6 +466,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       builder: (context) => const NotificationsScreen()));
             }),
         _buildSettingsOption(
+            context,
             icon: Icons.help_outline,
             title: AppLocalizations.of(context)!.helpAndSupport,
             onTap: () {
@@ -495,6 +478,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               );
             }),
         _buildSettingsOption(
+            context,
             icon: Icons.security_outlined,
             title: AppLocalizations.of(context)!.privacyAndSecurity,
             onTap: () {
@@ -504,10 +488,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       builder: (context) => const SecuritySettingsScreen()));
             }),
         _buildSettingsOption(
+            context,
             icon: Icons.info_outline,
             title: AppLocalizations.of(context)!.aboutApp,
             onTap: () => _showAboutDialog(context)),
         _buildSettingsOption(
+            context,
             icon: Icons.cloud_queue,
             title: AppLocalizations.of(context)!.firebaseDetails,
             onTap: () {
@@ -520,14 +506,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildSectionContainer(String title, List<Widget> children) {
+  Widget _buildSectionContainer(BuildContext context, String title, List<Widget> children) {
     List<Widget> spacedChildren = [];
     for (int i = 0; i < children.length; i++) {
       spacedChildren.add(children[i]);
       if (i < children.length - 1) {
         spacedChildren.add(Divider(
           height: 1,
-          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
           indent: 16,
           endIndent: 16,
         ));
@@ -545,7 +531,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               color: Theme.of(context)
                   .colorScheme
                   .onSurface
-                  .withValues(alpha: 0.7)),
+                  .withOpacity(0.7)),
         ),
         const SizedBox(height: 12),
         Container(
@@ -559,7 +545,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildSettingsOption(
+  Widget _buildSettingsOption(BuildContext context,
       {required IconData icon,
       required String title,
       Widget? trailing,
@@ -578,7 +564,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   color: Theme.of(context)
                       .colorScheme
                       .onSurface
-                      .withValues(alpha: 0.7),
+                      .withOpacity(0.7),
                   size: 22),
               const SizedBox(width: 16),
               Expanded(
@@ -592,7 +578,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: Theme.of(context)
                           .colorScheme
                           .onSurface
-                          .withValues(alpha: 0.38)),
+                          .withOpacity(0.38)),
             ],
           ),
         ),
@@ -613,7 +599,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   color: Theme.of(context)
                       .colorScheme
                       .onSurface
-                      .withValues(alpha: 0.7))),
+                      .withOpacity(0.7))),
           actions: [
             TextButton(
                 onPressed: () => Navigator.of(context).pop(),
@@ -622,7 +608,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         color: Theme.of(context)
                             .colorScheme
                             .onSurface
-                            .withValues(alpha: 0.7)))),
+                            .withOpacity(0.7)))),
             TextButton(
               onPressed: () async {
                 Navigator.of(context).pop();
@@ -656,14 +642,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: Theme.of(context)
                           .colorScheme
                           .onSurface
-                          .withValues(alpha: 0.7))),
+                          .withOpacity(0.7))),
               const SizedBox(height: 8),
               Text(AppLocalizations.of(context)!.demoEcommerceApp,
                   style: TextStyle(
                       color: Theme.of(context)
                           .colorScheme
                           .onSurface
-                          .withValues(alpha: 0.7))),
+                          .withOpacity(0.7))),
             ],
           ),
           actions: [

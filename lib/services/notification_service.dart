@@ -8,7 +8,8 @@ class NotificationService {
   factory NotificationService() => _instance;
   NotificationService._internal();
 
-  final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _localNotifications =
+      FlutterLocalNotificationsPlugin();
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   // Initialize notifications
@@ -19,9 +20,11 @@ class NotificationService {
 
   // Initialize local notifications
   Future<void> _initializeLocalNotifications() async {
-    const AndroidInitializationSettings androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
-    
-    const DarwinInitializationSettings iosSettings = DarwinInitializationSettings(
+    const AndroidInitializationSettings androidSettings =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    const DarwinInitializationSettings iosSettings =
+        DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
@@ -67,7 +70,8 @@ class NotificationService {
     FirebaseMessaging.onMessageOpenedApp.listen(_handleNotificationTap);
 
     // Handle notifications when opening app from notification
-    RemoteMessage? initialMessage = await _firebaseMessaging.getInitialMessage();
+    RemoteMessage? initialMessage =
+        await _firebaseMessaging.getInitialMessage();
     if (initialMessage != null) {
       _handleNotificationTap(initialMessage);
     }
@@ -75,8 +79,9 @@ class NotificationService {
 
   // Handle foreground notifications
   void _handleForegroundMessage(RemoteMessage message) {
-    debugPrint('Received foreground notification: ${message.notification?.title}');
-    
+    debugPrint(
+        'Received foreground notification: ${message.notification?.title}');
+
     // Show local notification
     _showLocalNotification(
       title: message.notification?.title ?? 'Gizmo Store',
@@ -103,7 +108,8 @@ class NotificationService {
     required String body,
     String? payload,
   }) async {
-    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
       'gizmo_store_channel',
       'Gizmo Store Notifications',
       channelDescription: 'Gizmo Store Notifications',

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:gizmo_store/models/product.dart';
 import 'package:gizmo_store/services/database_setup_service.dart';
-import 'package:gizmo_store/screens/product_detail_screen.dart';
+import 'package:gizmo_store/screens/product/product_detail_screen.dart';
 import 'package:gizmo_store/l10n/app_localizations.dart';
 
 class CategoryProductsScreen extends StatefulWidget {
@@ -82,6 +82,8 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
 
     try {
       List<Product> products = await DatabaseSetupService.getProductsByCategory(widget.category);
+      
+      print('Loaded ${products.length} products for category: ${widget.category}');
 
       setState(() {
         categoryProducts = products;
@@ -112,16 +114,45 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                     style: const TextStyle(fontSize: 18),
                   ),
                 )
-              : GridView.builder(
-                  padding: const EdgeInsets.all(16),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    childAspectRatio: 0.7,
-                  ),
-                  itemCount: categoryProducts.length,
-                  itemBuilder: (context, index) {
+              : LayoutBuilder(
+                  builder: (context, constraints) {
+                    // تحديد عدد الأعمدة بناءً على عرض الشاشة لمنتجات الفئة
+                    int crossAxisCount;
+                    double childAspectRatio;
+                    double spacing;
+                    
+                    if (constraints.maxWidth > 1200) {
+                      // شاشات كبيرة جداً (Desktop)
+                      crossAxisCount = 4;
+                      childAspectRatio = 0.8;
+                      spacing = 12;
+                    } else if (constraints.maxWidth > 800) {
+                      // شاشات متوسطة (Tablet)
+                      crossAxisCount = 3;
+                      childAspectRatio = 0.75;
+                      spacing = 10;
+                    } else if (constraints.maxWidth > 600) {
+                      // شاشات صغيرة (Large Phone)
+                      crossAxisCount = 2;
+                      childAspectRatio = 0.75;
+                      spacing = 8;
+                    } else {
+                      // شاشات صغيرة جداً (Small Phone)
+                      crossAxisCount = 2;
+                      childAspectRatio = 0.7;
+                      spacing = 6;
+                    }
+                    
+                    return GridView.builder(
+                      padding: EdgeInsets.all(constraints.maxWidth > 600 ? 16 : 12),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: crossAxisCount,
+                        crossAxisSpacing: spacing,
+                        mainAxisSpacing: spacing,
+                        childAspectRatio: childAspectRatio,
+                      ),
+                      itemCount: categoryProducts.length,
+                      itemBuilder: (context, index) {
                     final product = categoryProducts[index];
                     return GestureDetector(
                       onTap: () {
@@ -130,7 +161,6 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                           MaterialPageRoute(
                             builder: (context) => ProductDetailScreen(
                               product: product,
-                              cart: const [], // Empty cart for now
                             ),
                           ),
                         );
@@ -148,7 +178,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                                 borderRadius: const BorderRadius.vertical(
                                     top: Radius.circular(12)),
                                 child: _buildImageWidget(
-                                  product.image,
+                                  product.imageUrl,
                                   width: double.infinity,
                                   fit: BoxFit.cover,
                                 ),
@@ -182,10 +212,10 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const Text(
-                                        '\${product.price.toStringAsFixed(2)}',
-                                        style: TextStyle(
-                                          color: Color(0xFFB71C1C), // Changed from Color(0xFFB71C1C) to orange
+                                      Text(
+                                        '${product.price.toStringAsFixed(0)} ج.س',
+                                        style: const TextStyle(
+                                          color: Color(0xFFB71C1C),
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -216,6 +246,8 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                         ),
                       ),
                     );
+                  },
+                );
                   },
                 ),
     );

@@ -11,7 +11,7 @@ class PromoBanner extends StatelessWidget {
       margin: const EdgeInsets.all(16),
       height: 150,
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           colors: [Color(0xFFB71C1C), Color(0xFFB71C1C).withOpacity(0.8)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -31,7 +31,7 @@ class PromoBanner extends StatelessWidget {
               ),
             ),
             Text(
-              AppLocalizations.of(context)!.upToDiscount,
+              AppLocalizations.of(context)!.upTo50Off,
               style: const TextStyle(fontSize: 16, color: Colors.white),
             ),
           ],

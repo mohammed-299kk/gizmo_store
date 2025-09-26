@@ -8,11 +8,15 @@ class AuthProvider with ChangeNotifier {
   User? _user;
   bool _isLoading = false;
   String? _errorMessage;
+  bool _isAdmin = false;
+  String _userRole = 'user';
 
   User? get user => _user;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   bool get isAuthenticated => _user != null;
+  bool get isAdmin => _isAdmin;
+  String get userRole => _userRole;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final UserPreferencesService _preferencesService = UserPreferencesService();
@@ -23,15 +27,36 @@ class AuthProvider with ChangeNotifier {
       final previousUser = _user;
       _user = user;
       
-      // Handle preference syncing based on auth state changes
-      if (user != null && previousUser == null) {
-        // User just logged in - sync preferences from cloud
-        await _syncPreferencesOnLogin();
-      } else if (user == null && previousUser != null) {
-        // User just logged out - reset to defaults
-        await _resetPreferencesOnLogout();
+      try {
+        // Check admin status and role when user changes
+        if (user != null) {
+          await _checkUserRole(user.uid);
+          
+          // Handle preference syncing based on auth state changes
+          if (previousUser == null) {
+            // User just logged in - sync preferences from cloud
+            await _syncPreferencesOnLogin();
+          }
+        } else {
+          // User logged out - reset admin status and role
+          _isAdmin = false;
+          _userRole = 'user';
+          
+          if (previousUser != null) {
+            // User just logged out - reset to defaults
+            await _resetPreferencesOnLogout();
+          }
+        }
+      } catch (e) {
+        debugPrint('Error in auth state change: $e');
+        // Set safe defaults on error
+        _isAdmin = false;
+        _userRole = 'user';
+        _errorMessage = null; // Clear any previous errors
       }
       
+      // Always stop loading and notify listeners
+      _isLoading = false;
       notifyListeners();
     });
   }
@@ -41,6 +66,7 @@ class AuthProvider with ChangeNotifier {
     try {
       _setLoading(true);
       _errorMessage = null;
+      
       // Clear previous session before signing in
       if (_auth.currentUser != null) {
         await _auth.signOut();
@@ -93,6 +119,8 @@ class AuthProvider with ChangeNotifier {
       _setLoading(false);
     }
   }
+
+
 
   // تسجيل الدخول كضيف
   Future<void> signInAsGuest() async {
@@ -197,9 +225,49 @@ class AuthProvider with ChangeNotifier {
     try {
       await _auth.currentUser?.reload();
       _user = _auth.currentUser;
+      if (_user != null) {
+        await _checkUserRole(_user!.uid);
+      }
       notifyListeners();
     } catch (e) {
       // Handle error silently or log it
+    }
+  }
+
+  // Check user role and admin status
+  Future<void> _checkUserRole(String uid) async {
+    try {
+      // Add timeout to prevent hanging
+      final adminCheck = FirebaseAuthService.isUserAdmin(uid).timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          debugPrint('Admin check timed out, defaulting to false');
+          return false;
+        },
+      );
+      
+      final roleCheck = FirebaseAuthService.getUserRole(uid).timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          debugPrint('Role check timed out, defaulting to user');
+          return 'user';
+        },
+      );
+      
+      _isAdmin = await adminCheck;
+      _userRole = await roleCheck;
+    } catch (e) {
+      debugPrint('Error checking user role: $e');
+      _isAdmin = false;
+      _userRole = 'user';
+    }
+  }
+
+  // Manually refresh user role (useful after role changes)
+  Future<void> refreshUserRole() async {
+    if (_user != null) {
+      await _checkUserRole(_user!.uid);
+      notifyListeners();
     }
   }
 }

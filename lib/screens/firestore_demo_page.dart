@@ -14,7 +14,7 @@ class FirestoreDemoPage extends StatelessWidget {
       name: 'New Phone',
       description: 'A cool new phone from GizmoStore',
       price: 799,
-      image: 'assets/images/new_phone.jpg', // أضف قيمة للمعلمة image
+      image: 'https://m.media-amazon.com/images/I/61+btTqf7tL._AC_SL1500_.jpg', // صورة خارجية للهاتف
     );
 
     try {

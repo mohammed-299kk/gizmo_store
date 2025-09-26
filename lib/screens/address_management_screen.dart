@@ -9,7 +9,8 @@ class AddressManagementScreen extends StatefulWidget {
   const AddressManagementScreen({Key? key}) : super(key: key);
 
   @override
-  State<AddressManagementScreen> createState() => _AddressManagementScreenState();
+  State<AddressManagementScreen> createState() =>
+      _AddressManagementScreenState();
 }
 
 class _AddressManagementScreenState extends State<AddressManagementScreen> {
@@ -254,7 +255,8 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
                         children: [
                           const Icon(Icons.delete, size: 20, color: Colors.red),
                           const SizedBox(width: 8),
-                          Text(AppLocalizations.of(context)!.delete, style: const TextStyle(color: Colors.red)),
+                          Text(AppLocalizations.of(context)!.delete,
+                              style: const TextStyle(color: Colors.red)),
                         ],
                       ),
                     ),
@@ -338,11 +340,13 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
           addressId,
           address,
         );
-        _showSnackBar(AppLocalizations.of(context)!.addressUpdatedSuccessfully, Colors.green);
+        _showSnackBar(AppLocalizations.of(context)!.addressUpdatedSuccessfully,
+            Colors.green);
       } else {
         // Add new address
         await _firestoreService.addAddress(_currentUser!.uid, address);
-        _showSnackBar(AppLocalizations.of(context)!.addressAddedSuccessfully, Colors.green);
+        _showSnackBar(AppLocalizations.of(context)!.addressAddedSuccessfully,
+            Colors.green);
       }
     } catch (e) {
       _showSnackBar(
@@ -364,7 +368,8 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
         _currentUser!.uid,
         address.id!,
       );
-      _showSnackBar(AppLocalizations.of(context)!.addressSetAsDefault, Colors.green);
+      _showSnackBar(
+          AppLocalizations.of(context)!.addressSetAsDefault, Colors.green);
     } catch (e) {
       _showSnackBar(
         '${AppLocalizations.of(context)!.error}: ${e.toString()}',
@@ -380,7 +385,8 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(AppLocalizations.of(context)!.confirmDelete),
-        content: Text(AppLocalizations.of(context)!.confirmDeleteAddress(address.name)),
+        content: Text(
+            AppLocalizations.of(context)!.confirmDeleteAddress(address.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -406,7 +412,8 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
 
     try {
       await _firestoreService.deleteAddress(_currentUser!.uid, address.id!);
-      _showSnackBar(AppLocalizations.of(context)!.addressDeletedSuccessfully, Colors.green);
+      _showSnackBar(AppLocalizations.of(context)!.addressDeletedSuccessfully,
+          Colors.green);
     } catch (e) {
       _showSnackBar(
         '${AppLocalizations.of(context)!.error}: ${e.toString()}',
@@ -449,11 +456,7 @@ class _AddEditAddressDialogState extends State<AddEditAddressDialog> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
-  final _streetController = TextEditingController();
-  final _cityController = TextEditingController();
-  final _stateController = TextEditingController();
-  final _postalCodeController = TextEditingController();
-  final _countryController = TextEditingController();
+  final _addressController = TextEditingController();
   bool _isDefault = false;
   bool _isLoading = false;
 
@@ -463,14 +466,10 @@ class _AddEditAddressDialogState extends State<AddEditAddressDialog> {
     if (widget.address != null) {
       _nameController.text = widget.address!.name;
       _phoneController.text = widget.address!.phone;
-      _streetController.text = widget.address!.street;
-      _cityController.text = widget.address!.city;
-      _stateController.text = widget.address!.state;
-      _postalCodeController.text = widget.address!.postalCode;
-      _countryController.text = widget.address!.country;
+      // دمج جميع أجزاء العنوان في حقل واحد
+      _addressController.text =
+          '${widget.address!.street}, ${widget.address!.city}, ${widget.address!.state}, ${widget.address!.postalCode}, ${widget.address!.country}';
       _isDefault = widget.address!.isDefault;
-    } else {
-      _countryController.text = AppLocalizations.of(context)!.saudiArabia;
     }
   }
 
@@ -478,11 +477,7 @@ class _AddEditAddressDialogState extends State<AddEditAddressDialog> {
   void dispose() {
     _nameController.dispose();
     _phoneController.dispose();
-    _streetController.dispose();
-    _cityController.dispose();
-    _stateController.dispose();
-    _postalCodeController.dispose();
-    _countryController.dispose();
+    _addressController.dispose();
     super.dispose();
   }
 
@@ -504,7 +499,9 @@ class _AddEditAddressDialogState extends State<AddEditAddressDialog> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.address != null ? AppLocalizations.of(context)!.editAddress : AppLocalizations.of(context)!.addNewAddress,
+                    widget.address != null
+                        ? AppLocalizations.of(context)!.editAddress
+                        : AppLocalizations.of(context)!.addNewAddress,
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -513,76 +510,43 @@ class _AddEditAddressDialogState extends State<AddEditAddressDialog> {
                   const SizedBox(height: 24),
                   _buildTextField(
                     controller: _nameController,
-                    label: AppLocalizations.of(context)!.name,
-                    icon: Icons.person,
-                    validator: (value) => Address.validateName(value, context),
+                    label: 'اسم العنوان (مثل: المنزل، العمل)',
+                    icon: Icons.label,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'يرجى إدخال اسم العنوان';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  _buildTextField(
+                    controller: _addressController,
+                    label: 'العنوان الكامل',
+                    icon: Icons.location_on,
+                    maxLines: 3,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'يرجى إدخال العنوان الكامل';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 16),
                   _buildTextField(
                     controller: _phoneController,
-                    label: AppLocalizations.of(context)!.phoneNumber,
+                    label: 'رقم الهاتف (اختياري)',
                     icon: Icons.phone,
                     keyboardType: TextInputType.phone,
-                    validator: (value) => Address.validatePhone(value, context),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildTextField(
-                    controller: _streetController,
-                    label: AppLocalizations.of(context)!.streetAddress,
-                    icon: Icons.location_on,
-                    validator: (value) => Address.validateStreet(value, context),
-                    maxLines: 2,
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildTextField(
-                          controller: _cityController,
-                          label: AppLocalizations.of(context)!.city,
-                          icon: Icons.location_city,
-                          validator: (value) => Address.validateCity(value, context),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: _buildTextField(
-                          controller: _stateController,
-                          label: AppLocalizations.of(context)!.state,
-                          icon: Icons.map,
-                          validator: (value) => Address.validateState(value, context),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildTextField(
-                          controller: _postalCodeController,
-                          label: AppLocalizations.of(context)!.postalCode,
-                          icon: Icons.local_post_office,
-                          keyboardType: TextInputType.number,
-                          validator: (value) => Address.validatePostalCode(value, context),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: _buildTextField(
-                          controller: _countryController,
-                          label: AppLocalizations.of(context)!.country,
-                          icon: Icons.flag,
-                          validator: (value) => Address.validateCountry(value, context),
-                        ),
-                      ),
-                    ],
+                    validator: null,
                   ),
                   const SizedBox(height: 16),
                   CheckboxListTile(
-                    title: Text(AppLocalizations.of(context)!.setAsDefaultAddress),
+                    title:
+                        Text(AppLocalizations.of(context)!.setAsDefaultAddress),
                     value: _isDefault,
-                    onChanged: (value) => setState(() => _isDefault = value ?? false),
+                    onChanged: (value) =>
+                        setState(() => _isDefault = value ?? false),
                     controlAffinity: ListTileControlAffinity.leading,
                     contentPadding: EdgeInsets.zero,
                     activeColor: Colors.teal,
@@ -592,7 +556,8 @@ class _AddEditAddressDialogState extends State<AddEditAddressDialog> {
                     children: [
                       Expanded(
                         child: TextButton(
-                          onPressed: _isLoading ? null : () => Navigator.pop(context),
+                          onPressed:
+                              _isLoading ? null : () => Navigator.pop(context),
                           child: Text(AppLocalizations.of(context)!.cancel),
                         ),
                       ),
@@ -665,15 +630,29 @@ class _AddEditAddressDialogState extends State<AddEditAddressDialog> {
     setState(() => _isLoading = true);
 
     final now = DateTime.now();
+    final fullAddress = _addressController.text.trim();
+
+    // تقسيم العنوان الكامل إلى أجزاء (افتراضي)
+    final addressParts = fullAddress.split(',');
+    final street =
+        addressParts.isNotEmpty ? addressParts[0].trim() : fullAddress;
+    final city = addressParts.length > 1 ? addressParts[1].trim() : 'غير محدد';
+    final state = addressParts.length > 2 ? addressParts[2].trim() : 'غير محدد';
+    final postalCode =
+        addressParts.length > 3 ? addressParts[3].trim() : '00000';
+    final country = addressParts.length > 4
+        ? addressParts[4].trim()
+        : 'المملكة العربية السعودية';
+
     final address = Address(
       id: widget.address?.id,
       name: _nameController.text.trim(),
       phone: _phoneController.text.trim(),
-      street: _streetController.text.trim(),
-      city: _cityController.text.trim(),
-      state: _stateController.text.trim(),
-      postalCode: _postalCodeController.text.trim(),
-      country: _countryController.text.trim(),
+      street: street,
+      city: city,
+      state: state,
+      postalCode: postalCode,
+      country: country,
       isDefault: _isDefault,
       createdAt: widget.address?.createdAt ?? now,
       updatedAt: now,

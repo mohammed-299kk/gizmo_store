@@ -6,6 +6,7 @@ import 'dart:convert';
 import '../../models/order.dart';
 import '../../models/cart_item.dart';
 import '../../services/cart_service.dart';
+import '../../services/firebase_auth_service.dart';
 import '../../l10n/app_localizations.dart';
 
 class PaymentSimulationScreen extends StatefulWidget {
@@ -381,9 +382,19 @@ class _PaymentSimulationScreenState extends State<PaymentSimulationScreen> {
     });
 
     try {
-      final user = FirebaseAuth.instance.currentUser;
+      User? user = FirebaseAuth.instance.currentUser;
+      
+      // If user is not logged in, sign them in anonymously as guest
       if (user == null) {
-        throw Exception('المستخدم غير مسجل الدخول');
+        try {
+          final credential = await FirebaseAuthService.signInAnonymously(context);
+          user = credential?.user;
+          if (user == null) {
+            throw Exception('فشل في تسجيل الدخول كضيف');
+          }
+        } catch (e) {
+          throw Exception('غير قادر على معالجة الطلب: ${e.toString()}');
+        }
       }
 
       // تحويل CartItem إلى OrderItem

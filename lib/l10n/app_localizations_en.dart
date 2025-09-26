@@ -272,12 +272,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noResults => 'No results';
 
   @override
-  String get latestPhoneFromApple => 'Latest phone from Apple';
-
-  @override
-  String get samsungFlagshipPhone => 'Samsung\'s flagship phone';
-
-  @override
   String get resetFilters => 'Reset Filters';
 
   @override
@@ -494,10 +488,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get english => 'English';
 
   @override
-  String get arabic => 'العربية';
+  String get arabic => 'Arabic';
 
   @override
   String get continueAsGuest => 'Continue as Guest';
+
+  @override
+  String get adminLogin => 'Admin Login';
 
   @override
   String get signInSuccess => 'Sign in successful!';
@@ -607,7 +604,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get televisions => 'Televisions';
 
   @override
-  String get currency => 'SAR';
+  String get currency => 'SDG';
 
   @override
   String get clearCart => 'Clear Cart';
@@ -927,9 +924,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminPanelTitle => 'Gizmo Store Admin Panel';
 
   @override
-  String get adminLogin => 'Admin Login';
-
-  @override
   String get unauthorizedAccess =>
       'You are not authorized to access the admin panel';
 
@@ -1120,9 +1114,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get categoriesCreatedSuccessfully =>
       '✅ Categories created successfully';
-
-  @override
-  String get creatingSampleProducts => 'Creating sample products...';
 
   @override
   String get productsCreatedSuccessfully => '✅ Products created successfully';
@@ -1323,7 +1314,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pleaseSelectShippingMethod => 'Please select a shipping method';
 
   @override
-  String get languageArabic => 'العربية';
+  String get languageArabic => 'Arabic';
 
   @override
   String get languageEnglish => 'English';
@@ -1588,6 +1579,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get categoryCameras => 'Cameras';
+
+  @override
+  String get categoryGaming => 'Gaming';
 
   @override
   String get productIphone15ProDesc =>
@@ -2009,4 +2003,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dataUpdateFailed => 'Data update failed';
+
+  @override
+  String get checkoutPageComingSoon => 'Checkout page coming soon!';
+
+  @override
+  String errorAddingToCart(String error) {
+    return 'Error adding to cart: $error';
+  }
+
+  @override
+  String get logoutConfirmationMessage => 'Are you sure you want to logout?';
+
+  @override
+  String get pleaseLoginFirst =>
+      'Please login first to add products to favorites';
 }

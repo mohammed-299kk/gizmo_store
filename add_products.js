@@ -16,7 +16,11 @@ const products = [
     price: 4999,
     originalPrice: 5499,
     image: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400',
-    images: ['https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/iphone15pro_1_wnqhzd.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/iphone15pro_2_abc123.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/iphone15pro_3_def456.jpg'
+    ],
     category: 'هواتف ذكية',
     featured: true,
     isAvailable: true,
@@ -30,7 +34,11 @@ const products = [
     price: 4299,
     originalPrice: 4799,
     image: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400',
-    images: ['https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/galaxy_s24_1_xyz789.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/galaxy_s24_2_uvw012.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/galaxy_s24_3_rst345.jpg'
+    ],
     category: 'هواتف ذكية',
     featured: true,
     isAvailable: true,
@@ -44,7 +52,11 @@ const products = [
     price: 3599,
     originalPrice: 3999,
     image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400',
-    images: ['https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/pixel8pro_1_mno678.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/pixel8pro_2_pqr901.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/pixel8pro_3_stu234.jpg'
+    ],
     category: 'هواتف ذكية',
     featured: false,
     isAvailable: true,
@@ -58,7 +70,11 @@ const products = [
     price: 2899,
     originalPrice: 3299,
     image: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400',
-    images: ['https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/oneplus12_1_hij567.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/oneplus12_2_klm890.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/oneplus12_3_nop123.jpg'
+    ],
     category: 'هواتف ذكية',
     featured: false,
     isAvailable: true,
@@ -72,7 +88,11 @@ const products = [
     price: 2599,
     originalPrice: 2999,
     image: 'https://images.unsplash.com/photo-1567581935884-3349723552ca?w=400',
-    images: ['https://images.unsplash.com/photo-1567581935884-3349723552ca?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/xiaomi14_1_qrs456.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/xiaomi14_2_tuv789.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/xiaomi14_3_wxy012.jpg'
+    ],
     category: 'هواتف ذكية',
     featured: false,
     isAvailable: true,
@@ -88,7 +108,11 @@ const products = [
     price: 12999,
     originalPrice: 14999,
     image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400',
-    images: ['https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/macbook_pro_1_zab345.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/macbook_pro_2_cde678.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/macbook_pro_3_fgh901.jpg'
+    ],
     category: 'لابتوبات',
     featured: true,
     isAvailable: true,
@@ -102,7 +126,11 @@ const products = [
     price: 8999,
     originalPrice: 9999,
     image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400',
-    images: ['https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/dell_xps_1_ijk234.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/dell_xps_2_lmn567.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/dell_xps_3_opq890.jpg'
+    ],
     category: 'لابتوبات',
     featured: false,
     isAvailable: true,
@@ -116,7 +144,11 @@ const products = [
     price: 6999,
     originalPrice: 7999,
     image: 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400',
-    images: ['https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/hp_spectre_1_rst123.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/hp_spectre_2_uvw456.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/hp_spectre_3_xyz789.jpg'
+    ],
     category: 'لابتوبات',
     featured: false,
     isAvailable: true,
@@ -130,7 +162,11 @@ const products = [
     price: 7599,
     originalPrice: 8599,
     image: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400',
-    images: ['https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/thinkpad_1_abc012.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/thinkpad_2_def345.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/thinkpad_3_ghi678.jpg'
+    ],
     category: 'لابتوبات',
     featured: false,
     isAvailable: true,
@@ -144,7 +180,11 @@ const products = [
     price: 9999,
     originalPrice: 11999,
     image: 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400',
-    images: ['https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/asus_rog_1_jkl901.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/asus_rog_2_mno234.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/asus_rog_3_pqr567.jpg'
+    ],
     category: 'لابتوبات',
     featured: true,
     isAvailable: true,
@@ -160,7 +200,11 @@ const products = [
     price: 899,
     originalPrice: 999,
     image: 'https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=400',
-    images: ['https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/airpods_pro_1_stu890.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/airpods_pro_2_vwx123.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/airpods_pro_3_yza456.jpg'
+    ],
     category: 'سماعات',
     featured: true,
     isAvailable: true,
@@ -174,7 +218,11 @@ const products = [
     price: 1299,
     originalPrice: 1499,
     image: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400',
-    images: ['https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/sony_wh1000xm5_1_bcd789.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/sony_wh1000xm5_2_efg012.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/sony_wh1000xm5_3_hij345.jpg'
+    ],
     category: 'سماعات',
     featured: false,
     isAvailable: true,
@@ -188,7 +236,11 @@ const products = [
     price: 1599,
     originalPrice: 1799,
     image: 'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400',
-    images: ['https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/bose_qc_ultra_1_efg678.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/bose_qc_ultra_2_hij901.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/bose_qc_ultra_3_klm234.jpg'
+    ],
     category: 'سماعات',
     featured: false,
     isAvailable: true,
@@ -202,7 +254,11 @@ const products = [
     price: 1199,
     originalPrice: 1399,
     image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400',
-    images: ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/sennheiser_momentum_1_nop567.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/sennheiser_momentum_2_qrs890.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/sennheiser_momentum_3_tuv123.jpg'
+    ],
     category: 'سماعات',
     featured: false,
     isAvailable: true,
@@ -216,7 +272,11 @@ const products = [
     price: 599,
     originalPrice: 799,
     image: 'https://images.unsplash.com/photo-1558756520-22cfe5d382ca?w=400',
-    images: ['https://images.unsplash.com/photo-1558756520-22cfe5d382ca?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/jbl_live_660nc_1_wxy456.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/jbl_live_660nc_2_zab789.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/jbl_live_660nc_3_cde012.jpg'
+    ],
     category: 'سماعات',
     featured: false,
     isAvailable: true,
@@ -232,7 +292,11 @@ const products = [
     price: 1599,
     originalPrice: 1799,
     image: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400',
-    images: ['https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/apple_watch_s9_1_fgh345.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/apple_watch_s9_2_ijk678.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/apple_watch_s9_3_lmn901.jpg'
+    ],
     category: 'ساعات ذكية',
     featured: true,
     isAvailable: true,
@@ -246,7 +310,11 @@ const products = [
     price: 1299,
     originalPrice: 1499,
     image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400',
-    images: ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/galaxy_watch_6_1_opq234.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/galaxy_watch_6_2_rst567.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/galaxy_watch_6_3_uvw890.jpg'
+    ],
     category: 'ساعات ذكية',
     featured: false,
     isAvailable: true,
@@ -260,7 +328,11 @@ const products = [
     price: 2299,
     originalPrice: 2599,
     image: 'https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=400',
-    images: ['https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/fitbit_versa_4_1_xyz123.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/fitbit_versa_4_2_abc456.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/fitbit_versa_4_3_def789.jpg'
+    ],
     category: 'ساعات ذكية',
     featured: false,
     isAvailable: true,
@@ -274,7 +346,11 @@ const products = [
     price: 899,
     originalPrice: 1099,
     image: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=400',
-    images: ['https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/garmin_venu_3_1_ghi012.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/garmin_venu_3_2_jkl345.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/garmin_venu_3_3_mno678.jpg'
+    ],
     category: 'ساعات ذكية',
     featured: false,
     isAvailable: true,
@@ -288,7 +364,11 @@ const products = [
     price: 799,
     originalPrice: 999,
     image: 'https://images.unsplash.com/photo-1579586337278-3f436f25d4d6?w=400',
-    images: ['https://images.unsplash.com/photo-1579586337278-3f436f25d4d6?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/huawei_watch_gt4_1_abc012.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/huawei_watch_gt4_2_def345.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/huawei_watch_gt4_3_ghi678.jpg'
+    ],
     category: 'ساعات ذكية',
     featured: false,
     isAvailable: true,
@@ -304,7 +384,11 @@ const products = [
     price: 4999,
     originalPrice: 5499,
     image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400',
-    images: ['https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/amazfit_gtr_4_1_pqr901.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/amazfit_gtr_4_2_stu234.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/amazfit_gtr_4_3_vwx567.jpg'
+    ],
     category: 'أجهزة لوحية',
     featured: true,
     isAvailable: true,
@@ -318,7 +402,11 @@ const products = [
     price: 4299,
     originalPrice: 4799,
     image: 'https://images.unsplash.com/photo-1561154464-82e9adf32764?w=400',
-    images: ['https://images.unsplash.com/photo-1561154464-82e9adf32764?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/galaxy_tab_s9_1_yza890.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/galaxy_tab_s9_2_bcd123.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/galaxy_tab_s9_3_efg456.jpg'
+    ],
     category: 'أجهزة لوحية',
     featured: false,
     isAvailable: true,
@@ -332,7 +420,11 @@ const products = [
     price: 3599,
     originalPrice: 3999,
     image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400',
-    images: ['https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/logitech_mx_master_1_ijk234.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/logitech_mx_master_2_lmn567.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/logitech_mx_master_3_opq890.jpg'
+    ],
     category: 'أجهزة لوحية',
     featured: false,
     isAvailable: true,
@@ -346,7 +438,11 @@ const products = [
     price: 2299,
     originalPrice: 2699,
     image: 'https://images.unsplash.com/photo-1585790050230-5dd28404ccb9?w=400',
-    images: ['https://images.unsplash.com/photo-1585790050230-5dd28404ccb9?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/surface_pro_9_1_hij789.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/surface_pro_9_2_klm012.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/surface_pro_9_3_nop345.jpg'
+    ],
     category: 'أجهزة لوحية',
     featured: false,
     isAvailable: true,
@@ -360,7 +456,11 @@ const products = [
     price: 1999,
     originalPrice: 2399,
     image: 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400',
-    images: ['https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/lenovo_tab_p12_1_qrs678.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/lenovo_tab_p12_2_tuv901.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/lenovo_tab_p12_3_wxy234.jpg'
+    ],
     category: 'أجهزة لوحية',
     featured: false,
     isAvailable: true,
@@ -376,7 +476,11 @@ const products = [
     price: 199,
     originalPrice: 249,
     image: 'https://images.unsplash.com/photo-1609592806787-3d9c4d5b3b7d?w=400',
-    images: ['https://images.unsplash.com/photo-1609592806787-3d9c4d5b3b7d?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/magsafe_charger_1_zab345.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/magsafe_charger_2_cde678.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/magsafe_charger_3_fgh901.jpg'
+    ],
     category: 'إكسسوارات',
     featured: false,
     isAvailable: true,
@@ -404,7 +508,11 @@ const products = [
     price: 399,
     originalPrice: 499,
     image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400',
-    images: ['https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/surface_pro_9_1_jkl901.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/surface_pro_9_2_mno234.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/surface_pro_9_3_pqr567.jpg'
+    ],
     category: 'إكسسوارات',
     featured: false,
     isAvailable: true,
@@ -418,7 +526,11 @@ const products = [
     price: 499,
     originalPrice: 599,
     image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400',
-    images: ['https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400'],
+    images: [
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/magic_keyboard_1_rst123.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/magic_keyboard_2_uvw456.jpg',
+      'https://res.cloudinary.com/dq1anqzzx/image/upload/v1735659123/gizmo_store/products/magic_keyboard_3_xyz789.jpg'
+    ],
     category: 'إكسسوارات',
     featured: false,
     isAvailable: true,

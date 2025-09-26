@@ -58,16 +58,31 @@ class WishlistProvider with ChangeNotifier {
       for (var doc in snapshot.docs) {
         final data = doc.data() as Map<String, dynamic>;
         
-        // Fetch product data
-        final productSnapshot = await _firestore
-            .collection('products')
-            .doc(data['productId'])
-            .get();
-        
-        if (productSnapshot.exists) {
-          final product = Product.fromMap(productSnapshot.data()!, productSnapshot.id);
-          final wishlistItem = WishlistItem.fromMap(data, product);
+        try {
+          // إنشاء WishlistItem من البيانات المحفوظة مباشرة
+          final wishlistItem = WishlistItem.fromMap(data);
           newItems.add(wishlistItem);
+        } catch (e) {
+          print('Error creating wishlist item from data: $e');
+          // في حالة فشل إنشاء العنصر، نحاول الطريقة القديمة كـ fallback
+          try {
+            final productSnapshot = await _firestore
+                .collection('products')
+                .doc(data['productId'])
+                .get();
+            
+            if (productSnapshot.exists) {
+              final product = Product.fromMap(productSnapshot.data()!, productSnapshot.id);
+              final wishlistItem = WishlistItem(
+                id: data['id'] ?? '',
+                product: product,
+                dateAdded: DateTime.parse(data['dateAdded'] ?? DateTime.now().toIso8601String()),
+              );
+              newItems.add(wishlistItem);
+            }
+          } catch (fallbackError) {
+            print('Fallback method also failed: $fallbackError');
+          }
         }
       }
       

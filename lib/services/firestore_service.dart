@@ -15,11 +15,12 @@ class FirestoreService {
     try {
       QuerySnapshot snapshot = await _db.collection('categories').get();
       return snapshot.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
         return {
           'id': doc.id,
-          'name': doc['name'],
-          'image': doc['image'],
-          'icon': doc['icon'],
+          'name': data['name'],
+          'image': data['image'] ?? data['imageUrl'] ?? '',
+          'icon': data['icon'] ?? '',
         };
       }).toList();
     } on FirebaseException catch (e) {
@@ -27,7 +28,8 @@ class FirestoreService {
       throw FirestoreException('Failed to get categories: ${e.message}');
     } catch (e) {
       print('Error getting categories: $e');
-      throw FirestoreException('An unexpected error occurred while getting categories: $e');
+      throw FirestoreException(
+          'An unexpected error occurred while getting categories: $e');
     }
   }
 
@@ -44,7 +46,8 @@ class FirestoreService {
       throw FirestoreException('Failed to add product: ${e.message}');
     } catch (e) {
       print('Error adding product: $e');
-      throw FirestoreException('An unexpected error occurred while adding product: $e');
+      throw FirestoreException(
+          'An unexpected error occurred while adding product: $e');
     }
   }
 
@@ -52,10 +55,27 @@ class FirestoreService {
   Stream<List<Product>> getProducts() {
     return _db.collection('products').snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
-        final data = doc.data();
+        final data = Map<String, dynamic>.from(doc.data());
         return Product.fromMap(data, doc.id);
       }).toList();
     });
+  }
+
+  // Get all products as Future (for search functionality)
+  Future<List<Product>> getAllProducts() async {
+    try {
+      QuerySnapshot snapshot = await _db.collection('products').get();
+      return snapshot.docs.map((doc) {
+        return Product.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+      }).toList();
+    } on FirebaseException catch (e) {
+      print('Firebase Error getting all products: ${e.message}');
+      throw FirestoreException('Failed to get all products: ${e.message}');
+    } catch (e) {
+      print('Error getting all products: $e');
+      throw FirestoreException(
+          'An unexpected error occurred while getting all products: $e');
+    }
   }
 
   // Update existing product
@@ -67,7 +87,8 @@ class FirestoreService {
       throw FirestoreException('Failed to update product: ${e.message}');
     } catch (e) {
       print('Error updating product: $e');
-      throw FirestoreException('An unexpected error occurred while updating product: $e');
+      throw FirestoreException(
+          'An unexpected error occurred while updating product: $e');
     }
   }
 
@@ -80,7 +101,8 @@ class FirestoreService {
       throw FirestoreException('Failed to delete product: ${e.message}');
     } catch (e) {
       print('Error deleting product: $e');
-      throw FirestoreException('An unexpected error occurred while deleting product: $e');
+      throw FirestoreException(
+          'An unexpected error occurred while deleting product: $e');
     }
   }
 
@@ -97,7 +119,8 @@ class FirestoreService {
       throw FirestoreException('Failed to get product by ID: ${e.message}');
     } catch (e) {
       print('Error getting product by ID: $e');
-      throw FirestoreException('An unexpected error occurred while getting product by ID: $e');
+      throw FirestoreException(
+          'An unexpected error occurred while getting product by ID: $e');
     }
   }
 
@@ -107,7 +130,7 @@ class FirestoreService {
       QuerySnapshot snapshot = await _db
           .collection('products')
           .where('featured', isEqualTo: true)
-          .limit(10)
+          .limit(20)
           .get();
 
       return snapshot.docs.map((doc) {
@@ -118,7 +141,8 @@ class FirestoreService {
       throw FirestoreException('Failed to get featured products: ${e.message}');
     } catch (e) {
       print('Error getting featured products: $e');
-      throw FirestoreException('An unexpected error occurred while getting featured products: $e');
+      throw FirestoreException(
+          'An unexpected error occurred while getting featured products: $e');
     }
   }
 
@@ -135,38 +159,62 @@ class FirestoreService {
       }).toList();
     } on FirebaseException catch (e) {
       print('Firebase Error getting products by category: ${e.message}');
-      throw FirestoreException('Failed to get products by category: ${e.message}');
+      throw FirestoreException(
+          'Failed to get products by category: ${e.message}');
     } catch (e) {
       print('Error getting products by category: $e');
-      throw FirestoreException('An unexpected error occurred while getting products by category: $e');
+      throw FirestoreException(
+          'An unexpected error occurred while getting products by category: $e');
     }
   }
 
-  // Search products
+  // Search products with improved functionality
   Future<List<Product>> searchProducts(String query) async {
     try {
-      QuerySnapshot snapshot = await _db
-          .collection('products')
-          .where('name', isGreaterThanOrEqualTo: query)
-          .where('name', isLessThan: '${query}z')
-          .get();
+      if (query.isEmpty) {
+        // Return all products if query is empty
+        QuerySnapshot snapshot = await _db.collection('products').get();
+        return snapshot.docs.map((doc) {
+          return Product.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+        }).toList();
+      }
 
-      return snapshot.docs.map((doc) {
+      // Convert query to lowercase for case-insensitive search
+      String lowerQuery = query.toLowerCase();
+
+      // Get all products and filter locally for better search functionality
+      QuerySnapshot snapshot = await _db.collection('products').get();
+
+      List<Product> allProducts = snapshot.docs.map((doc) {
         return Product.fromMap(doc.data() as Map<String, dynamic>, doc.id);
       }).toList();
+
+      // Filter products based on name, category, and brand
+      List<Product> filteredProducts = allProducts.where((product) {
+        String productName = product.name.toLowerCase();
+        String productCategory = (product.category ?? '').toLowerCase();
+        String productBrand = (product.brand ?? '').toLowerCase();
+
+        return productName.contains(lowerQuery) ||
+            productCategory.contains(lowerQuery) ||
+            productBrand.contains(lowerQuery);
+      }).toList();
+
+      return filteredProducts;
     } on FirebaseException catch (e) {
       print('Firebase Error searching products: ${e.message}');
       throw FirestoreException('Failed to search products: ${e.message}');
     } catch (e) {
       print('Error searching products: $e');
-      throw FirestoreException('An unexpected error occurred while searching products: $e');
+      throw FirestoreException(
+          'An unexpected error occurred while searching products: $e');
     }
   }
 
   // ------------------------------
   // Orders
   // ------------------------------
-  
+
   /// Get user orders count
   Future<int> getUserOrderCount(String userId) async {
     try {
@@ -185,20 +233,21 @@ class FirestoreService {
   }
 
   /// Get user orders with status filtering option
-  Future<List<order_model.Order>> getUserOrders(String userId, {String? status}) async {
+  Future<List<order_model.Order>> getUserOrders(String userId,
+      {String? status}) async {
     try {
       Query query = _db
           .collection('orders')
           .where('userId', isEqualTo: userId)
           .orderBy('date', descending: true);
-      
+
       // Add status filter if specified
       if (status != null && status.isNotEmpty && status != 'الكل') {
         query = query.where('status', isEqualTo: status);
       }
-      
+
       final snapshot = await query.get();
-      
+
       return snapshot.docs.map((doc) {
         final data = doc.data() as Map<String, dynamic>;
         return order_model.Order.fromMap(data, documentId: doc.id);
@@ -208,45 +257,48 @@ class FirestoreService {
       throw FirestoreException('Failed to get user orders: ${e.message}');
     } catch (e) {
       print('Error getting user orders: $e');
-      throw FirestoreException('An unexpected error occurred while getting user orders: $e');
+      throw FirestoreException(
+          'An unexpected error occurred while getting user orders: $e');
     }
   }
 
   /// Get user orders as Stream for real-time updates
-  Stream<List<order_model.Order>> getUserOrdersStream(String userId, {String? status}) {
+  Stream<List<order_model.Order>> getUserOrdersStream(String userId,
+      {String? status}) {
     try {
       // Use simple query without orderBy to avoid composite index requirement
-      Query query = _db
-          .collection('orders')
-          .where('userId', isEqualTo: userId);
-      
+      Query query = _db.collection('orders').where('userId', isEqualTo: userId);
+
       // Add status filter if specified
       if (status != null && status.isNotEmpty && status != 'الكل') {
         query = query.where('status', isEqualTo: status);
       }
-      
+
       return query.snapshots().map((snapshot) {
         var orders = snapshot.docs.map((doc) {
           final data = doc.data() as Map<String, dynamic>;
           return order_model.Order.fromMap(data, documentId: doc.id);
         }).toList();
-        
+
         // Sort orders by date in memory instead of using orderBy
         orders.sort((a, b) => b.date.compareTo(a.date));
-        
+
         return orders;
       }).handleError((error) {
         print('Error in user orders stream: $error');
         if (error is FirebaseException) {
-          throw FirestoreException('Failed to get user orders: ${error.message}');
+          throw FirestoreException(
+              'Failed to get user orders: ${error.message}');
         } else {
-          throw FirestoreException('An unexpected error occurred while getting user orders: $error');
+          throw FirestoreException(
+              'An unexpected error occurred while getting user orders: $error');
         }
       });
     } catch (e) {
       print('Error creating user orders stream: $e');
       // Return stream containing error instead of empty stream
-      return Stream.error(FirestoreException('Failed to create orders stream: $e'));
+      return Stream.error(
+          FirestoreException('Failed to create orders stream: $e'));
     }
   }
 
@@ -263,14 +315,16 @@ class FirestoreService {
             name: 'iPhone 15 Pro Max',
             price: 1200.0,
             quantity: 1,
-            image: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400',
+            image:
+                'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400',
           ),
           order_model.OrderItem(
             id: '2',
             name: 'AirPods Pro',
             price: 250.0,
             quantity: 2,
-            image: 'https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=400',
+            image:
+                'https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=400',
           ),
         ],
         date: DateTime.now().subtract(const Duration(days: 2)),
@@ -291,7 +345,8 @@ class FirestoreService {
             name: 'Samsung Galaxy S24',
             price: 900.0,
             quantity: 1,
-            image: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400',
+            image:
+                'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400',
           ),
         ],
         date: DateTime.now().subtract(const Duration(days: 5)),
@@ -312,7 +367,8 @@ class FirestoreService {
             name: 'MacBook Pro 14"',
             price: 2500.0,
             quantity: 1,
-            image: 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400',
+            image:
+                'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400',
           ),
         ],
         date: DateTime.now().subtract(const Duration(days: 1)),
@@ -326,7 +382,7 @@ class FirestoreService {
       await _db.collection('orders').add(order1.toMap());
       await _db.collection('orders').add(order2.toMap());
       await _db.collection('orders').add(order3.toMap());
-      
+
       print('Sample orders added successfully');
     } catch (e) {
       print('Error adding sample orders: $e');
@@ -343,7 +399,7 @@ class FirestoreService {
       }
 
       final userId = user.uid;
-      
+
       // Sample wishlist items
       final wishlistItems = [
         {
@@ -351,7 +407,8 @@ class FirestoreService {
           'productId': '1',
           'productName': 'iPhone 15 Pro',
           'productPrice': 1200.0,
-          'productImage': 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400',
+          'productImage':
+              'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400',
           'dateAdded': DateTime.now().toIso8601String(),
         },
         {
@@ -359,16 +416,22 @@ class FirestoreService {
           'productId': '2',
           'productName': 'Samsung Galaxy Watch',
           'productPrice': 350.0,
-          'productImage': 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400',
-          'dateAdded': DateTime.now().subtract(const Duration(hours: 2)).toIso8601String(),
+          'productImage':
+              'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400',
+          'dateAdded': DateTime.now()
+              .subtract(const Duration(hours: 2))
+              .toIso8601String(),
         },
         {
           'id': (DateTime.now().millisecondsSinceEpoch + 2).toString(),
           'productId': '3',
           'productName': 'AirPods Pro',
           'productPrice': 250.0,
-          'productImage': 'https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=400',
-          'dateAdded': DateTime.now().subtract(const Duration(days: 1)).toIso8601String(),
+          'productImage':
+              'https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=400',
+          'dateAdded': DateTime.now()
+              .subtract(const Duration(days: 1))
+              .toIso8601String(),
         },
       ];
 
@@ -380,7 +443,7 @@ class FirestoreService {
             .doc(item['id'] as String)
             .set(item);
       }
-      
+
       print('Sample wishlist items added successfully');
     } catch (e) {
       print('Error adding sample wishlist items: $e');
@@ -397,7 +460,8 @@ class FirestoreService {
       throw FirestoreException('Failed to add order: ${e.message}');
     } catch (e) {
       print('Error adding order: $e');
-      throw FirestoreException('An unexpected error occurred while adding order: $e');
+      throw FirestoreException(
+          'An unexpected error occurred while adding order: $e');
     }
   }
 
@@ -413,7 +477,8 @@ class FirestoreService {
       throw FirestoreException('Failed to update order status: ${e.message}');
     } catch (e) {
       print('Error updating order status: $e');
-      throw FirestoreException('An unexpected error occurred while updating order status: $e');
+      throw FirestoreException(
+          'An unexpected error occurred while updating order status: $e');
     }
   }
 
@@ -431,7 +496,8 @@ class FirestoreService {
       throw FirestoreException('Failed to get order by ID: ${e.message}');
     } catch (e) {
       print('Error getting order by ID: $e');
-      throw FirestoreException('An unexpected error occurred while getting order by ID: $e');
+      throw FirestoreException(
+          'An unexpected error occurred while getting order by ID: $e');
     }
   }
 
@@ -455,7 +521,8 @@ class FirestoreService {
       });
     } catch (e) {
       print('Error getting user addresses: $e');
-      throw FirestoreException('An unexpected error occurred while getting addresses: $e');
+      throw FirestoreException(
+          'An unexpected error occurred while getting addresses: $e');
     }
   }
 
@@ -472,19 +539,21 @@ class FirestoreService {
           .doc(userId)
           .collection('addresses')
           .add(address.toFirestore());
-      
+
       return docRef.id;
     } on FirebaseException catch (e) {
       print('Firebase Error adding address: ${e.message}');
       throw FirestoreException('Failed to add address: ${e.message}');
     } catch (e) {
       print('Error adding address: $e');
-      throw FirestoreException('An unexpected error occurred while adding address: $e');
+      throw FirestoreException(
+          'An unexpected error occurred while adding address: $e');
     }
   }
 
   // Update existing address
-  Future<void> updateAddress(String userId, String addressId, Address address) async {
+  Future<void> updateAddress(
+      String userId, String addressId, Address address) async {
     try {
       // If updated address is default, remove default from other addresses
       if (address.isDefault) {
@@ -502,7 +571,8 @@ class FirestoreService {
       throw FirestoreException('Failed to update address: ${e.message}');
     } catch (e) {
       print('Error updating address: $e');
-      throw FirestoreException('An unexpected error occurred while updating address: $e');
+      throw FirestoreException(
+          'An unexpected error occurred while updating address: $e');
     }
   }
 
@@ -520,7 +590,8 @@ class FirestoreService {
       throw FirestoreException('Failed to delete address: ${e.message}');
     } catch (e) {
       print('Error deleting address: $e');
-      throw FirestoreException('An unexpected error occurred while deleting address: $e');
+      throw FirestoreException(
+          'An unexpected error occurred while deleting address: $e');
     }
   }
 
@@ -529,7 +600,7 @@ class FirestoreService {
     try {
       // Remove default from all addresses
       await _setAllAddressesNonDefault(userId);
-      
+
       // Set specified address as default
       await _db
           .collection('users')
@@ -545,7 +616,8 @@ class FirestoreService {
       throw FirestoreException('Failed to set default address: ${e.message}');
     } catch (e) {
       print('Error setting default address: $e');
-      throw FirestoreException('An unexpected error occurred while setting default address: $e');
+      throw FirestoreException(
+          'An unexpected error occurred while setting default address: $e');
     }
   }
 
@@ -559,7 +631,7 @@ class FirestoreService {
           .where('isDefault', isEqualTo: true)
           .limit(1)
           .get();
-      
+
       if (snapshot.docs.isNotEmpty) {
         final doc = snapshot.docs.first;
         return Address.fromFirestore(doc.data(), doc.id);
@@ -570,7 +642,8 @@ class FirestoreService {
       throw FirestoreException('Failed to get default address: ${e.message}');
     } catch (e) {
       print('Error getting default address: $e');
-      throw FirestoreException('An unexpected error occurred while getting default address: $e');
+      throw FirestoreException(
+          'An unexpected error occurred while getting default address: $e');
     }
   }
 
@@ -583,7 +656,7 @@ class FirestoreService {
           .collection('addresses')
           .doc(addressId)
           .get();
-      
+
       if (doc.exists && doc.data() != null) {
         return Address.fromFirestore(doc.data()!, doc.id);
       }
@@ -593,12 +666,14 @@ class FirestoreService {
       throw FirestoreException('Failed to get address: ${e.message}');
     } catch (e) {
       print('Error getting address: $e');
-      throw FirestoreException('An unexpected error occurred while getting address: $e');
+      throw FirestoreException(
+          'An unexpected error occurred while getting address: $e');
     }
   }
 
   // Helper function to remove default from all addresses
-  Future<void> _setAllAddressesNonDefault(String userId, {String? excludeAddressId}) async {
+  Future<void> _setAllAddressesNonDefault(String userId,
+      {String? excludeAddressId}) async {
     try {
       final snapshot = await _db
           .collection('users')
@@ -606,7 +681,7 @@ class FirestoreService {
           .collection('addresses')
           .where('isDefault', isEqualTo: true)
           .get();
-      
+
       final batch = _db.batch();
       for (final doc in snapshot.docs) {
         if (excludeAddressId == null || doc.id != excludeAddressId) {
@@ -619,7 +694,8 @@ class FirestoreService {
       await batch.commit();
     } catch (e) {
       print('Error setting addresses non-default: $e');
-      throw FirestoreException('An unexpected error occurred while updating addresses: $e');
+      throw FirestoreException(
+          'An unexpected error occurred while updating addresses: $e');
     }
   }
 }

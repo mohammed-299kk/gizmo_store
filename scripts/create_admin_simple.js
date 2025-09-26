@@ -25,8 +25,8 @@ const firestore = admin.firestore();
  * Create admin user with provided credentials
  */
 async function createAdminUser() {
-  const email = 'chatgpt0242@gmail.com';
-  const password = 'Chatgpt0242@';
+  const email = 'admin@gizmo.com';
+  const password = 'gizmo1234';
   const displayName = 'Admin User';
 
   try {

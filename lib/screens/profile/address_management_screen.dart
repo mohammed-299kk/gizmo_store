@@ -232,52 +232,76 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
   }
 
   void _showEditAddressDialog(String addressId, Map<String, dynamic> data) {
-    _showAddressDialog(addressId: addressId, initialData: data);
+    _showAddressDialog(addressId: addressId, addressData: data);
   }
 
-  void _showAddressDialog({String? addressId, Map<String, dynamic>? initialData}) {
-    final titleController = TextEditingController(text: initialData?['title'] ?? '');
-    final addressController = TextEditingController(text: initialData?['fullAddress'] ?? '');
-    final phoneController = TextEditingController(text: initialData?['phone'] ?? '');
-    bool isDefault = initialData?['isDefault'] ?? false;
+  void _showAddressDialog({String? addressId, Map<String, dynamic>? addressData}) {
+    final titleController = TextEditingController(
+      text: addressData?['title'] ?? '',
+    );
+    final addressController = TextEditingController(
+      text: addressData?['fullAddress'] ?? '',
+    );
+    final phoneController = TextEditingController(
+      text: addressData?['phone'] ?? '',
+    );
+    bool isDefault = addressData?['isDefault'] ?? false;
+    final formKey = GlobalKey<FormState>();
 
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
           title: Text(addressId == null ? 'إضافة عنوان جديد' : 'تعديل العنوان'),
-          content: SingleChildScrollView(
+          content: Form(
+            key: formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                TextField(
+                TextFormField(
                   controller: titleController,
                   decoration: const InputDecoration(
-                    labelText: 'عنوان العنوان (مثل: المنزل، العمل)',
+                    labelText: 'اسم العنوان (مثل: المنزل، العمل)',
                     border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.label),
                   ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'يرجى إدخال اسم العنوان';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
-                TextField(
+                TextFormField(
                   controller: addressController,
-                  maxLines: 3,
                   decoration: const InputDecoration(
                     labelText: 'العنوان الكامل',
                     border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.location_on),
+                    hintText: 'مثال: شارع الملك فهد، الرياض، المملكة العربية السعودية',
                   ),
+                  maxLines: 3,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'يرجى إدخال العنوان الكامل';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
-                TextField(
+                TextFormField(
                   controller: phoneController,
-                  keyboardType: TextInputType.phone,
                   decoration: const InputDecoration(
                     labelText: 'رقم الهاتف (اختياري)',
                     border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.phone),
                   ),
+                  keyboardType: TextInputType.phone,
                 ),
                 const SizedBox(height: 16),
                 CheckboxListTile(
-                  title: const Text('جعل هذا العنوان افتراضي'),
+                  title: const Text('تعيين كعنوان افتراضي'),
                   value: isDefault,
                   onChanged: (value) {
                     setState(() {
@@ -296,21 +320,21 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                if (titleController.text.trim().isEmpty || addressController.text.trim().isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('يرجى ملء جميع الحقول المطلوبة')),
+                if (formKey.currentState!.validate()) {
+                  _saveAddress(
+                    addressId: addressId,
+                    title: titleController.text.trim(),
+                    fullAddress: addressController.text.trim(),
+                    phone: phoneController.text.trim(),
+                    isDefault: isDefault,
                   );
-                  return;
+                  Navigator.pop(context);
                 }
-                _saveAddress(
-                  addressId: addressId,
-                  title: titleController.text.trim(),
-                  fullAddress: addressController.text.trim(),
-                  phone: phoneController.text.trim(),
-                  isDefault: isDefault,
-                );
-                Navigator.pop(context);
               },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFFB71C1C),
+                foregroundColor: Colors.white,
+              ),
               child: Text(addressId == null ? 'إضافة' : 'حفظ'),
             ),
           ],

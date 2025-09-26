@@ -602,18 +602,6 @@ abstract class AppLocalizations {
   /// **'No results'**
   String get noResults;
 
-  /// No description provided for @latestPhoneFromApple.
-  ///
-  /// In en, this message translates to:
-  /// **'Latest phone from Apple'**
-  String get latestPhoneFromApple;
-
-  /// No description provided for @samsungFlagshipPhone.
-  ///
-  /// In en, this message translates to:
-  /// **'Samsung\'s flagship phone'**
-  String get samsungFlagshipPhone;
-
   /// No description provided for @resetFilters.
   ///
   /// In en, this message translates to:
@@ -1043,7 +1031,7 @@ abstract class AppLocalizations {
   /// No description provided for @arabic.
   ///
   /// In en, this message translates to:
-  /// **'العربية'**
+  /// **'Arabic'**
   String get arabic;
 
   /// No description provided for @continueAsGuest.
@@ -1051,6 +1039,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Continue as Guest'**
   String get continueAsGuest;
+
+  /// No description provided for @adminLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin Login'**
+  String get adminLogin;
 
   /// No description provided for @signInSuccess.
   ///
@@ -1265,7 +1259,7 @@ abstract class AppLocalizations {
   /// Currency abbreviation
   ///
   /// In en, this message translates to:
-  /// **'SAR'**
+  /// **'SDG'**
   String get currency;
 
   /// Title for clear cart dialog
@@ -1892,12 +1886,6 @@ abstract class AppLocalizations {
   /// **'Gizmo Store Admin Panel'**
   String get adminPanelTitle;
 
-  /// No description provided for @adminLogin.
-  ///
-  /// In en, this message translates to:
-  /// **'Admin Login'**
-  String get adminLogin;
-
   /// No description provided for @unauthorizedAccess.
   ///
   /// In en, this message translates to:
@@ -2269,12 +2257,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'✅ Categories created successfully'**
   String get categoriesCreatedSuccessfully;
-
-  /// No description provided for @creatingSampleProducts.
-  ///
-  /// In en, this message translates to:
-  /// **'Creating sample products...'**
-  String get creatingSampleProducts;
 
   /// No description provided for @productsCreatedSuccessfully.
   ///
@@ -2651,7 +2633,7 @@ abstract class AppLocalizations {
   /// No description provided for @languageArabic.
   ///
   /// In en, this message translates to:
-  /// **'العربية'**
+  /// **'Arabic'**
   String get languageArabic;
 
   /// No description provided for @languageEnglish.
@@ -3175,6 +3157,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cameras'**
   String get categoryCameras;
+
+  /// Gaming category
+  ///
+  /// In en, this message translates to:
+  /// **'Gaming'**
+  String get categoryGaming;
 
   /// iPhone 15 Pro description
   ///
@@ -3943,6 +3931,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Data update failed'**
   String get dataUpdateFailed;
+
+  /// Message for checkout page under development
+  ///
+  /// In en, this message translates to:
+  /// **'Checkout page coming soon!'**
+  String get checkoutPageComingSoon;
+
+  /// Error message when adding item to cart fails
+  ///
+  /// In en, this message translates to:
+  /// **'Error adding to cart: {error}'**
+  String errorAddingToCart(String error);
+
+  /// Confirmation message for logout
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to logout?'**
+  String get logoutConfirmationMessage;
+
+  /// Message asking user to login before adding to favorites
+  ///
+  /// In en, this message translates to:
+  /// **'Please login first to add products to favorites'**
+  String get pleaseLoginFirst;
 }
 
 class _AppLocalizationsDelegate

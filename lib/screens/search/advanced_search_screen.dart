@@ -7,6 +7,7 @@ import '../../providers/wishlist_provider.dart';
 import '../../providers/cart_provider.dart';
 import '../product/product_detail_screen.dart';
 import '../../models/cart_item.dart';
+import '../../utils/image_helper.dart';
 
 class AdvancedSearchScreen extends StatefulWidget {
   const AdvancedSearchScreen({super.key});
@@ -21,21 +22,21 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
   bool _showFilters = false;
 
   List<String> get _categories => [
-    AppLocalizations.of(context)!.all,
-    AppLocalizations.of(context)!.smartphones,
-    AppLocalizations.of(context)!.computers,
-    AppLocalizations.of(context)!.tablets,
-    AppLocalizations.of(context)!.smartwatches,
-    AppLocalizations.of(context)!.headphones,
-    AppLocalizations.of(context)!.accessories,
-  ];
+        AppLocalizations.of(context)!.all,
+        AppLocalizations.of(context)!.smartphones,
+        AppLocalizations.of(context)!.computers,
+        AppLocalizations.of(context)!.tablets,
+        AppLocalizations.of(context)!.smartwatches,
+        AppLocalizations.of(context)!.headphones,
+        AppLocalizations.of(context)!.accessories,
+      ];
 
   List<String> get _sortOptions => [
-    AppLocalizations.of(context)!.newest,
-    AppLocalizations.of(context)!.priceLowToHigh,
-    AppLocalizations.of(context)!.priceHighToLow,
-    AppLocalizations.of(context)!.topRated,
-  ];
+        AppLocalizations.of(context)!.newest,
+        AppLocalizations.of(context)!.priceLowToHigh,
+        AppLocalizations.of(context)!.priceHighToLow,
+        AppLocalizations.of(context)!.topRated,
+      ];
 
   @override
   void initState() {
@@ -95,17 +96,29 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
             focusNode: _searchFocusNode,
             decoration: InputDecoration(
               hintText: AppLocalizations.of(context)!.searchForProducts,
-              prefixIcon: Icon(Icons.search, color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.6)),
+              prefixIcon: Icon(Icons.search,
+                  color: Theme.of(context)
+                      .iconTheme
+                      .color
+                      ?.withValues(alpha: 0.6)),
               suffixIcon: _searchController.text.isNotEmpty
                   ? IconButton(
-                      icon: Icon(Icons.clear, color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.6)),
+                      icon: Icon(Icons.clear,
+                          color: Theme.of(context)
+                              .iconTheme
+                              .color
+                              ?.withValues(alpha: 0.6)),
                       onPressed: () {
                         _searchController.clear();
                         searchProvider.clearSearchResults();
                       },
                     )
                   : IconButton(
-                      icon: Icon(Icons.mic, color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.6)),
+                      icon: Icon(Icons.mic,
+                          color: Theme.of(context)
+                              .iconTheme
+                              .color
+                              ?.withValues(alpha: 0.6)),
                       onPressed: () {
                         // Voice search
                         searchProvider.startVoiceSearch();
@@ -181,8 +194,10 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.secondary,
-                        foregroundColor: Theme.of(context).colorScheme.onSecondary,
+                        backgroundColor:
+                            Theme.of(context).colorScheme.secondary,
+                        foregroundColor:
+                            Theme.of(context).colorScheme.onSecondary,
                       ),
                       child: Text(AppLocalizations.of(context)!.reset),
                     ),
@@ -200,7 +215,8 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).colorScheme.primary,
-                        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                        foregroundColor:
+                            Theme.of(context).colorScheme.onPrimary,
                       ),
                       child: Text(AppLocalizations.of(context)!.apply),
                     ),
@@ -220,7 +236,9 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
       children: [
         Text(
           AppLocalizations.of(context)!.category,
-          style: TextStyle(color: Theme.of(context).textTheme.titleMedium?.color, fontWeight: FontWeight.w500),
+          style: TextStyle(
+              color: Theme.of(context).textTheme.titleMedium?.color,
+              fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 8),
         Wrap(
@@ -239,7 +257,9 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
               selectedColor: Theme.of(context).colorScheme.primary,
               backgroundColor: Theme.of(context).colorScheme.secondary,
               labelStyle: TextStyle(
-                color: isSelected ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).textTheme.bodyMedium?.color,
+                color: isSelected
+                    ? Theme.of(context).colorScheme.onPrimary
+                    : Theme.of(context).textTheme.bodyMedium?.color,
               ),
             );
           }).toList(),
@@ -254,7 +274,9 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
       children: [
         Text(
           AppLocalizations.of(context)!.priceRange,
-          style: TextStyle(color: Theme.of(context).textTheme.titleMedium?.color, fontWeight: FontWeight.w500),
+          style: TextStyle(
+              color: Theme.of(context).textTheme.titleMedium?.color,
+              fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 8),
         RangeSlider(
@@ -281,11 +303,13 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
           children: [
             Text(
               '${searchProvider.minPrice.toInt()} ${AppLocalizations.of(context)!.currency}',
-              style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
+              style: TextStyle(
+                  color: Theme.of(context).textTheme.bodySmall?.color),
             ),
             Text(
               '${searchProvider.maxPrice.toInt()} ${AppLocalizations.of(context)!.currency}',
-              style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
+              style: TextStyle(
+                  color: Theme.of(context).textTheme.bodySmall?.color),
             ),
           ],
         ),
@@ -299,7 +323,9 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
       children: [
         Text(
           AppLocalizations.of(context)!.minimumRating,
-          style: TextStyle(color: Theme.of(context).textTheme.titleMedium?.color, fontWeight: FontWeight.w500),
+          style: TextStyle(
+              color: Theme.of(context).textTheme.titleMedium?.color,
+              fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 8),
         Row(
@@ -315,7 +341,9 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
               },
               child: Icon(
                 Icons.star,
-                color: isSelected ? Theme.of(context).colorScheme.tertiary : Theme.of(context).colorScheme.secondary,
+                color: isSelected
+                    ? Theme.of(context).colorScheme.tertiary
+                    : Theme.of(context).colorScheme.secondary,
                 size: 30,
               ),
             );
@@ -331,13 +359,16 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
       children: [
         Text(
           AppLocalizations.of(context)!.sortBy,
-          style: TextStyle(color: Theme.of(context).textTheme.titleMedium?.color, fontWeight: FontWeight.w500),
+          style: TextStyle(
+              color: Theme.of(context).textTheme.titleMedium?.color,
+              fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 8),
         DropdownButton<String>(
           value: searchProvider.sortBy,
           dropdownColor: Theme.of(context).cardTheme.color,
-          style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+          style:
+              TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
           items: _sortOptions.map((option) {
             return DropdownMenuItem(
               value: option,
@@ -387,7 +418,8 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                     },
                     child: const Text(
                       'مسح الكل',
-                      style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary),
                     ),
                   ),
                 ],
@@ -407,7 +439,8 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                       searchProvider.removeFromSearchHistory(query);
                     },
                     backgroundColor: Theme.of(context).colorScheme.secondary,
-                    labelStyle: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+                    labelStyle: TextStyle(
+                        color: Theme.of(context).colorScheme.onSecondary),
                     deleteIconColor: Theme.of(context).iconTheme.color,
                   );
                 }).toList(),
@@ -546,17 +579,10 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                     child: Container(
                       width: double.infinity,
                       color: Theme.of(context).colorScheme.secondary,
-                      child: product.image != null && product.image!.isNotEmpty
-                          ? Image.network(
-                              product.image!,
+                      child: product.imageUrl != null && product.imageUrl!.isNotEmpty
+                          ? ImageHelper.buildCachedImage(
+                              imageUrl: product.imageUrl!,
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return const Icon(
-                                  Icons.image_not_supported,
-                                  color: Theme.of(context).iconTheme.color,
-                                  size: 40,
-                                );
-                              },
                             )
                           : const Icon(
                               Icons.image_not_supported,
@@ -581,7 +607,8 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text('${AppLocalizations.of(context)!.error}: $error'),
+                                    content: Text(
+                                        '${AppLocalizations.of(context)!.error}: $error'),
                                     backgroundColor: Colors.red,
                                   ),
                                 );
@@ -591,7 +618,10 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                           child: Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .surface
+                                  .withValues(alpha: 0.9),
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
@@ -648,7 +678,8 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                           Text(
                             '(${product.reviewsCount ?? 0})',
                             style: TextStyle(
-                              color: Theme.of(context).textTheme.bodySmall?.color,
+                              color:
+                                  Theme.of(context).textTheme.bodySmall?.color,
                               fontSize: 8,
                             ),
                           ),

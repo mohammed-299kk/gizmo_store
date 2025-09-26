@@ -10,16 +10,24 @@ class Product {
   final double? originalPrice;
   final String? image;
   final List<String>? images;
+  
+  // Getter for imageUrl compatibility
+  String? get imageUrl => image?.isNotEmpty == true 
+    ? image 
+    : 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=300&h=300&fit=crop&crop=center';
   final double? rating;
   final int? reviewsCount;
   final String? category;
+  final String? brand;
   final int? discount;
   final List<String>? specifications;
   final List<Map<String, dynamic>>? reviews;
   final bool featured;
+  final bool isAvailable;
   final String currency;
   final String location;
   final int? stock;
+  final DateTime? createdAt;
 
   Product({
     required this.id,
@@ -32,13 +40,16 @@ class Product {
     this.rating,
     this.reviewsCount,
     this.category,
+    this.brand,
     this.discount,
     this.specifications,
     this.reviews,
     this.featured = false,
+    this.isAvailable = true,
     this.currency = '',
     this.location = '',
     this.stock,
+    this.createdAt,
   });
 
   // تحويل من Map إلى Product
@@ -47,22 +58,45 @@ class Product {
       id: id,
       name: map['name'] ?? '',
       description: map['description'] ?? '',
-      price: (map['price'] ?? 0).toDouble(),
-      originalPrice: (map['originalPrice'] ?? 0).toDouble(),
-      image: map['image'],
-      images: List<String>.from(map['images'] ?? []),
-      rating: (map['rating'] ?? 0).toDouble(),
-      reviewsCount: map['reviewsCount'],
+      price: map['price'] != null 
+          ? (map['price'] is String 
+              ? double.tryParse(map['price']) ?? 0.0
+              : (map['price']).toDouble())
+          : 0.0,
+      originalPrice: map['originalPrice'] != null 
+          ? (map['originalPrice'] is String 
+              ? double.tryParse(map['originalPrice'])
+              : (map['originalPrice']).toDouble())
+          : null,
+      image: map['image'] ?? map['imageUrl'], // Support both 'image' and 'imageUrl'
+      images: map['images'] != null ? List<String>.from(map['images']) : [],
+      rating: map['rating'] != null 
+          ? (map['rating'] is String 
+              ? double.tryParse(map['rating']) ?? 0.0
+              : (map['rating']).toDouble())
+          : null,
+      reviewsCount: map['reviewsCount'] ?? map['reviewCount'], // Support both field names
       category: map['category'],
+      brand: map['brand'],
       discount: map['discount'] ?? 0,
-      specifications: List<String>.from(map['specifications'] ?? []),
-      reviews: (map['reviews'] as List?)
-          ?.map((e) => Map<String, dynamic>.from(e))
-          .toList(),
+      specifications: map['specifications'] != null 
+          ? (map['specifications'] is Map 
+              ? (map['specifications'] as Map).values.map((e) => e.toString()).toList()
+              : List<String>.from(map['specifications']))
+          : [],
+      reviews: map['reviews'] != null && map['reviews'] is List
+          ? (map['reviews'] as List).where((e) => e is Map).map((e) => Map<String, dynamic>.from(e as Map)).toList()
+          : null,
       featured: map['featured'] ?? false,
+      isAvailable: map['isAvailable'] ?? true,
       currency: map['currency'] ?? '',
       location: map['location'] ?? '',
-      stock: map['stock'],
+      stock: map['stock'] ?? map['stockQuantity'], // Support both field names
+      createdAt: map['createdAt'] != null 
+          ? (map['createdAt'] is DateTime 
+              ? map['createdAt'] 
+              : DateTime.tryParse(map['createdAt'].toString()))
+          : null,
     );
   }
 
@@ -78,13 +112,16 @@ class Product {
       'rating': rating,
       'reviewsCount': reviewsCount,
       'category': category,
+      'brand': brand,
       'discount': discount,
       'specifications': specifications,
       'reviews': reviews,
       'featured': featured,
+      'isAvailable': isAvailable,
       'currency': currency,
       'location': location,
       'stock': stock,
+      'createdAt': createdAt,
     };
   }
 }

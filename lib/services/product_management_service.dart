@@ -38,11 +38,11 @@ class ProductManagementService {
           description: 'أحدث هاتف من آبل بشاشة 6.7 بوصة وكاميرا احترافية ثلاثية العدسات مع معالج A17 Pro',
           price: 5499.0,
           originalPrice: 5999.0,
-          image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+          image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-max-naturaltitanium-select?wid=470&hei=556&fmt=png-alpha&.v=1692845702708',
           images: [
-            'https://images.unsplash.com/photo-1695048133142-1a20484d2569?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-max-naturaltitanium-select?wid=470&hei=556&fmt=png-alpha&.v=1692845702708',
+            'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-max-bluetitanium-select?wid=470&hei=556&fmt=png-alpha&.v=1692845702708',
+            'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-max-whitetitanium-select?wid=470&hei=556&fmt=png-alpha&.v=1692845702708'
           ],
           category: 'هواتف ذكية',
           rating: 4.9,
@@ -55,11 +55,10 @@ class ProductManagementService {
           description: 'هاتف سامسونج الرائد بقلم S Pen وكاميرا 200 ميجابكسل مع تقنيات الذكاء الاصطناعي',
           price: 4299.0,
           originalPrice: 4799.0,
-          image: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+          image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/samsung-galaxy-s24-ultra?wid=572&hei=572&fmt=jpeg&qlt=95&.v=1660803972361',
           images: [
-            'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1567581935884-3349723552ca?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/samsung-galaxy-s24-ultra?wid=572&hei=572&fmt=jpeg&qlt=95&.v=1660803972361',
+            'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
           ],
           category: 'هواتف ذكية',
           rating: 4.8,
@@ -112,10 +111,10 @@ class ProductManagementService {
           description: 'لابتوب آبل بمعالج M3 Pro وشاشة Retina عالية الدقة مثالي للمحترفين',
           price: 12999.0,
           originalPrice: 13999.0,
-          image: 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+          image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mbp16-spacegray-select-202310?wid=904&hei=840&fmt=jpeg&qlt=90&.v=1697311054290',
           images: [
-            'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mbp16-spacegray-select-202310?wid=904&hei=840&fmt=jpeg&qlt=90&.v=1697311054290',
+            'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mbp16-silver-select-202310?wid=904&hei=840&fmt=jpeg&qlt=90&.v=1697311054290'
           ],
           category: 'لابتوبات',
           rating: 4.9,
@@ -175,10 +174,10 @@ class ProductManagementService {
           description: 'سماعات آبل اللاسلكية بإلغاء الضوضاء النشط وجودة صوت فائقة',
           price: 1299.0,
           originalPrice: 1499.0,
-          image: 'https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+          image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/MQD83?wid=572&hei=572&fmt=jpeg&qlt=95&.v=1660803972361',
           images: [
-            'https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1484704849700-f032a568e944?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/MQD83?wid=572&hei=572&fmt=jpeg&qlt=95&.v=1660803972361',
+            'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/airpods-pro-2nd-gen-hero-select-202209?wid=976&hei=916&fmt=jpeg&qlt=90&.v=1660803972361'
           ],
           category: 'سماعات',
           rating: 4.8,
@@ -216,10 +215,10 @@ class ProductManagementService {
           description: 'ساعة آبل الذكية بمراقبة صحية متقدمة وتطبيقات متنوعة',
           price: 2199.0,
           originalPrice: 2399.0,
-          image: 'https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+          image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/watch-s9-45mm-pink-sport-band-pink-pdp-image-position-1__en-us?wid=570&hei=570&fmt=jpeg&qlt=95&.v=1692895395617',
           images: [
-            'https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/watch-s9-45mm-pink-sport-band-pink-pdp-image-position-1__en-us?wid=570&hei=570&fmt=jpeg&qlt=95&.v=1692895395617',
+            'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/watch-s9-45mm-midnight-sport-band-midnight-pdp-image-position-1__en-us?wid=570&hei=570&fmt=jpeg&qlt=95&.v=1692895395617'
           ],
           category: 'ساعات ذكية',
           rating: 4.8,
@@ -414,17 +413,17 @@ class ProductManagementService {
       
       // أجهزة لوحية
       Product(
-        id: '',
-        name: 'iPad Pro 12.9"',
-        description: 'آيباد برو بشاشة كبيرة ومعالج M2 للمحترفين',
-        price: 5999.0,
-        originalPrice: 6499.0,
-        image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        category: 'أجهزة لوحية',
-        rating: 4.8,
-        reviewsCount: 167,
-        featured: true,
-      ),
+          id: '',
+          name: 'iPad Pro 12.9"',
+          description: 'آيباد برو بشاشة كبيرة ومعالج M2 للمحترفين',
+          price: 5999.0,
+          originalPrice: 6499.0,
+          image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/ipad-pro-12-select-wifi-spacegray-202210?wid=940&hei=1112&fmt=png-alpha&.v=1664411207213',
+          category: 'أجهزة لوحية',
+          rating: 4.8,
+          reviewsCount: 167,
+          featured: true,
+        ),
       Product(
         id: '',
         name: 'Samsung Galaxy Tab S9',

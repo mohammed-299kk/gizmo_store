@@ -33,6 +33,52 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
+  void _showLogoutDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Row(
+            children: [
+              Icon(Icons.logout, color: Colors.red),
+              SizedBox(width: 8),
+              Text(
+                'تسجيل الخروج',
+                style: TextStyle(color: Colors.red),
+              ),
+            ],
+          ),
+          content: const Text(
+            'هل أنت متأكد من أنك تريد تسجيل الخروج والعودة إلى شاشة التسجيل؟',
+            style: TextStyle(fontSize: 16),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'إلغاء',
+                style: TextStyle(color: Colors.grey),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                context.read<auth.AuthProvider>().signOut();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('تسجيل الخروج'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,7 +132,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                         onSelected: (value) {
                           if (value == 'logout') {
-                            context.read<auth.AuthProvider>().signOut();
+                            _showLogoutDialog();
                           }
                         },
                         itemBuilder: (context) => [
@@ -94,9 +140,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             value: 'profile',
                             child: Row(
                               children: [
-                                const Icon(Icons.person),
+                                const Icon(Icons.person, color: Colors.orange),
                                 const SizedBox(width: 8),
-                                Text(context.read<auth.AuthProvider>().user?.email ?? 'Admin'),
+                                Text(
+                                  context.read<auth.AuthProvider>().user?.email ?? 'مدير النظام',
+                                  style: const TextStyle(fontSize: 14),
+                                ),
                               ],
                             ),
                           ),
@@ -104,9 +153,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             value: 'logout',
                             child: Row(
                               children: [
-                                Icon(Icons.logout),
+                                Icon(Icons.logout, color: Colors.red),
                                 SizedBox(width: 8),
-                                Text('Logout'),
+                                Text(
+                                  'تسجيل الخروج',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ],
                             ),
                           ),

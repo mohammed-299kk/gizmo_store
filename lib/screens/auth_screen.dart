@@ -24,19 +24,46 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isDark = themeProvider.isDarkMode;
-    
+
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF1A1A1A) : const Color(0xFFF5F5F5),
+      backgroundColor:
+          isDark ? const Color(0xFF1A1A1A) : const Color(0xFFF5F5F5),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Theme toggle button
+              // Top buttons row
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  // Admin access icon
+                  Container(
+                    decoration: BoxDecoration(
+                      color: isDark ? const Color(0xFF2A2A2A) : Colors.white,
+                      borderRadius: BorderRadius.circular(25),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.1),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/admin_login');
+                      },
+                      icon: Icon(
+                        Icons.admin_panel_settings,
+                        color: Colors.orange,
+                        size: 24,
+                      ),
+                      tooltip: 'دخول الأدمن',
+                    ),
+                  ),
+                  // Theme toggle button
                   Container(
                     decoration: BoxDecoration(
                       color: isDark ? const Color(0xFF2A2A2A) : Colors.white,
@@ -56,11 +83,14 @@ class _AuthScreenState extends State<AuthScreen> {
                         child: Icon(
                           isDark ? Icons.wb_sunny : Icons.nightlight_round,
                           key: ValueKey(isDark),
-                          color: isDark ? Colors.amber : const Color(0xFFB71C1C),
+                          color:
+                              isDark ? Colors.amber : const Color(0xFFB71C1C),
                           size: 24,
                         ),
                       ),
-                      tooltip: isDark ? 'التبديل للوضع النهاري' : 'التبديل للوضع الليلي',
+                      tooltip: isDark
+                          ? 'التبديل للوضع النهاري'
+                          : 'التبديل للوضع الليلي',
                     ),
                   ),
                 ],
@@ -75,7 +105,8 @@ class _AuthScreenState extends State<AuthScreen> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.15),
+                      color:
+                          Colors.black.withValues(alpha: isDark ? 0.3 : 0.15),
                       blurRadius: 15,
                       offset: const Offset(0, 8),
                     ),
@@ -108,7 +139,9 @@ class _AuthScreenState extends State<AuthScreen> {
 
               // Title
               Text(
-                isLogin ? AppLocalizations.of(context)!.welcomeBack : AppLocalizations.of(context)!.createNewAccount,
+                isLogin
+                    ? AppLocalizations.of(context)!.welcomeBack
+                    : AppLocalizations.of(context)!.createNewAccount,
                 style: TextStyle(
                   color: isDark ? Colors.white : Colors.black87,
                   fontSize: 28,
@@ -120,7 +153,9 @@ class _AuthScreenState extends State<AuthScreen> {
               const SizedBox(height: 8),
 
               Text(
-                isLogin ? AppLocalizations.of(context)!.signInToContinue : AppLocalizations.of(context)!.joinGizmoFamily,
+                isLogin
+                    ? AppLocalizations.of(context)!.signInToContinue
+                    : AppLocalizations.of(context)!.joinGizmoFamily,
                 style: TextStyle(
                   color: isDark ? Colors.white70 : Colors.black54,
                   fontSize: 16,
@@ -200,7 +235,9 @@ class _AuthScreenState extends State<AuthScreen> {
                           ],
                         )
                       : Text(
-                          isLogin ? AppLocalizations.of(context)!.signIn : AppLocalizations.of(context)!.createAccount,
+                          isLogin
+                              ? AppLocalizations.of(context)!.signIn
+                              : AppLocalizations.of(context)!.createAccount,
                           style: const TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold),
                         ),
@@ -211,9 +248,8 @@ class _AuthScreenState extends State<AuthScreen> {
 
               // Toggle button
               TextButton(
-                onPressed: isLoading
-                    ? null
-                    : () => setState(() => isLogin = !isLogin),
+                onPressed:
+                    isLoading ? null : () => setState(() => isLogin = !isLogin),
                 child: Text(
                   isLogin
                       ? AppLocalizations.of(context)!.noAccountCreateNew
@@ -230,15 +266,20 @@ class _AuthScreenState extends State<AuthScreen> {
               // Divider line
               Row(
                 children: [
-                  Expanded(child: Divider(color: isDark ? Colors.white24 : Colors.black26)),
+                  Expanded(
+                      child: Divider(
+                          color: isDark ? Colors.white24 : Colors.black26)),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
                       AppLocalizations.of(context)!.or,
-                      style: TextStyle(color: isDark ? Colors.white70 : Colors.black54),
+                      style: TextStyle(
+                          color: isDark ? Colors.white70 : Colors.black54),
                     ),
                   ),
-                  Expanded(child: Divider(color: isDark ? Colors.white24 : Colors.black26)),
+                  Expanded(
+                      child: Divider(
+                          color: isDark ? Colors.white24 : Colors.black26)),
                 ],
               ),
 
@@ -325,7 +366,7 @@ class _AuthScreenState extends State<AuthScreen> {
   }) {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     final isDark = themeProvider.isDarkMode;
-    
+
     return TextField(
       controller: controller,
       obscureText: isPassword ? !(isPasswordVisible ?? false) : obscureText,
@@ -338,12 +379,16 @@ class _AuthScreenState extends State<AuthScreen> {
         suffixIcon: isPassword && onToggleVisibility != null
             ? IconButton(
                 icon: Icon(
-                  (isPasswordVisible ?? false) ? Icons.visibility : Icons.visibility_off,
+                  (isPasswordVisible ?? false)
+                      ? Icons.visibility
+                      : Icons.visibility_off,
                   color: isDark ? Colors.white70 : Colors.black54,
                   size: 24,
                 ),
                 onPressed: onToggleVisibility,
-                tooltip: (isPasswordVisible ?? false) ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور',
+                tooltip: (isPasswordVisible ?? false)
+                    ? 'إخفاء كلمة المرور'
+                    : 'إظهار كلمة المرور',
                 splashRadius: 20,
               )
             : null,
@@ -351,11 +396,15 @@ class _AuthScreenState extends State<AuthScreen> {
         fillColor: isDark ? const Color(0xFF2A2A2A) : Colors.white,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: isDark ? BorderSide.none : const BorderSide(color: Colors.grey, width: 1),
+          borderSide: isDark
+              ? BorderSide.none
+              : const BorderSide(color: Colors.grey, width: 1),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: isDark ? BorderSide.none : const BorderSide(color: Colors.grey, width: 1),
+          borderSide: isDark
+              ? BorderSide.none
+              : const BorderSide(color: Colors.grey, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -405,7 +454,7 @@ class _AuthScreenState extends State<AuthScreen> {
           password: password,
           context: context,
         );
-        
+
         if (mounted) {
           _showSuccessMessage(AppLocalizations.of(context)!.signInSuccess);
         }
@@ -417,20 +466,21 @@ class _AuthScreenState extends State<AuthScreen> {
           name: name,
           context: context,
         );
-        
+
         if (mounted) {
-          _showSuccessMessage(AppLocalizations.of(context)!.accountCreatedSuccess);
+          _showSuccessMessage(
+              AppLocalizations.of(context)!.accountCreatedSuccess);
         }
       }
 
       if (mounted) {
         setState(() => isLoading = false);
-        
+
         // Navigate to home screen
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => const HomeScreen(),
+            builder: (context) => HomeScreen(),
           ),
         );
       }
@@ -451,14 +501,14 @@ class _AuthScreenState extends State<AuthScreen> {
 
       if (mounted) {
         setState(() => isLoading = false);
-        
+
         _showSuccessMessage(AppLocalizations.of(context)!.welcomeGuest);
 
         // Navigate to home screen
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => const HomeScreen(),
+            builder: (context) => HomeScreen(),
           ),
         );
       }

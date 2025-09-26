@@ -11,12 +11,9 @@ class ExtendedProductsService {
     try {
       final localizations = AppLocalizations.of(context)!;
       
-      // Check if extended products already exist
-      final existingProducts = await _firestore.collection('products').get();
-      if (existingProducts.docs.length > 20) {
-        print('Extended products already exist. Skipping setup.');
-        return;
-      }
+      // Clear existing products first to ensure fresh data
+      await clearAllProducts();
+      print('Cleared existing products. Adding fresh extended products...');
 
       final List<Product> allProducts = [];
 
@@ -27,8 +24,8 @@ class ExtendedProductsService {
           id: '',
           name: 'iPhone 15 Pro Max',
           description: 'أحدث هاتف من آبل بشاشة 6.7 بوصة وكاميرا احترافية',
-          price: 5499.0,
-          originalPrice: 5999.0,
+          price: 285000.0,
+          originalPrice: 320000.0,
           image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
           category: localizations.categorySmartphones,
           rating: 4.9,
@@ -39,8 +36,8 @@ class ExtendedProductsService {
           id: '',
           name: 'Samsung Galaxy S24 Plus',
           description: 'هاتف سامسونج الرائد بمعالج قوي وكاميرا متطورة',
-          price: 3999.0,
-          originalPrice: 4499.0,
+          price: 245000.0,
+          originalPrice: 275000.0,
           image: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
           category: localizations.categorySmartphones,
           rating: 4.7,
@@ -51,7 +48,7 @@ class ExtendedProductsService {
           id: '',
           name: 'OnePlus 12',
           description: 'هاتف ون بلس بأداء سريع وشحن فائق السرعة',
-          price: 2999.0,
+          price: 165000.0,
           image: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
           category: localizations.categorySmartphones,
           rating: 4.6,

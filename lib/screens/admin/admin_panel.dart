@@ -4,6 +4,7 @@ import 'package:gizmo_store/l10n/app_localizations.dart';
 import 'add_product_screen.dart';
 import 'add_category_screen.dart';
 import 'manage_products_screen.dart';
+import 'admin_products_screen.dart';
 import '../product_management_screen.dart';
 
 class AdminPanel extends StatefulWidget {
@@ -20,7 +21,7 @@ class _AdminPanelState extends State<AdminPanel> {
     const AdminDashboard(),
     const AddProductScreen(),
     const AddCategoryScreen(),
-    const ManageProductsScreen(),
+    const AdminProductsScreen(),
   ];
 
   @override

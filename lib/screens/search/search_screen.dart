@@ -9,7 +9,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gizmo_store/models/product.dart';
 
 // استيراد شاشة التفاصيل
-import 'package:gizmo_store/screens/product_detail_screen.dart';
+import 'package:gizmo_store/screens/product/product_detail_screen.dart';
+
+// استيراد خدمة Firestore
+import 'package:gizmo_store/services/firestore_service.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -41,37 +44,37 @@ class _SearchScreenState extends State<SearchScreen>
 
   // خيارات التصنيف والترتيب
   List<String> get _sortOptions => [
-    AppLocalizations.of(context)!.newest,
-    AppLocalizations.of(context)!.priceLowToHigh,
-    AppLocalizations.of(context)!.priceHighToLow,
-    AppLocalizations.of(context)!.topRated,
-  ];
+        AppLocalizations.of(context)!.newest,
+        AppLocalizations.of(context)!.priceLowToHigh,
+        AppLocalizations.of(context)!.priceHighToLow,
+        AppLocalizations.of(context)!.topRated,
+      ];
   List<String> get _categories => [
-    AppLocalizations.of(context)!.all,
-    AppLocalizations.of(context)!.smartphones,
-    AppLocalizations.of(context)!.computers,
-    AppLocalizations.of(context)!.tablets,
-    AppLocalizations.of(context)!.smartwatches,
-    AppLocalizations.of(context)!.headphones,
-    AppLocalizations.of(context)!.accessories,
-  ];
+        AppLocalizations.of(context)!.all,
+        AppLocalizations.of(context)!.smartphones,
+        AppLocalizations.of(context)!.computers,
+        AppLocalizations.of(context)!.tablets,
+        AppLocalizations.of(context)!.smartwatches,
+        AppLocalizations.of(context)!.headphones,
+        AppLocalizations.of(context)!.accessories,
+      ];
 
   List<String> get _brands => [
-    AppLocalizations.of(context)!.all,
-    'Apple',
-    'Samsung',
-    'Sony',
-    'Dell',
-    'Huawei',
-    'Xiaomi'
-  ];
+        AppLocalizations.of(context)!.all,
+        'Apple',
+        'Samsung',
+        'Sony',
+        'Dell',
+        'Huawei',
+        'Xiaomi'
+      ];
 
   String _formatPrice(double price) {
     String priceStr = price.toStringAsFixed(2);
     List<String> parts = priceStr.split('.');
     String integerPart = parts[0];
     String decimalPart = parts[1];
-    
+
     // Add thousand separators
     String formattedInteger = '';
     for (int i = 0; i < integerPart.length; i++) {
@@ -80,7 +83,7 @@ class _SearchScreenState extends State<SearchScreen>
       }
       formattedInteger += integerPart[i];
     }
-    
+
     return '$formattedInteger.$decimalPart';
   }
 
@@ -101,7 +104,7 @@ class _SearchScreenState extends State<SearchScreen>
 
   void _onSearchChanged() {
     if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
-    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+    _debounceTimer = Timer(const Duration(milliseconds: 300), () {
       _performSearch(_searchController.text);
     });
   }
@@ -127,75 +130,38 @@ class _SearchScreenState extends State<SearchScreen>
     });
 
     try {
-      // Load products from Firestore
-      final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('products')
-          .where('isAvailable', isEqualTo: true)
-          .get();
-
-      final List<Product> products = snapshot.docs.map((doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        return Product(
-          id: doc.id,
-          name: data['name'] ?? '',
-          price: (data['price'] ?? 0).toDouble(),
-          image: data['image'] ?? '',
-          description: data['description'] ?? '',
-          category: data['category'] ?? '',
-          rating: (data['rating'] ?? 0).toDouble(),
-          reviewsCount: data['reviewsCount'] ?? 0,
-          featured: data['featured'] ?? false,
-        );
-      }).toList();
-
-      setState(() {
-        _searchResults = products.isNotEmpty ? products : _getSampleProducts();
-        _isSearching = false;
-      });
-    } catch (e) {
-      // Handle error gracefully with sample data
-      setState(() {
-        _searchResults = _getSampleProducts();
-        _isSearching = false;
-      });
+      // Use FirestoreService to load all products
+      final List<Product> products = await FirestoreService().getAllProducts();
 
       if (mounted) {
+        setState(() {
+          _searchResults =
+              products;
+          _isSearching = false;
+        });
+      }
+    } catch (e) {
+      print('Error loading products: $e');
+      // Handle error gracefully
+      if (mounted) {
+        setState(() {
+          _searchResults = [];
+          _isSearching = false;
+        });
+
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.failedToLoadProducts),
-            backgroundColor: Theme.of(context).colorScheme.secondary,
+          const SnackBar(
+            content:
+                Text('تعذر تحميل المنتجات من الخادم'),
+            backgroundColor: Colors.orange,
+            duration: Duration(seconds: 2),
           ),
         );
       }
     }
   }
 
-  List<Product> _getSampleProducts() {
-    return [
-      Product(
-        id: '1',
-        name: 'iPhone 15 Pro',
-        price: 4999.0,
-        image: 'https://via.placeholder.com/300x300?text=iPhone+15+Pro',
-        description: AppLocalizations.of(context)!.latestPhoneFromApple,
-        category: AppLocalizations.of(context)!.smartphones,
-        rating: 4.8,
-        reviewsCount: 150,
-        featured: true,
-      ),
-      Product(
-        id: '2',
-        name: 'Samsung Galaxy S24',
-        price: 3999.0,
-        image: 'https://via.placeholder.com/300x300?text=Galaxy+S24',
-        description: AppLocalizations.of(context)!.samsungFlagshipPhone,
-        category: AppLocalizations.of(context)!.smartphones,
-        rating: 4.7,
-        reviewsCount: 120,
-        featured: false,
-      ),
-    ];
-  }
+
 
   @override
   void dispose() {
@@ -216,75 +182,42 @@ class _SearchScreenState extends State<SearchScreen>
       _isSearching = true;
     });
 
-    _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
+    _debounceTimer = Timer(const Duration(milliseconds: 300), () async {
       try {
         List<Product> results;
 
         if (query.isEmpty) {
-          // Load all products if query is empty
-          final QuerySnapshot snapshot = await FirebaseFirestore.instance
-              .collection('products')
-              .where('isAvailable', isEqualTo: true)
-              .get();
-
-          results = snapshot.docs.map((doc) {
-            final data = doc.data() as Map<String, dynamic>;
-            return Product(
-              id: doc.id,
-              name: data['name'] ?? '',
-              price: (data['price'] ?? 0).toDouble(),
-              image: data['image'] ?? '',
-              description: data['description'] ?? '',
-              category: data['category'] ?? '',
-              rating: (data['rating'] ?? 0).toDouble(),
-              reviewsCount: data['reviewsCount'] ?? 0,
-              featured: data['featured'] ?? false,
-            );
-          }).toList();
+          // Use FirestoreService to get all products
+          results = await FirestoreService().getAllProducts();
         } else {
-          // Search products by name, description, or category
-          final QuerySnapshot snapshot = await FirebaseFirestore.instance
-              .collection('products')
-              .where('isAvailable', isEqualTo: true)
-              .get();
-
-          results = snapshot.docs.map((doc) {
-            final data = doc.data() as Map<String, dynamic>;
-            return Product(
-              id: doc.id,
-              name: data['name'] ?? '',
-              price: (data['price'] ?? 0).toDouble(),
-              image: data['image'] ?? '',
-              description: data['description'] ?? '',
-              category: data['category'] ?? '',
-              rating: (data['rating'] ?? 0).toDouble(),
-              reviewsCount: data['reviewsCount'] ?? 0,
-              featured: data['featured'] ?? false,
-            );
-          }).where((product) {
-            final searchLower = query.toLowerCase();
-            return product.name.toLowerCase().contains(searchLower) ||
-                   product.description.toLowerCase().contains(searchLower) ||
-                   (product.category ?? '').toLowerCase().contains(searchLower);
-          }).toList();
+          // Use improved search from FirestoreService
+          results = await FirestoreService().searchProducts(query.trim());
         }
 
-        setState(() {
-          _searchResults = results;
-          _applyFilters();
-          _isSearching = false;
-        });
+        if (mounted) {
+          setState(() {
+            _searchResults = results;
+            _applyFilters();
+            _isSearching = false;
+          });
+        }
       } catch (e) {
-        setState(() {
-          _searchResults = _getSampleProducts().where((product) {
-            if (query.isEmpty) return true;
-            final searchLower = query.toLowerCase();
-            return product.name.toLowerCase().contains(searchLower) ||
-                   product.description.toLowerCase().contains(searchLower) ||
-                   (product.category ?? '').toLowerCase().contains(searchLower);
-          }).toList();
-          _isSearching = false;
-        });
+        print('Search error: $e');
+        if (mounted) {
+          setState(() {
+            _searchResults = [];
+            _isSearching = false;
+          });
+
+          // Show error message to user
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('حدث خطأ أثناء البحث، يتم عرض منتجات تجريبية'),
+              backgroundColor: Colors.orange,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
       }
     });
   }
@@ -292,14 +225,15 @@ class _SearchScreenState extends State<SearchScreen>
   void _applyFilters() {
     setState(() {
       _searchResults = _searchResults.where((product) {
-        bool categoryMatch = _selectedCategory == AppLocalizations.of(context)!.all ||
-            (product.category ?? '') == _selectedCategory;
+        bool categoryMatch =
+            _selectedCategory == AppLocalizations.of(context)!.all ||
+                (product.category ?? '') == _selectedCategory;
         bool priceMatch =
             product.price >= _minPrice && product.price <= _maxPrice;
 
         // فلترة حسب العلامة التجارية
-        bool brandMatch =
-            _selectedBrand == AppLocalizations.of(context)!.all || product.name.contains(_selectedBrand);
+        bool brandMatch = _selectedBrand == AppLocalizations.of(context)!.all ||
+            product.name.contains(_selectedBrand);
 
         return categoryMatch && priceMatch && brandMatch;
       }).toList();
@@ -425,20 +359,20 @@ class _SearchScreenState extends State<SearchScreen>
             ),
             const SizedBox(height: 16),
             ..._sortOptions.map((option) => ListTile(
-              title: Text(option),
-              leading: Radio<String>(
-                value: option,
-                groupValue: _sortBy,
-                onChanged: (value) {
-                  setState(() {
-                    _sortBy = value!;
-                  });
-                  _applyFilters();
-                  Navigator.pop(context);
-                },
-                activeColor: Colors.red.shade600,
-              ),
-            )),
+                  title: Text(option),
+                  leading: Radio<String>(
+                    value: option,
+                    groupValue: _sortBy,
+                    onChanged: (value) {
+                      setState(() {
+                        _sortBy = value!;
+                      });
+                      _applyFilters();
+                      Navigator.pop(context);
+                    },
+                    activeColor: Colors.red.shade600,
+                  ),
+                )),
           ],
         ),
       ),
@@ -516,7 +450,8 @@ class _SearchScreenState extends State<SearchScreen>
                       controller: _searchController,
                       focusNode: _searchFocusNode,
                       decoration: InputDecoration(
-                        hintText: AppLocalizations.of(context)!.searchForProducts,
+                        hintText:
+                            AppLocalizations.of(context)!.searchForProducts,
                         hintStyle: TextStyle(
                           color: Colors.grey.shade500,
                           fontSize: 16,
@@ -567,7 +502,8 @@ class _SearchScreenState extends State<SearchScreen>
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
-                      onSubmitted: (_) => _performSearch(_searchController.text),
+                      onSubmitted: (_) =>
+                          _performSearch(_searchController.text),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -591,11 +527,15 @@ class _SearchScreenState extends State<SearchScreen>
                         isActive: _showAdvancedFilters,
                       ),
                       _buildQuickActionButton(
-                        icon: _viewMode == ViewMode.grid ? Icons.view_list : Icons.grid_view,
+                        icon: _viewMode == ViewMode.grid
+                            ? Icons.view_list
+                            : Icons.grid_view,
                         label: _viewMode == ViewMode.grid ? 'قائمة' : 'شبكة',
                         onTap: () {
                           setState(() {
-                            _viewMode = _viewMode == ViewMode.grid ? ViewMode.list : ViewMode.grid;
+                            _viewMode = _viewMode == ViewMode.grid
+                                ? ViewMode.list
+                                : ViewMode.grid;
                           });
                         },
                       ),
@@ -610,8 +550,6 @@ class _SearchScreenState extends State<SearchScreen>
               ),
             ),
           ),
-
-
 
           // Enhanced Advanced filters with animation
           SizeTransition(
@@ -739,8 +677,10 @@ class _SearchScreenState extends State<SearchScreen>
                         TextButton(
                           onPressed: () {
                             setState(() {
-                              _selectedCategory = AppLocalizations.of(context)!.all;
-                              _selectedBrand = AppLocalizations.of(context)!.all;
+                              _selectedCategory =
+                                  AppLocalizations.of(context)!.all;
+                              _selectedBrand =
+                                  AppLocalizations.of(context)!.all;
                               _minPrice = 0;
                               _maxPrice = 5000;
                             });
@@ -779,8 +719,6 @@ class _SearchScreenState extends State<SearchScreen>
             ),
           ),
           if (_showAdvancedFilters) const SizedBox(height: 16),
-
-
 
           // Enhanced Results Section
           Expanded(
@@ -848,8 +786,10 @@ class _SearchScreenState extends State<SearchScreen>
                                 onPressed: () {
                                   _searchController.clear();
                                   setState(() {
-                                    _selectedCategory = AppLocalizations.of(context)!.all;
-                                    _selectedBrand = AppLocalizations.of(context)!.all;
+                                    _selectedCategory =
+                                        AppLocalizations.of(context)!.all;
+                                    _selectedBrand =
+                                        AppLocalizations.of(context)!.all;
                                     _minPrice = 0;
                                     _maxPrice = 5000;
                                   });
@@ -886,7 +826,8 @@ class _SearchScreenState extends State<SearchScreen>
                             Container(
                               padding: const EdgeInsets.symmetric(vertical: 12),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     'النتائج (${_searchResults.length})',
@@ -921,7 +862,9 @@ class _SearchScreenState extends State<SearchScreen>
                                         ),
                                         const SizedBox(width: 4),
                                         Text(
-                                          _viewMode == ViewMode.grid ? 'شبكة' : 'قائمة',
+                                          _viewMode == ViewMode.grid
+                                              ? 'شبكة'
+                                              : 'قائمة',
                                           style: TextStyle(
                                             fontSize: 12,
                                             fontWeight: FontWeight.w600,
@@ -937,35 +880,69 @@ class _SearchScreenState extends State<SearchScreen>
                             // Products grid/list
                             Expanded(
                               child: _viewMode == ViewMode.grid
-                                  ? GridView.builder(
-                                      padding: const EdgeInsets.only(bottom: 16),
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        childAspectRatio: 0.75,
-                                        crossAxisSpacing: 12,
-                                        mainAxisSpacing: 12,
-                                      ),
-                                      itemCount: _currentPageResults.length,
-                                      itemBuilder: (context, index) {
-                                        final product = _currentPageResults[index];
-                                        return _buildProductItem(product);
+                                  ? LayoutBuilder(
+                                      builder: (context, constraints) {
+                                        // تحديد عدد الأعمدة بناءً على عرض الشاشة للبحث
+                                        int crossAxisCount;
+                                        double childAspectRatio;
+                                        double spacing;
+                                        
+                                        if (constraints.maxWidth > 1200) {
+                                          // شاشات كبيرة جداً (Desktop)
+                                          crossAxisCount = 4;
+                                          childAspectRatio = 0.8;
+                                          spacing = 16;
+                                        } else if (constraints.maxWidth > 800) {
+                                          // شاشات متوسطة (Tablet)
+                                          crossAxisCount = 3;
+                                          childAspectRatio = 0.75;
+                                          spacing = 14;
+                                        } else if (constraints.maxWidth > 600) {
+                                          // شاشات صغيرة (Large Phone)
+                                          crossAxisCount = 2;
+                                          childAspectRatio = 0.75;
+                                          spacing = 12;
+                                        } else {
+                                          // شاشات صغيرة جداً (Small Phone)
+                                          crossAxisCount = 2;
+                                          childAspectRatio = 0.7;
+                                          spacing = 10;
+                                        }
+                                        
+                                        return GridView.builder(
+                                          padding: const EdgeInsets.only(bottom: 16),
+                                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: crossAxisCount,
+                                            childAspectRatio: childAspectRatio,
+                                            crossAxisSpacing: spacing,
+                                            mainAxisSpacing: spacing,
+                                          ),
+                                          itemCount: _currentPageResults.length,
+                                          itemBuilder: (context, index) {
+                                            final product = _currentPageResults[index];
+                                            return _buildProductItem(product);
+                                          },
+                                        );
                                       },
                                     )
                                   : ListView.builder(
-                                      padding: const EdgeInsets.only(bottom: 16),
+                                      padding:
+                                          const EdgeInsets.only(bottom: 16),
                                       itemCount: _currentPageResults.length,
                                       itemBuilder: (context, index) {
-                                        final product = _currentPageResults[index];
+                                        final product =
+                                            _currentPageResults[index];
                                         return _buildProductListItem(product);
                                       },
                                     ),
                             ),
                             // Load more button
-                            if (_currentPageResults.length < _searchResults.length)
+                            if (_currentPageResults.length <
+                                _searchResults.length)
                               Container(
                                 width: double.infinity,
-                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16),
                                 child: ElevatedButton(
                                   onPressed: _loadMore,
                                   style: ElevatedButton.styleFrom(
@@ -975,7 +952,8 @@ class _SearchScreenState extends State<SearchScreen>
                                       color: Colors.red.shade300,
                                       width: 1,
                                     ),
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
                                     ),
@@ -1015,7 +993,6 @@ class _SearchScreenState extends State<SearchScreen>
           MaterialPageRoute(
             builder: (context) => ProductDetailScreen(
               product: product,
-              cart: const [],
             ),
           ),
         );
@@ -1070,26 +1047,83 @@ class _SearchScreenState extends State<SearchScreen>
                         top: Radius.circular(16),
                       ),
                       child: CachedNetworkImage(
-                        imageUrl: product.image!,
+                        imageUrl: product.imageUrl ?? '',
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                        // تحسينات الأداء للبحث
+                        memCacheWidth: 300,
+                        memCacheHeight: 250,
+                        maxWidthDiskCache: 600,
+                        maxHeightDiskCache: 500,
+                        fadeInDuration: const Duration(milliseconds: 200),
+                        fadeOutDuration: const Duration(milliseconds: 100),
+                        httpHeaders: const {
+                          'Cache-Control': 'max-age=86400',
+                          'Accept': 'image/webp,image/jpeg,image/png,*/*',
+                        },
                         placeholder: (context, url) => Container(
-                          color: Colors.grey.shade100,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.grey.shade100,
+                                Colors.grey.shade50,
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
                           child: const Center(
-                            child: CircularProgressIndicator(
-                              color: Color(0xFFB71C1C),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CircularProgressIndicator(
+                                  color: Color(0xFFB71C1C),
+                                  strokeWidth: 2,
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  'تحميل...',
+                                  style: TextStyle(
+                                    color: Color(0xFFB71C1C),
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
                         errorWidget: (context, url, error) => Container(
-                          color: Colors.grey.shade100,
-                          child: const Icon(
-                            Icons.image_not_supported,
-                            color: Colors.grey,
-                            size: 40,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.red.shade100,
+                                Colors.red.shade50,
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
+                          child: const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.image_not_supported,
+                                color: Colors.grey,
+                                size: 40,
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                'فشل التحميل',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 8,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: double.infinity,
                       ),
                     ),
                     // Rating badge
@@ -1133,7 +1167,7 @@ class _SearchScreenState extends State<SearchScreen>
             Expanded(
               flex: 2,
               child: Padding(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1240,7 +1274,6 @@ class _SearchScreenState extends State<SearchScreen>
           MaterialPageRoute(
             builder: (context) => ProductDetailScreen(
               product: product,
-              cart: const [],
             ),
           ),
         );
@@ -1269,26 +1302,87 @@ class _SearchScreenState extends State<SearchScreen>
                     bottomLeft: Radius.circular(16),
                   ),
                   child: CachedNetworkImage(
-                    imageUrl: product.image!,
+                    imageUrl: product.imageUrl!,
                     width: 120,
                     height: 120,
+                    fit: BoxFit.cover,
+                    // تحسينات الأداء للقائمة
+                    memCacheWidth: 240, // ضعف الحجم للشاشات عالية الدقة
+                    memCacheHeight: 240,
+                    maxWidthDiskCache: 480,
+                    maxHeightDiskCache: 480,
+                    fadeInDuration: const Duration(milliseconds: 150),
+                    fadeOutDuration: const Duration(milliseconds: 100),
+                    httpHeaders: const {
+                      'Cache-Control': 'max-age=86400',
+                      'Accept': 'image/webp,image/jpeg,image/png,*/*',
+                    },
                     placeholder: (context, url) => Container(
-                      color: Colors.grey.shade100,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.grey.shade100,
+                            Colors.grey.shade50,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
                       child: const Center(
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFD32F2F)),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFD32F2F)),
+                                strokeWidth: 2,
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              'تحميل...',
+                              style: TextStyle(
+                                color: Color(0xFFD32F2F),
+                                fontSize: 8,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                     errorWidget: (context, url, error) => Container(
-                      color: Colors.grey.shade100,
-                      child: const Icon(
-                        Icons.image_not_supported,
-                        color: Colors.grey,
-                        size: 40,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.red.shade100,
+                            Colors.red.shade50,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.image_not_supported,
+                            color: Colors.grey,
+                            size: 40,
+                          ),
+                          SizedBox(height: 2),
+                          Text(
+                            'فشل التحميل',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 8,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    fit: BoxFit.cover,
                   ),
                 ),
                 if (product.discount! > 0)
@@ -1324,7 +1418,8 @@ class _SearchScreenState extends State<SearchScreen>
             const SizedBox(width: 16),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

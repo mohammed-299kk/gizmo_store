@@ -1,49 +1,63 @@
-// Script to create admin user in Firestore
 const admin = require('firebase-admin');
 const serviceAccount = require('./serviceAccountKey.json');
 
+// Initialize Firebase Admin
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
-const db = admin.firestore();
+const auth = admin.auth();
+const firestore = admin.firestore();
 
 async function createAdminUser() {
   try {
-    const adminUserData = {
-      uid: 'Hj11wZ1FlANccDf5xoi9ujdZiFM2',
-      email: 'admin@gmail.com',
-      name: 'Admin User',
-      userType: 'admin',
+    // Create user in Firebase Auth
+    const userRecord = await auth.createUser({
+      uid: 'q3x9weNlEmYpRnM4NSGB8I8kvd73',
+      email: 'admin@gizmo.com',
+      password: 'gizmo1234',
+      displayName: 'Admin User',
+      emailVerified: true,
+      disabled: false
+    });
+    
+    console.log('✅ Admin user created in Firebase Auth:', userRecord.uid);
+    
+    // Create user document in Firestore
+    await firestore.collection('users').doc(userRecord.uid).set({
+      uid: userRecord.uid,
+      email: 'admin@gizmo.com',
+      displayName: 'Admin User',
       isAdmin: true,
+      role: 'admin',
+      userType: 'admin',
+      permissions: {
+        users: true,
+        products: true,
+        orders: true,
+        categories: true,
+        reports: true,
+        settings: true
+      },
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      lastLoginAt: admin.firestore.FieldValue.serverTimestamp(),
       isActive: true,
       preferences: {
-        language: 'en',
+        language: 'ar',
         notifications: true,
-        theme: 'light'
-      },
-      profile: {
-        firstName: 'Admin',
-        lastName: 'User',
-        avatar: null,
-        phone: null,
-        address: null,
-        dateOfBirth: null
-      },
-      stats: {
-        totalOrders: 0,
-        totalSpent: 0,
-        favoriteProducts: [],
-        cartItems: []
-      },
-      createdAt: admin.firestore.Timestamp.now(),
-      lastLoginAt: admin.firestore.Timestamp.now()
-    };
-
-    await db.collection('users').doc('Hj11wZ1FlANccDf5xoi9ujdZiFM2').set(adminUserData);
-    console.log('Admin user created successfully!');
+        theme: 'dark'
+      }
+    });
+    
+    console.log('✅ Admin user document created in Firestore');
+    console.log('🎉 Admin user setup completed successfully!');
+    console.log('📧 Email: admin@gizmo.com');
+    console.log('🔑 Password: gizmo1234');
+    
   } catch (error) {
-    console.error('Error creating admin user:', error);
+    console.error('❌ Error creating admin user:', error);
+  } finally {
+    process.exit();
   }
 }
 

@@ -12,7 +12,7 @@ class AuthScreen extends StatefulWidget {
   State<AuthScreen> createState() => _AuthScreenState();
 }
 
-class _AuthScreenState extends State<AuthScreen> {
+class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -23,6 +23,50 @@ class _AuthScreenState extends State<AuthScreen> {
   bool isLoading = false;
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+
+  late AnimationController _fadeController;
+  late AnimationController _slideController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _fadeController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _slideController = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+    
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _fadeController,
+      curve: Curves.easeInOut,
+    ));
+    
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _slideController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    _fadeController.forward();
+    _slideController.forward();
+  }
+
+  @override
+  void dispose() {
+    _fadeController.dispose();
+    _slideController.dispose();
+    super.dispose();
+  }
 
   // Login or create account function
   Future<void> _submit() async {
@@ -121,256 +165,520 @@ class _AuthScreenState extends State<AuthScreen> {
           backgroundColor:
               themeProvider.isDarkMode ? const Color(0xFF1A1A1A) : Colors.white,
           body: SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Theme toggle button
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+            child: FadeTransition(
+              opacity: _fadeAnimation,
+              child: SlideTransition(
+                position: _slideAnimation,
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: themeProvider.isDarkMode
-                              ? Colors.grey[800]
-                              : Colors.grey[200],
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: IconButton(
-                          onPressed: () {
-                            themeProvider.toggleTheme();
-                          },
-                          icon: Icon(
-                            themeProvider.isDarkMode
-                                ? Icons.wb_sunny
-                                : Icons.nightlight_round,
-                            color: themeProvider.isDarkMode
-                                ? Colors.yellow
-                                : Colors.grey[700],
-                            size: 24,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // Admin access icon
+                          TweenAnimationBuilder<double>(
+                            duration: const Duration(milliseconds: 600),
+                            tween: Tween(begin: 0.0, end: 1.0),
+                            builder: (context, value, child) {
+                              return Transform.scale(
+                                scale: value,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: themeProvider.isDarkMode
+                                        ? const Color(0xFF2A2A2A)
+                                        : Colors.white,
+                                    borderRadius: BorderRadius.circular(25),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(25),
+                                      onTap: () {
+                                        Navigator.pushNamed(context, '/admin_login');
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: Icon(
+                                          Icons.admin_panel_settings,
+                                          color: Colors.orange,
+                                          size: 24,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                          tooltip: themeProvider.isDarkMode
-                              ? 'الوضع الفاتح'
-                              : 'الوضع المظلم',
+                          // Theme toggle button
+                          TweenAnimationBuilder<double>(
+                            duration: const Duration(milliseconds: 800),
+                            tween: Tween(begin: 0.0, end: 1.0),
+                            builder: (context, value, child) {
+                              return Transform.scale(
+                                scale: value,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: themeProvider.isDarkMode
+                                        ? const Color(0xFF2A2A2A)
+                                        : Colors.white,
+                                    borderRadius: BorderRadius.circular(25),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(25),
+                                      onTap: () => themeProvider.toggleTheme(),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: AnimatedSwitcher(
+                                          duration: const Duration(milliseconds: 300),
+                                          child: Icon(
+                                            themeProvider.isDarkMode
+                                                ? Icons.light_mode
+                                                : Icons.dark_mode,
+                                            key: ValueKey(themeProvider.isDarkMode),
+                                            color: themeProvider.isDarkMode
+                                                ? Colors.yellow
+                                                : Colors.grey[700],
+                                            size: 24,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+
+                      // شعار التطبيق
+                      TweenAnimationBuilder<double>(
+                        duration: const Duration(milliseconds: 1000),
+                        tween: Tween(begin: 0.0, end: 1.0),
+                        builder: (context, value, child) {
+                          return Transform.scale(
+                            scale: value,
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              height: 100,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [Color(0xFFB71C1C), Color(0xFFD32F2F)],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFFB71C1C).withOpacity(0.3),
+                                    blurRadius: 15,
+                                    offset: const Offset(0, 5),
+                                  ),
+                                ],
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  'Gizmo Store',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.2,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+
+                      const SizedBox(height: 40),
+
+                      // Title
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child: Text(
+                          isLogin
+                              ? AppLocalizations.of(context)!.welcomeBack
+                              : AppLocalizations.of(context)!.createNewAccount,
+                          key: ValueKey(isLogin),
+                          style: TextStyle(
+                            color: themeProvider.isDarkMode
+                                ? Colors.white
+                                : Colors.black,
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
 
-                  // شعار التطبيق
-                  Container(
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFB71C1C), // Red color
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Gizmo Store',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
+                      const SizedBox(height: 8),
+
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child: Text(
+                          isLogin
+                              ? AppLocalizations.of(context)!.signInToContinue
+                              : AppLocalizations.of(context)!.joinGizmoFamily,
+                          key: ValueKey('${isLogin}_subtitle'),
+                          style: TextStyle(
+                            color: themeProvider.isDarkMode
+                                ? Colors.white70
+                                : Colors.black54,
+                            fontSize: 16,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
-                    ),
-                  ),
 
-                  const SizedBox(height: 40),
-
-                  // Title
-                  Text(
-                    isLogin
-                        ? AppLocalizations.of(context)!.welcomeBack
-                        : AppLocalizations.of(context)!.createNewAccount,
-                    style: TextStyle(
-                      color: themeProvider.isDarkMode
-                          ? Colors.white
-                          : Colors.black,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-
-                  Text(
-                    isLogin
-                        ? AppLocalizations.of(context)!.signInToContinue
-                        : AppLocalizations.of(context)!.joinGizmoFamily,
-                    style: TextStyle(
-                      color: themeProvider.isDarkMode
-                          ? Colors.white70
-                          : Colors.black54,
-                      fontSize: 16,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-
-                  const SizedBox(height: 40),
+                      const SizedBox(height: 40),
 
                   // Input fields
-                  if (!isLogin) ...[
-                    Row(
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 400),
+                    child: Column(
+                      key: ValueKey(isLogin),
                       children: [
-                        Expanded(
-                          child: _buildTextField(
-                            controller: _firstNameController,
-                            label: AppLocalizations.of(context)!.firstName,
-                            icon: Icons.person,
-                          ),
+                        if (!isLogin) ...[
+                          TweenAnimationBuilder<double>(
+                            duration: const Duration(milliseconds: 600),
+                            tween: Tween(begin: 0.0, end: 1.0),
+                            builder: (context, value, child) {
+                              return Transform.translate(
+                                offset: Offset(0, 20 * (1 - value)),
+                                child: Opacity(
+                                  opacity: value,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: _buildTextField(
+                          controller: _firstNameController,
+                          label: AppLocalizations.of(context)!.firstName,
+                          icon: Icons.person,
+                          keyboardType: TextInputType.name,
+                          isDarkMode: themeProvider.isDarkMode,
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: _buildTextField(
-                            controller: _lastNameController,
-                            label: AppLocalizations.of(context)!.lastName,
-                            icon: Icons.person_outline,
+                                      ),
+                                      const SizedBox(width: 16),
+                                      Expanded(
+                                        child: _buildTextField(
+                                          controller: _lastNameController,
+                                          label: AppLocalizations.of(context)!.lastName,
+                                          icon: Icons.person_outline,
+                                          keyboardType: TextInputType.name,
+                                          isDarkMode: themeProvider.isDarkMode,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
                           ),
+                          const SizedBox(height: 16),
+                        ],
+
+                        TweenAnimationBuilder<double>(
+                          duration: const Duration(milliseconds: 800),
+                          tween: Tween(begin: 0.0, end: 1.0),
+                          builder: (context, value, child) {
+                            return Transform.translate(
+                              offset: Offset(0, 20 * (1 - value)),
+                              child: Opacity(
+                                opacity: value,
+                                child: _buildTextField(
+                                  controller: _emailController,
+                                  label: AppLocalizations.of(context)!.email,
+                                  icon: Icons.email,
+                                  keyboardType: TextInputType.emailAddress,
+                                  isDarkMode: themeProvider.isDarkMode,
+                                ),
+                              ),
+                            );
+                          },
                         ),
+
+                        const SizedBox(height: 16),
+
+                        TweenAnimationBuilder<double>(
+                          duration: const Duration(milliseconds: 900),
+                          tween: Tween(begin: 0.0, end: 1.0),
+                          builder: (context, value, child) {
+                            return Transform.translate(
+                              offset: Offset(0, 20 * (1 - value)),
+                              child: Opacity(
+                                opacity: value,
+                                child: _buildTextField(
+                                  controller: _passwordController,
+                                  label: AppLocalizations.of(context)!.password,
+                                  icon: Icons.lock,
+                                  isPassword: true,
+                                  isPasswordVisible: !_obscurePassword,
+                                  onToggleVisibility: () {
+                                    setState(() {
+                                      _obscurePassword = !_obscurePassword;
+                                    });
+                                  },
+                                  isDarkMode: themeProvider.isDarkMode,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+
+                        if (!isLogin) ...[
+                          const SizedBox(height: 16),
+                          TweenAnimationBuilder<double>(
+                            duration: const Duration(milliseconds: 1000),
+                            tween: Tween(begin: 0.0, end: 1.0),
+                            builder: (context, value, child) {
+                              return Transform.translate(
+                                offset: Offset(0, 20 * (1 - value)),
+                                child: Opacity(
+                                  opacity: value,
+                                  child: _buildTextField(
+                                    controller: _confirmPasswordController,
+                                    label: AppLocalizations.of(context)!.confirmPassword,
+                                    icon: Icons.lock_outline,
+                                    isPassword: true,
+                                    isPasswordVisible: !_obscureConfirmPassword,
+                                    onToggleVisibility: () {
+                                      setState(() {
+                                        _obscureConfirmPassword = !_obscureConfirmPassword;
+                                      });
+                                    },
+                                    isDarkMode: themeProvider.isDarkMode,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ],
                     ),
-                    const SizedBox(height: 16),
-                  ],
-
-                  _buildTextField(
-                    controller: _emailController,
-                    label: AppLocalizations.of(context)!.email,
-                    icon: Icons.email,
-                    keyboardType: TextInputType.emailAddress,
                   ),
-
-                  const SizedBox(height: 16),
-
-                  _buildTextField(
-                    controller: _passwordController,
-                    label: AppLocalizations.of(context)!.password,
-                    icon: Icons.lock,
-                    isPassword: true,
-                    isPasswordVisible: !_obscurePassword,
-                    onToggleVisibility: () {
-                      setState(() {
-                        _obscurePassword = !_obscurePassword;
-                      });
-                    },
-                  ),
-
-                  if (!isLogin) ...[
-                    const SizedBox(height: 16),
-                    _buildTextField(
-                      controller: _confirmPasswordController,
-                      label: AppLocalizations.of(context)!.confirmPassword,
-                      icon: Icons.lock_outline,
-                      isPassword: true,
-                      isPasswordVisible: !_obscureConfirmPassword,
-                      onToggleVisibility: () {
-                        setState(() {
-                          _obscureConfirmPassword = !_obscureConfirmPassword;
-                        });
-                      },
-                    ),
-                  ],
 
                   const SizedBox(height: 32),
 
                   // Sign in/register button
-                  if (isLoading)
-                    const Center(
-                      child:
-                          CircularProgressIndicator(color: Color(0xFFB71C1C)),
-                    )
-                  else
-                    ElevatedButton(
-                      onPressed: _submit,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFFB71C1C),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                  TweenAnimationBuilder<double>(
+                    duration: const Duration(milliseconds: 1100),
+                    tween: Tween(begin: 0.0, end: 1.0),
+                    builder: (context, value, child) {
+                      return Transform.scale(
+                        scale: value,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          width: double.infinity,
+                          height: 56,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFFB71C1C), Color(0xFFD32F2F)],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            ),
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFFB71C1C).withOpacity(0.3),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(16),
+                              onTap: isLoading ? null : _submit,
+                              child: Center(
+                                child: isLoading
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          valueColor: AlwaysStoppedAnimation<Color>(
+                                              Colors.white),
+                                        ),
+                                      )
+                                    : AnimatedSwitcher(
+                                        duration: const Duration(milliseconds: 200),
+                                        child: Text(
+                                          isLogin
+                                              ? AppLocalizations.of(context)!.signIn
+                                              : AppLocalizations.of(context)!.createAccount,
+                                          key: ValueKey(isLogin),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                      child: Text(
-                        isLogin
-                            ? AppLocalizations.of(context)!.signIn
-                            : AppLocalizations.of(context)!.createAccount,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ),
+                      );
+                    },
+                  ),
 
                   const SizedBox(height: 16),
 
                   // زر التبديل
-                  TextButton(
-                    onPressed: () => setState(() => isLogin = !isLogin),
-                    child: Text(
-                      isLogin
-                          ? AppLocalizations.of(context)!.noAccountCreateNew
-                          : AppLocalizations.of(context)!.haveAccountSignIn,
-                      style: const TextStyle(
-                        color: Color(0xFFB71C1C),
-                        fontSize: 16,
-                      ),
-                    ),
+                  TweenAnimationBuilder<double>(
+                    duration: const Duration(milliseconds: 1200),
+                    tween: Tween(begin: 0.0, end: 1.0),
+                    builder: (context, value, child) {
+                      return Transform.translate(
+                        offset: Offset(0, 20 * (1 - value)),
+                        child: Opacity(
+                          opacity: value,
+                          child: TextButton(
+                            onPressed: () => setState(() => isLogin = !isLogin),
+                            style: TextButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                            ),
+                            child: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 300),
+                              child: Text(
+                                isLogin
+                                    ? AppLocalizations.of(context)!.noAccountCreateNew
+                                    : AppLocalizations.of(context)!.haveAccountSignIn,
+                                key: ValueKey(isLogin),
+                                style: const TextStyle(
+                                  color: Color(0xFFB71C1C),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
 
                   const SizedBox(height: 24),
 
                   // خط فاصل
-                  Row(
-                    children: [
-                      Expanded(
-                          child: Divider(
-                              color: themeProvider.isDarkMode
-                                  ? Colors.white24
-                                  : Colors.black26)),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: Text(
-                          AppLocalizations.of(context)!.or,
-                          style: TextStyle(
-                              color: themeProvider.isDarkMode
-                                  ? Colors.white70
-                                  : Colors.black54),
+                  TweenAnimationBuilder<double>(
+                    duration: const Duration(milliseconds: 1300),
+                    tween: Tween(begin: 0.0, end: 1.0),
+                    builder: (context, value, child) {
+                      return Opacity(
+                        opacity: value,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 500),
+                                height: 1,
+                                color: themeProvider.isDarkMode
+                                    ? Colors.white24
+                                    : Colors.black26,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              child: Text(
+                                AppLocalizations.of(context)!.or,
+                                style: TextStyle(
+                                  color: themeProvider.isDarkMode
+                                      ? Colors.white70
+                                      : Colors.black54,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 500),
+                                height: 1,
+                                color: themeProvider.isDarkMode
+                                    ? Colors.white24
+                                    : Colors.black26,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      Expanded(
-                          child: Divider(
-                              color: themeProvider.isDarkMode
-                                  ? Colors.white24
-                                  : Colors.black26)),
-                    ],
+                      );
+                    },
                   ),
 
                   const SizedBox(height: 24),
 
                   // زر الدخول كضيف
-                  OutlinedButton(
-                    onPressed: _continueAsGuest,
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: themeProvider.isDarkMode
-                          ? Colors.white
-                          : Colors.black,
-                      side: const BorderSide(color: Color(0xFFB71C1C)),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: Text(
-                      AppLocalizations.of(context)!.continueAsGuest,
-                      style: TextStyle(fontSize: 16),
-                    ),
+                  TweenAnimationBuilder<double>(
+                    duration: const Duration(milliseconds: 1400),
+                    tween: Tween(begin: 0.0, end: 1.0),
+                    builder: (context, value, child) {
+                      return Transform.scale(
+                        scale: value,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          width: double.infinity,
+                          height: 56,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: const Color(0xFFB71C1C),
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(16),
+                              onTap: _continueAsGuest,
+                              child: Center(
+                                child: Text(
+                                  AppLocalizations.of(context)!.continueAsGuest,
+                                  style: TextStyle(
+                                    color: themeProvider.isDarkMode
+                                        ? Colors.white
+                                        : Colors.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
+  },
+);
   }
 
   // دالة لبناء حقل الإدخال
@@ -378,64 +686,105 @@ class _AuthScreenState extends State<AuthScreen> {
     required TextEditingController controller,
     required String label,
     required IconData icon,
-    bool obscureText = false,
     TextInputType? keyboardType,
     bool isPassword = false,
-    VoidCallback? onToggleVisibility,
     bool? isPasswordVisible,
+    VoidCallback? onToggleVisibility,
+    required bool isDarkMode,
   }) {
-    return Consumer<ThemeProvider>(
-      builder: (context, themeProvider, child) {
-        return TextField(
-          controller: controller,
-          obscureText: isPassword ? !(isPasswordVisible ?? false) : obscureText,
-          keyboardType: keyboardType,
-          style: TextStyle(
-            color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      decoration: BoxDecoration(
+        color: isDarkMode
+            ? const Color(0xFF2A2A2A)
+            : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDarkMode
+              ? Colors.white12
+              : Colors.black12,
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 3),
           ),
-          decoration: InputDecoration(
-            labelText: label,
-            labelStyle: TextStyle(
-              color: themeProvider.isDarkMode ? Colors.white70 : Colors.black54,
-            ),
-            prefixIcon: Icon(
+        ],
+      ),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: keyboardType,
+        obscureText: isPassword && !(isPasswordVisible ?? false),
+        style: TextStyle(
+          color: isDarkMode ? Colors.white : Colors.black,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(
+            color: isDarkMode ? Colors.white70 : Colors.black54,
+            fontSize: 14,
+          ),
+          prefixIcon: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            child: Icon(
               icon,
-              color: themeProvider.isDarkMode ? Colors.white70 : Colors.black54,
+              color: const Color(0xFFB71C1C),
+              size: 22,
             ),
-            suffixIcon: isPassword && onToggleVisibility != null
-                ? IconButton(
-                    icon: Icon(
-                      (isPasswordVisible ?? false)
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      color: themeProvider.isDarkMode
-                          ? Colors.white
-                          : Colors.black,
-                      size: 24,
-                    ),
+          ),
+          suffixIcon: isPassword
+              ? AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  child: IconButton(
                     onPressed: onToggleVisibility,
+                    icon: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child: Icon(
+                        (isPasswordVisible ?? false)
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        key: ValueKey(isPasswordVisible ?? false),
+                        color: isDarkMode
+                            ? Colors.white54
+                            : Colors.black54,
+                        size: 20,
+                      ),
+                    ),
                     tooltip: (isPasswordVisible ?? false)
                         ? AppLocalizations.of(context)!.hidePassword
                         : AppLocalizations.of(context)!.showPassword,
                     splashRadius: 20,
-                  )
-                : null,
-            filled: true,
-            fillColor: themeProvider.isDarkMode
-                ? const Color(0xFF2A2A2A)
-                : Colors.grey[100],
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                  color: Color(0xFFB71C1C), width: 2), // Red color
+                  ),
+                )
+              : null,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide.none,
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: const BorderSide(
+              color: Color(0xFFB71C1C),
+              width: 2,
             ),
           ),
-        );
-      },
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide.none,
+          ),
+          filled: true,
+          fillColor: Colors.transparent,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 18,
+          ),
+          floatingLabelBehavior: FloatingLabelBehavior.auto,
+        ),
+      ),
     );
   }
 }

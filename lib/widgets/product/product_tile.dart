@@ -62,7 +62,7 @@ class ProductTile extends StatelessWidget {
   }
 
   Widget _buildProductImage() {
-    final imageUrl = product.image ?? '';
+    final imageUrl = product.imageUrl ?? '';
     if (imageUrl.isEmpty) {
       return const Icon(Icons.image_not_supported,
           size: 60, color: Colors.grey);

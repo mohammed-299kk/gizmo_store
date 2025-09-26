@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gizmo_store/models/product.dart';
 import 'package:gizmo_store/screens/order/checkout_screen.dart';
 import 'package:gizmo_store/l10n/app_localizations.dart';
+import '../../utils/image_helper.dart';
 
 // Sample product data for testing CartScreen
 final List<Product> featuredProducts = [
@@ -133,17 +134,14 @@ class _CartScreenState extends State<CartScreen> {
                               height: 80,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8),
-                                image: DecorationImage(
-                                  image: NetworkImage(item.product.image ?? ''),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: ImageHelper.buildCachedImage(
+                                  imageUrl: item.product.imageUrl ?? '',
                                   fit: BoxFit.cover,
-                                  onError: (exception, stackTrace) {
-                                    // Handle image loading error silently
-                                  },
                                 ),
                               ),
-                              child: item.product.image == null || item.product.image!.isEmpty
-                                  ? const Icon(Icons.image_not_supported, color: Colors.grey)
-                                  : null,
                             ),
                             const SizedBox(width: 12),
                             Expanded(

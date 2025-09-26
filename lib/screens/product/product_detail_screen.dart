@@ -20,7 +20,6 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int _quantity = 1;
-  int _selectedImageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -69,67 +68,119 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   // معرض صور المنتج
   Widget _buildImageGallery() {
-    final images = widget.product.images ?? [];
-    if (images.isEmpty) {
-      return const Icon(Icons.image_not_supported,
-          size: 200, color: Colors.grey);
+    // استخدام imageUrl بدلاً من images للحصول على صورة صحيحة
+    final imageUrl = widget.product.imageUrl;
+    
+    if (imageUrl == null || imageUrl.isEmpty) {
+      return Container(
+      height: 200,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Icon(
+        Icons.image_not_supported,
+        size: 80,
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+      ),
+    );
     }
 
-    return Column(
-      children: [
-        SizedBox(
-          height: 300,
-          child: PageView.builder(
-            itemCount: images.length,
-            onPageChanged: (index) =>
-                setState(() => _selectedImageIndex = index),
-            itemBuilder: (context, index) => CachedNetworkImage(
-              imageUrl: images[index],
-              placeholder: (context, url) =>
-                  const Center(child: CircularProgressIndicator()),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-              fit: BoxFit.cover,
-            ),
+    return Container(
+      height: 200,
+      width: double.infinity,
+      margin: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
           ),
-        ),
-        Container(
-          height: 60,
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: images.length,
-            itemBuilder: (context, index) => GestureDetector(
-              onTap: () => setState(() => _selectedImageIndex = index),
-              child: Container(
-                width: 50,
-                height: 50,
-                margin: const EdgeInsets.only(right: 8),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: _selectedImageIndex == index
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
-                    width: 2,
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: CachedNetworkImage(
+          imageUrl: imageUrl,
+          fit: BoxFit.cover,
+          // تحسينات الأداء لصور تفاصيل المنتج
+          memCacheWidth: 800, // حجم أكبر لصور التفاصيل
+          memCacheHeight: 800,
+          maxWidthDiskCache: 1200,
+          maxHeightDiskCache: 1200,
+          fadeInDuration: const Duration(milliseconds: 200),
+          fadeOutDuration: const Duration(milliseconds: 150),
+          httpHeaders: const {
+            'Cache-Control': 'max-age=86400',
+            'Accept': 'image/webp,image/jpeg,image/png,*/*',
+          },
+          placeholder: (context, url) => Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.primary,
+                    strokeWidth: 3,
                   ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
-                  child: CachedNetworkImage(
-                    imageUrl: images[index],
-                    placeholder: (context, url) =>
-                        Container(color: Theme.of(context).colorScheme.secondary),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
-                    fit: BoxFit.cover,
+                  const SizedBox(height: 12),
+                  Text(
+                    'تحميل الصورة...',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           ),
+          errorWidget: (context, url, error) => Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.red.shade100,
+                  Colors.red.shade50,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.image_not_supported,
+                  size: 100,
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'فشل في تحميل الصورة',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
-      ],
+      ),
     );
   }
 
@@ -152,7 +203,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           Row(
             children: [
               Text(
-                '\$${widget.product.price.toStringAsFixed(2)}',
+                '${_formatPrice(widget.product.price)} ج.س',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -162,7 +213,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               if (widget.product.originalPrice != null) ...[
                 const SizedBox(width: 12),
                 Text(
-                  '\$${widget.product.originalPrice!.toStringAsFixed(2)}',
+                  '${_formatPrice(widget.product.originalPrice!)} ج.س',
                   style: TextStyle(
                     fontSize: 18,
                     decoration: TextDecoration.lineThrough,
@@ -250,8 +301,78 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   // قسم المواصفات
   Widget _buildSpecificationsSection() {
-    final specs = widget.product.specifications ?? [];
-    if (specs.isEmpty) return const SizedBox.shrink();
+    List<String> specs = widget.product.specifications ?? [];
+    
+    // إذا لم تكن هناك مواصفات، نضع مواصفات افتراضية
+    if (specs.isEmpty) {
+      final productName = widget.product.name.toLowerCase();
+      
+      if (productName.contains('phone') || productName.contains('mobile') || productName.contains('iphone') || productName.contains('samsung')) {
+        specs = [
+          'شاشة عالية الدقة',
+          'معالج قوي ومتطور',
+          'كاميرا عالية الجودة',
+          'بطارية طويلة المدى',
+          'نظام تشغيل حديث',
+          'ذاكرة تخزين كبيرة',
+          'تصميم أنيق ومتين',
+          'اتصال 5G/4G',
+        ];
+      } else if (productName.contains('laptop') || productName.contains('macbook') || productName.contains('computer')) {
+        specs = [
+          'معالج عالي الأداء',
+          'ذاكرة عشوائية كبيرة',
+          'ذاكرة تخزين SSD سريعة',
+          'شاشة عالية الدقة',
+          'بطارية طويلة المدى',
+          'تصميم نحيف وخفيف',
+          'منافذ متعددة',
+          'نظام تشغيل حديث',
+        ];
+      } else if (productName.contains('headphone') || productName.contains('earphone') || productName.contains('airpods') || productName.contains('sony')) {
+        specs = [
+          'جودة صوت عالية',
+          'تصميم مريح',
+          'بطارية طويلة المدى',
+          'اتصال لاسلكي',
+          'ميكروفون مدمج',
+          'تحكم باللمس',
+          'مقاومة للماء',
+          'إلغاء الضوضاء',
+        ];
+      } else if (productName.contains('watch') || productName.contains('ساعة')) {
+        specs = [
+          'شاشة عالية الدقة',
+          'مراقبة اللياقة البدنية',
+          'مقاومة للماء',
+          'بطارية طويلة المدى',
+          'اتصال لاسلكي',
+          'تطبيقات متنوعة',
+          'تصميم أنيق',
+          'سهولة الاستخدام',
+        ];
+      } else if (productName.contains('ipad') || productName.contains('tablet')) {
+        specs = [
+          'شاشة كبيرة عالية الدقة',
+          'معالج قوي',
+          'كاميرا عالية الجودة',
+          'بطارية طويلة المدى',
+          'دعم القلم الرقمي',
+          'تصميم نحيف وخفيف',
+          'نظام تشغيل متطور',
+          'ذاكرة تخزين كبيرة',
+        ];
+      } else {
+        specs = [
+          'جودة عالية في التصنيع',
+          'تصميم عصري وأنيق',
+          'سهولة في الاستخدام',
+          'ضمان الشركة المصنعة',
+          'متوافق مع المعايير العالمية',
+          'أداء موثوق ومستقر',
+        ];
+      }
+    }
 
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -467,5 +588,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   void _viewAllReviews() {
     // تنفيذ عرض جميع المراجعات
+  }
+
+  String _formatPrice(double price) {
+    return price.toStringAsFixed(0).replaceAllMapped(
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+      (Match m) => '${m[1]},',
+    );
   }
 }

@@ -51,7 +51,7 @@ class ProductService {
       final querySnapshot = await _firestore
           .collection(_collection)
           .where('featured', isEqualTo: true)
-          .limit(5)
+          .limit(20)
           .get();
       
       return querySnapshot.docs
@@ -70,6 +70,7 @@ class ProductService {
       final querySnapshot = await _firestore
           .collection(_collection)
           .where('category', isEqualTo: category)
+          .limit(100)
           .get();
       
       return querySnapshot.docs
@@ -112,16 +113,7 @@ class ProductService {
     }
   }
 
-  // Update product
-  static Future<void> updateProduct(String id, Product product, BuildContext context) async {
-    try {
-      await _firestore.collection(_collection).doc(id).update(product.toMap());
-    } catch (e) {
-      final localizations = AppLocalizations.of(context)!;
-      print('${localizations.errorUpdatingProduct}: $e');
-      throw Exception(localizations.failedToUpdateProduct);
-    }
-  }
+
 
   // Delete product
   static Future<void> deleteProduct(String id, BuildContext context) async {
@@ -135,27 +127,50 @@ class ProductService {
   }
 
   // Upload image using Cloudinary
-  static Future<String> uploadProductImage(File imageFile, String productId, BuildContext context) async {
+  static Future<String> uploadProductImage(File imageFile, String productId) async {
+    print('📤 ProductService.uploadProductImage - بدء رفع الصورة...');
+    print('🆔 معرف المنتج: $productId');
+    print('📁 مسار الملف: ${imageFile.path}');
+    
     try {
+      print('☁️ رفع الصورة إلى Cloudinary...');
       final urls = await ImageUploadService.uploadProductImages([imageFile]);
-      return urls.first;
+      
+      if (urls.isEmpty) {
+        print('❌ لم يتم إرجاع أي URLs من خدمة رفع الصور');
+        throw Exception('فشل في رفع الصورة إلى Cloudinary - لم يتم إرجاع أي URLs');
+      }
+      
+      // التحقق من أن القائمة تحتوي على عناصر قبل استخدام .first
+      if (urls.isNotEmpty) {
+        final imageUrl = urls.first;
+        print('✅ تم رفع الصورة بنجاح: $imageUrl');
+        return imageUrl;
+      } else {
+        print('❌ القائمة فارغة رغم التحقق السابق');
+        throw Exception('خطأ غير متوقع: القائمة فارغة');
+      }
     } catch (e) {
-      final localizations = AppLocalizations.of(context)!;
-      print('${localizations.errorUploadingImage}: $e');
-      throw Exception(localizations.failedToUploadImage);
+      print('❌ خطأ في رفع الصورة: $e');
+      print('📊 نوع الخطأ: ${e.runtimeType}');
+      throw Exception('فشل في رفع الصورة: ${e.toString()}');
     }
   }
 
   // Delete image (Cloudinary images don't need manual deletion)
-  static Future<void> deleteProductImage(String imageUrl, BuildContext context) async {
+  static Future<void> deleteProductImage(String imageUrl) async {
+    print('🗑️ ProductService.deleteProductImage - بدء حذف الصورة...');
+    print('🔗 رابط الصورة: $imageUrl');
+    
     try {
       // Cloudinary images are managed automatically
       // No manual deletion needed for basic usage
-      print('Image deletion not required for Cloudinary: $imageUrl');
+      print('☁️ حذف الصورة من Cloudinary غير مطلوب للاستخدام الأساسي');
+      print('✅ تم تجاهل حذف الصورة بنجاح');
     } catch (e) {
-      final localizations = AppLocalizations.of(context)!;
-      print('${localizations.errorDeletingImage}: $e');
-      throw Exception(localizations.failedToDeleteImage);
+      print('❌ خطأ في حذف الصورة: $e');
+      print('📊 نوع الخطأ: ${e.runtimeType}');
+      throw Exception('فشل في حذف الصورة: ${e.toString()}');
     }
   }
 
@@ -188,173 +203,7 @@ class ProductService {
     }
   }
 
-  // Create sample data
-  static Future<void> _createSampleProducts() async {
-    final sampleProducts = [
-      Product(
-        id: 'iphone_15_pro',
-        name: 'iPhone 15 Pro',
-        description: 'Latest iPhone from Apple with A17 Pro processor and advanced camera',
-        price: 4999.0,
-        originalPrice: 5499.0,
-        image: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400',
-        category: 'Phones',
-        rating: 4.8,
-        reviewsCount: 1250,
-        featured: true,
-        specifications: [
-          'A17 Pro processor',
-          '128GB storage',
-          '48MP camera',
-          '6.1-inch display',
-          'IP68 water resistant'
-        ],
-      ),
-      Product(
-        id: 'macbook_pro_m3',
-        name: 'MacBook Pro M3',
-        description: 'Professional laptop with M3 processor for developers and designers',
-        price: 8999.0,
-        originalPrice: 9999.0,
-        image: 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400',
-        category: 'Computer',
-        rating: 4.9,
-        reviewsCount: 890,
-        featured: true,
-        specifications: [
-          'Apple M3 processor',
-          '16GB RAM',
-          '512GB SSD storage',
-          '14-inch Retina display',
-          '18-hour battery life'
-        ],
-      ),
-      Product(
-        id: 'airpods_pro_2',
-        name: 'AirPods Pro 2nd Generation',
-        description: 'Wireless earphones with active noise cancellation',
-        price: 899.0,
-        originalPrice: 999.0,
-        image: 'https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=400',
-        category: 'Headphones',
-        rating: 4.7,
-        reviewsCount: 2100,
-        featured: true,
-        specifications: [
-          'Active noise cancellation',
-          'H2 chip',
-          'IPX4 water resistant',
-          '30-hour battery life',
-          'Wireless charging'
-        ],
-      ),
-      Product(
-        id: 'ipad_air_5',
-        name: 'iPad Air 5th Generation',
-        description: 'Powerful and versatile tablet for work and entertainment',
-        price: 2499.0,
-        image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400',
-        category: 'Tablet',
-        rating: 4.6,
-        reviewsCount: 750,
-        featured: false,
-        specifications: [
-          'M1 processor',
-          '10.9-inch Liquid Retina display',
-          '12MP camera',
-          'Apple Pencil support',
-          'Available in multiple colors'
-        ],
-      ),
-      Product(
-        id: 'apple_watch_9',
-        name: 'Apple Watch Series 9',
-        description: 'Advanced smartwatch for health and fitness tracking',
-        price: 1599.0,
-        image: 'https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=400',
-        category: 'Watches',
-        rating: 4.5,
-        reviewsCount: 1800,
-        featured: false,
-        specifications: [
-          'S9 SiP processor',
-          'Always-On Retina display',
-          '50-meter water resistant',
-          'Heart rate tracking',
-          'Built-in GPS'
-        ],
-      ),
-      Product(
-        id: 'samsung_tv_75',
-        name: 'Samsung QLED 75-inch',
-        description: 'Smart TV with 4K resolution and QLED technology',
-        price: 3299.0,
-        originalPrice: 3799.0,
-        image: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400',
-        category: 'Television',
-        rating: 4.4,
-        reviewsCount: 650,
-        featured: false,
-        specifications: [
-          '4K UHD resolution',
-          'QLED technology',
-          'Tizen smart system',
-          'HDR10+',
-          'Four HDMI ports'
-        ],
-      ),
-      Product(
-        id: 'sony_headphones',
-        name: 'Sony WH-1000XM5',
-        description: 'Wireless headphones with industry-leading noise cancellation',
-        price: 1299.0,
-        image: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400',
-        category: 'Headphones',
-        rating: 4.8,
-        reviewsCount: 920,
-        featured: true,
-        specifications: [
-          'Industry-leading noise cancellation',
-          '30-hour battery',
-          'Quick charge',
-          'High-resolution audio',
-          'Clear calls'
-        ],
-      ),
-      Product(
-        id: 'dell_laptop',
-        name: 'Dell XPS 13',
-        description: 'Slim and lightweight laptop perfect for business and study',
-        price: 4599.0,
-        image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400',
-        category: 'Computer',
-        rating: 4.3,
-        reviewsCount: 540,
-        featured: false,
-        specifications: [
-          'Intel Core i7 processor',
-          '16GB RAM',
-          '512GB SSD storage',
-          '13.3-inch InfinityEdge display',
-          'Only 1.2kg weight'
-        ],
-      ),
-    ];
 
-    try {
-      final batch = _firestore.batch();
-      
-      for (final product in sampleProducts) {
-        final docRef = _firestore.collection(_collection).doc(product.id);
-        batch.set(docRef, product.toMap());
-      }
-      
-      await batch.commit();
-      print('✅ Sample data created successfully');
-    } catch (e) {
-      print('❌ Error creating sample data: $e');
-    }
-  }
 
   // Default data in case of no connection
   static List<Product> _getDefaultProducts() {
@@ -393,6 +242,72 @@ class ProductService {
       return true;
     } catch (e) {
       return false;
+    }
+  }
+
+  static Future<void> updateProduct(Product product) async {
+    print('🔄 ProductService.updateProduct - بدء تحديث المنتج...');
+    print('🆔 معرف المنتج: ${product.id}');
+    print('📝 اسم المنتج: ${product.name}');
+    print('💰 السعر: ${product.price}');
+    print('📦 المخزون: ${product.stock}');
+    print('🏷️ الفئة: ${product.category}');
+    print('📸 عدد الصور: ${product.images?.length ?? 0}');
+    print('⭐ مميز: ${product.featured}');
+    print('✅ متوفر: ${product.isAvailable}');
+    
+    try {
+      print('🔗 الاتصال بـ Firestore...');
+      
+      // Convert Product to Map for Firestore
+      Map<String, dynamic> productData = {
+        'name': product.name,
+        'description': product.description,
+        'price': product.price,
+        'discount': product.discount,
+        'stock': product.stock,
+        'category': product.category,
+        'imageUrls': product.images ?? [],
+        'isFeatured': product.featured,
+        'isAvailable': product.isAvailable,
+        'updatedAt': FieldValue.serverTimestamp(),
+      };
+      
+      print('📊 بيانات المنتج للحفظ:');
+      productData.forEach((key, value) {
+        if (key != 'updatedAt') {
+          print('  $key: $value');
+        }
+      });
+      
+      print('💾 تحديث المستند في Firestore...');
+      await _firestore
+          .collection('products')
+          .doc(product.id)
+          .update(productData);
+      
+      print('✅ تم تحديث المنتج في Firestore بنجاح!');
+      print('🎉 ProductService.updateProduct - اكتمل بنجاح');
+      
+    } catch (e) {
+      print('❌ خطأ في ProductService.updateProduct: $e');
+      print('📊 نوع الخطأ: ${e.runtimeType}');
+      print('🔍 تفاصيل الخطأ الكاملة: ${e.toString()}');
+      
+      // Check for specific Firebase errors
+      if (e.toString().contains('permission-denied')) {
+        print('🚫 خطأ في الصلاحيات - المستخدم ليس لديه صلاحية للتحديث');
+        throw Exception('ليس لديك صلاحية لتحديث المنتجات. تأكد من تسجيل الدخول كمدير.');
+      } else if (e.toString().contains('not-found')) {
+        print('🔍 المنتج غير موجود');
+        throw Exception('المنتج غير موجود في قاعدة البيانات.');
+      } else if (e.toString().contains('network')) {
+        print('🌐 خطأ في الشبكة');
+        throw Exception('خطأ في الاتصال بالإنترنت. تحقق من اتصالك وحاول مرة أخرى.');
+      } else {
+        print('❓ خطأ غير معروف');
+        throw Exception('حدث خطأ أثناء تحديث المنتج: ${e.toString()}');
+      }
     }
   }
 }

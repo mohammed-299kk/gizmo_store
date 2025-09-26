@@ -1,44 +1,62 @@
-﻿import 'dart:io';
+import 'dart:io';
 import 'package:cloudinary_public/cloudinary_public.dart';
 
 class CloudinaryService {
-  static const String cloudName = 'YOUR_CLOUD_NAME';
-  static const String uploadPreset = 'YOUR_UPLOAD_PRESET';
+  // إعدادات Cloudinary للمتجر
+  static const String cloudName = 'gizmo-store'; 
+  static const String uploadPreset = 'gizmo_products';
   
   static final CloudinaryPublic cloudinary = CloudinaryPublic(
     cloudName,
     uploadPreset,
   );
   
-  static Future<String> uploadImage(File imageFile, {String? folder}) async {
+  // رفع صورة واحدة
+  static Future<String> uploadImage(File imageFile, {required String folder}) async {
     try {
-      CloudinaryResponse response = await cloudinary.uploadFile(
+      print('🔄 بدء رفع الصورة: ${imageFile.path}');
+      print('📁 المجلد: $folder');
+      print('☁️ Cloud Name: $cloudName');
+      print('📤 Upload Preset: $uploadPreset');
+      
+      final response = await cloudinary.uploadFile(
         CloudinaryFile.fromFile(
           imageFile.path,
-          folder: folder ?? 'gizmo_store/products',
+          folder: folder,
         ),
       );
+      
+      print('✅ تم رفع الصورة بنجاح!');
+      print('🔗 رابط الصورة: ${response.secureUrl}');
+      
       return response.secureUrl;
     } catch (e) {
-      throw Exception('Failed to upload image: $e');
+      print('❌ خطأ في رفع الصورة: $e');
+      print('📊 نوع الخطأ: ${e.runtimeType}');
+      throw Exception('فشل في رفع الصورة: $e');
     }
   }
   
-  static Future<List<String>> uploadMultipleImages(
-    List<File> imageFiles, {
-    String? folder,
-  }) async {
+  // رفع عدة صور
+  static Future<List<String>> uploadMultipleImages(List<File> imageFiles, {required String folder}) async {
+    print('📤 بدء رفع ${imageFiles.length} صورة');
     List<String> urls = [];
     
-    for (File imageFile in imageFiles) {
+    for (int i = 0; i < imageFiles.length; i++) {
+      File imageFile = imageFiles[i];
+      print('📸 رفع الصورة ${i + 1}/${imageFiles.length}: ${imageFile.path}');
+      
       try {
         String url = await uploadImage(imageFile, folder: folder);
         urls.add(url);
+        print('✅ تم رفع الصورة ${i + 1} بنجاح');
       } catch (e) {
-        print('Error uploading image: $e');
+        print('❌ فشل في رفع الصورة ${i + 1}: $e');
+        // لا نضيف URL في حالة الفشل
       }
     }
     
+    print('📊 تم رفع ${urls.length} من أصل ${imageFiles.length} صورة');
     return urls;
   }
 }

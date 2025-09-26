@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../models/cart_item.dart';
 import '../models/order.dart';
 import '../models/address.dart';
+import '../utils/image_helper.dart';
 
 class CheckoutScreen extends StatelessWidget {
   final List<CartItem> cartItems;
@@ -28,7 +29,7 @@ class CheckoutScreen extends StatelessWidget {
             children: [
               ListTile(
                 title: const Text('توصيل سريع (24 ساعة)'),
-                subtitle: const Text('15 ريال'),
+                subtitle: const Text('15 ج.س'),
                 leading: Radio<String>(
                   value: 'fast_delivery',
                   groupValue: checkoutProvider.selectedShippingMethod,
@@ -40,7 +41,7 @@ class CheckoutScreen extends StatelessWidget {
               ),
               ListTile(
                 title: const Text('توصيل عادي (3-5 أيام)'),
-                subtitle: const Text('10 ريال'),
+                subtitle: const Text('10 ج.س'),
                 leading: Radio<String>(
                   value: 'standard_delivery',
                   groupValue: checkoutProvider.selectedShippingMethod,
@@ -94,7 +95,7 @@ class CheckoutScreen extends StatelessWidget {
                 name: cartItem.product.name,
                 price: cartItem.product.price,
                 quantity: cartItem.quantity,
-                image: cartItem.product.image ?? '',
+                image: cartItem.product.imageUrl,
               ))
           .toList();
 
@@ -187,23 +188,14 @@ class CheckoutScreen extends StatelessWidget {
                   final item = cartItems[index];
                   return Card(
                     child: ListTile(
-                      leading: item.product.image != null
+                      leading: item.product.imageUrl.isNotEmpty
                           ? ClipRRect(
                               borderRadius: BorderRadius.circular(8),
-                              child: Image.network(
-                                item.product.image!,
+                              child: ImageHelper.buildCachedImage(
+                                imageUrl: item.product.imageUrl,
                                 width: 50,
                                 height: 50,
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Container(
-                                    width: 50,
-                                    height: 50,
-                                    color: Colors.grey[300],
-                                    child:
-                                        const Icon(Icons.image_not_supported),
-                                  );
-                                },
                               ),
                             )
                           : Container(

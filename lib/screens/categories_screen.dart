@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:gizmo_store/models/category.dart';
+import 'package:gizmo_store/models/product.dart';
+import 'package:gizmo_store/services/database_setup_service.dart';
 import 'package:gizmo_store/screens/category_products_screen.dart';
 import 'package:gizmo_store/l10n/app_localizations.dart';
 
@@ -14,7 +15,8 @@ class CategoriesScreen extends StatefulWidget {
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
   List<Category> categories = [];
-  bool isLoading = true;
+  Map<String, int> categoryProductCounts = {};
+  bool _isLoading = true;
   String? errorMessage;
 
   @override
@@ -24,46 +26,60 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   }
 
   Future<void> _loadCategories() async {
+    setState(() {
+      _isLoading = true;
+      errorMessage = null;
+    });
+
     try {
-      setState(() {
-        isLoading = true;
-        errorMessage = null;
-      });
-
-      final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('categories')
-          .orderBy('order', descending: false)
-          .get();
-
-      final List<Category> loadedCategories = snapshot.docs
-          .map((doc) {
-            final data = doc.data() as Map<String, dynamic>;
-            return Category(
-              id: doc.id,
-              name: data['name'] ?? '',
-              imageUrl: data['imageUrl'] ?? '',
-              order: data['order'] ?? 0,
-              isActive: data['isActive'] ?? true,
-            );
-          })
-          .where((category) => category.isActive)
-          .toList();
-
-      // If no categories found in Firebase, use fallback categories
-      if (loadedCategories.isEmpty) {
-        loadedCategories.addAll(_getFallbackCategories());
-      }
-
+      // تحميل الفئات الافتراضية
+      List<Category> loadedCategories = _getFallbackCategories();
+      
+      // عرض الفئات فوراً بدون انتظار عدد المنتجات
       setState(() {
         categories = loadedCategories;
-        isLoading = false;
+        _isLoading = false;
       });
+      
+      // تحميل عدد المنتجات لكل فئة بشكل متوازي في الخلفية
+      _loadProductCountsInBackground(loadedCategories);
+      
     } catch (e) {
+      print('Error loading categories: $e');
       setState(() {
         categories = _getFallbackCategories();
-        isLoading = false;
+        _isLoading = false;
         errorMessage = AppLocalizations.of(context)!.failedToLoadCategories;
       });
+    }
+  }
+
+  Future<void> _loadProductCountsInBackground(List<Category> categories) async {
+    try {
+      // تحميل عدد المنتجات لكل فئة بشكل متوازي
+      List<Future<MapEntry<String, int>>> futures = categories.map((category) async {
+        try {
+          List<Product> products = await DatabaseSetupService.getProductsByCategory(category.name);
+          return MapEntry(category.name, products.length);
+        } catch (e) {
+          print('Error loading products for category ${category.name}: $e');
+          return MapEntry(category.name, 0);
+        }
+      }).toList();
+
+      // انتظار جميع العمليات المتوازية
+      List<MapEntry<String, int>> results = await Future.wait(futures);
+      
+      // تحديث عدد المنتجات
+      Map<String, int> productCounts = Map.fromEntries(results);
+      
+      if (mounted) {
+        setState(() {
+          categoryProductCounts = productCounts;
+        });
+      }
+    } catch (e) {
+      print('Error loading product counts: $e');
     }
   }
 
@@ -71,46 +87,58 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     final localizations = AppLocalizations.of(context)!;
     return [
       Category(
-        id: '1',
-        name: localizations.smartphones,
-        imageUrl: 'https://via.placeholder.com/300x300?text=Smartphones',
-        order: 1,
-        isActive: true,
+        id: 'smartphones',
+        name: 'smartphones',
+        displayName: localizations.categorySmartphones,
+        imageUrl: 'https://cdn.pixabay.com/photo/2016/12/09/11/33/smartphone-1894723_960_720.jpg',
       ),
       Category(
-        id: '2',
-        name: localizations.laptops,
-        imageUrl: 'https://via.placeholder.com/300x300?text=Laptops',
-        order: 2,
-        isActive: true,
+        id: 'laptops',
+        name: 'laptops',
+        displayName: localizations.categoryLaptops,
+        imageUrl: 'https://cdn.pixabay.com/photo/2015/09/09/16/05/forest-931706_960_720.jpg',
       ),
       Category(
-        id: '3',
-        name: localizations.headphones,
-        imageUrl: 'https://via.placeholder.com/300x300?text=Headphones',
-        order: 3,
-        isActive: true,
+        id: 'headphones',
+        name: 'headphones',
+        displayName: localizations.categoryHeadphones,
+        imageUrl: 'https://cdn.pixabay.com/photo/2018/09/17/14/27/headphones-3683983_960_720.jpg',
       ),
       Category(
-        id: '4',
-        name: localizations.smartwatches,
-        imageUrl: 'https://via.placeholder.com/300x300?text=Smartwatches',
-        order: 4,
-        isActive: true,
+        id: 'smartwatches',
+        name: 'smartwatches',
+        displayName: localizations.categorySmartWatches,
+        imageUrl: 'https://cdn.pixabay.com/photo/2015/12/09/17/12/smartwatch-1085307_960_720.jpg',
       ),
       Category(
-        id: '5',
-        name: localizations.tablets,
-        imageUrl: 'https://via.placeholder.com/300x300?text=Tablets',
-        order: 5,
-        isActive: true,
+        id: 'tablets',
+        name: 'tablets',
+        displayName: localizations.categoryTablets,
+        imageUrl: 'https://cdn.pixabay.com/photo/2015/01/08/18/25/desk-593327_960_720.jpg',
       ),
       Category(
-        id: '6',
-        name: localizations.accessories,
-        imageUrl: 'https://via.placeholder.com/300x300?text=Accessories',
-        order: 6,
-        isActive: true,
+        id: 'accessories',
+        name: 'accessories',
+        displayName: localizations.categoryAccessories,
+        imageUrl: 'https://cdn.pixabay.com/photo/2017/08/10/08/47/laptop-2619564_960_720.jpg',
+      ),
+      Category(
+        id: 'cameras',
+        name: 'cameras',
+        displayName: localizations.categoryCameras,
+        imageUrl: 'https://cdn.pixabay.com/photo/2016/04/04/14/12/camera-1307199_960_720.jpg',
+      ),
+      Category(
+        id: 'tv',
+        name: 'tv',
+        displayName: localizations.categoryTv,
+        imageUrl: 'https://cdn.pixabay.com/photo/2019/06/30/20/09/tv-4308538_960_720.jpg',
+      ),
+      Category(
+        id: 'gaming',
+        name: 'gaming',
+        displayName: localizations.categoryGaming,
+        imageUrl: 'https://cdn.pixabay.com/photo/2017/11/15/15/27/nintendo-2951227_960_720.jpg',
       ),
     ];
   }
@@ -156,7 +184,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   }
 
   Widget _buildBody() {
-    if (isLoading) {
+    if (_isLoading) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -318,15 +346,46 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(20.0),
-              child: GridView.builder(
-                itemCount: categories.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.9,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
-                ),
-                itemBuilder: (ctx, i) => _buildCategoryCard(categories[i]),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  // تحديد عدد الأعمدة بناءً على عرض الشاشة للفئات
+                  int crossAxisCount;
+                  double childAspectRatio;
+                  double spacing;
+                  
+                  if (constraints.maxWidth > 1200) {
+                    // شاشات كبيرة جداً (Desktop)
+                    crossAxisCount = 4;
+                    childAspectRatio = 1.0;
+                    spacing = 24;
+                  } else if (constraints.maxWidth > 800) {
+                    // شاشات متوسطة (Tablet)
+                    crossAxisCount = 3;
+                    childAspectRatio = 0.95;
+                    spacing = 20;
+                  } else if (constraints.maxWidth > 600) {
+                    // شاشات صغيرة (Large Phone)
+                    crossAxisCount = 2;
+                    childAspectRatio = 0.9;
+                    spacing = 20;
+                  } else {
+                    // شاشات صغيرة جداً (Small Phone)
+                    crossAxisCount = 2;
+                    childAspectRatio = 0.85;
+                    spacing = 16;
+                  }
+                  
+                  return GridView.builder(
+                    itemCount: categories.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: crossAxisCount,
+                      childAspectRatio: childAspectRatio,
+                      crossAxisSpacing: spacing,
+                      mainAxisSpacing: spacing,
+                    ),
+                    itemBuilder: (ctx, i) => _buildCategoryCard(categories[i]),
+                  );
+                },
               ),
             ),
           ),
@@ -348,6 +407,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         );
       },
       child: Container(
+        height: 220,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(25),
@@ -396,17 +456,60 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                           child: CachedNetworkImage(
                             imageUrl: category.imageUrl,
                             fit: BoxFit.cover,
+                            // تحسينات الأداء للفئات
+                            memCacheWidth: 160,
+                            memCacheHeight: 160,
+                            maxWidthDiskCache: 320,
+                            maxHeightDiskCache: 320,
+                            fadeInDuration: const Duration(milliseconds: 250),
+                            fadeOutDuration: const Duration(milliseconds: 150),
+                            httpHeaders: const {
+                              'Cache-Control': 'max-age=604800', // أسبوع للفئات
+                              'Accept': 'image/webp,image/jpeg,image/png,*/*',
+                            },
                             placeholder: (context, url) => Container(
-                              color: Colors.white.withOpacity(0.3),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.white.withOpacity(0.3),
+                                    Colors.white.withOpacity(0.1),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                              ),
                               child: const Center(
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                    SizedBox(height: 4),
+                                    Text(
+                                      'تحميل...',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 8,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
                             errorWidget: (context, url, error) => Container(
-                              color: Colors.white.withOpacity(0.3),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.red.withOpacity(0.3),
+                                    Colors.red.withOpacity(0.1),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                              ),
                               child: Icon(
                                 _getCategoryIcon(category.name),
                                 size: 40,
@@ -450,30 +553,32 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             Expanded(
               flex: 2,
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      category.name,
+                      category.displayName ?? category.name, // استخدام displayName إذا كان متوفراً
                       style: TextStyle(
                         color: Colors.grey[800],
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
-                      maxLines: 2,
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 2),
+                    _buildProductCount(category.name),
+                    const SizedBox(height: 4),
                     Container(
-                      height: 3,
-                      width: 40,
+                      height: 2,
+                      width: 30,
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
                           colors: [Color(0xFFD32F2F), Color(0xFFB71C1C)],
                         ),
-                        borderRadius: BorderRadius.circular(2),
+                        borderRadius: BorderRadius.circular(1),
                       ),
                     ),
                   ],
@@ -487,19 +592,66 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   }
 
   IconData _getCategoryIcon(String categoryName) {
-    final localizations = AppLocalizations.of(context)!;
-    if (categoryName == localizations.laptops) {
-      return Icons.laptop_mac;
-    } else if (categoryName == localizations.smartphones) {
-      return Icons.smartphone;
-    } else if (categoryName == localizations.headphones) {
-      return Icons.headphones;
-    } else if (categoryName == localizations.smartwatches) {
-      return Icons.watch;
-    } else if (categoryName == localizations.tablets) {
-      return Icons.tablet_mac;
-    } else {
-      return Icons.category;
+    switch (categoryName) {
+      case 'laptops':
+        return Icons.laptop_mac;
+      case 'smartphones':
+        return Icons.smartphone;
+      case 'headphones':
+        return Icons.headphones;
+      case 'smartwatches':
+        return Icons.watch;
+      case 'tablets':
+        return Icons.tablet_mac;
+      case 'accessories':
+        return Icons.category;
+      case 'cameras':
+        return Icons.camera_alt;
+      case 'tv':
+        return Icons.tv;
+      case 'gaming':
+        return Icons.sports_esports;
+      default:
+        return Icons.category;
     }
+  }
+
+  Widget _buildProductCount(String categoryName) {
+    final count = categoryProductCounts[categoryName];
+    
+    if (count == null) {
+      // عرض مؤشر تحميل صغير أثناء تحميل عدد المنتجات
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 10,
+            height: 10,
+            child: CircularProgressIndicator(
+              strokeWidth: 1.5,
+              color: Colors.grey[400],
+            ),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            'جاري التحميل...',
+            style: TextStyle(
+              color: Colors.grey[500],
+              fontSize: 10,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ],
+      );
+    }
+    
+    return Text(
+      '$count منتج',
+      style: TextStyle(
+        color: Colors.grey[600],
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+      ),
+    );
   }
 }

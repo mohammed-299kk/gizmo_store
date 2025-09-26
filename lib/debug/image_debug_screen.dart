@@ -40,8 +40,8 @@ class _ImageDebugScreenState extends State<ImageDebugScreen> {
       // طباعة روابط الصور في الكونسول
       for (var product in products) {
         print('Product: ${product.name}');
-        print('Image URL: ${product.image}');
-        print('Images URLs: ${product.images}');
+        print('Image URL: ${product.imageUrl}');
+      print('Images URLs: ${product.images}');
         print('---');
       }
     } catch (e) {
@@ -95,9 +95,9 @@ class _ImageDebugScreenState extends State<ImageDebugScreen> {
                               ),
                             ),
                             const SizedBox(height: 8),
-                            Text('Image URL: ${product.image ?? "No image"}'),
-                            const SizedBox(height: 8),
-                            if (product.image != null && product.image!.isNotEmpty)
+                            Text('Image URL: ${product.imageUrl ?? "No image"}'),
+            const SizedBox(height: 8),
+            if (product.imageUrl != null && product.imageUrl!.isNotEmpty)
                               Container(
                                 height: 200,
                                 width: double.infinity,
@@ -108,7 +108,7 @@ class _ImageDebugScreenState extends State<ImageDebugScreen> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(8),
                                   child: CachedNetworkImage(
-                                    imageUrl: product.image!,
+                    imageUrl: product.imageUrl!,
                                     fit: BoxFit.cover,
                                     placeholder: (context, url) => const Center(
                                       child: CircularProgressIndicator(),

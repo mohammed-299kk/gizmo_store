@@ -7,7 +7,7 @@ import 'package:gizmo_store/providers/auth_provider.dart';
 import 'package:gizmo_store/providers/cart_provider.dart';
 import 'package:gizmo_store/providers/coupon_provider.dart';
 import 'package:gizmo_store/providers/language_provider.dart';
-import 'package:gizmo_store/providers/theme_provider.dart'; 
+import 'package:gizmo_store/providers/theme_provider.dart';
 import 'package:gizmo_store/providers/notification_provider.dart';
 import 'package:gizmo_store/providers/review_provider.dart';
 import 'package:gizmo_store/providers/search_provider.dart';
@@ -15,7 +15,7 @@ import 'package:gizmo_store/providers/wishlist_provider.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'routes.dart';
-import 'constants/app_colors.dart';
+import 'constants/app_theme.dart';
 import 'package:gizmo_store/l10n/app_localizations.dart';
 
 /*************  ✨ Windsurf Command ⭐  *************/
@@ -62,7 +62,9 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: 'Gizmo Store',
             debugShowCheckedModeBanner: false,
-            theme: themeProvider.themeData,
+            theme: themeProvider.isDarkMode
+                ? AppTheme.darkTheme
+                : AppTheme.lightTheme,
             locale: languageProvider.currentLocale,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,

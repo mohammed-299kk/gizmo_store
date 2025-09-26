@@ -13,8 +13,8 @@ class EnhancedSampleDataService {
         name: 'iPhone 15 Pro Max',
         description:
             'Latest iPhone from Apple with A17 Pro processor and advanced 48MP camera, titanium design and exceptional performance',
-        price: 2850000,
-        originalPrice: 3200000,
+        price: 285000,
+        originalPrice: 320000,
         image:
             'https://cdn.dxomark.com/wp-content/uploads/medias/post-155689/Apple-iPhone-15-Pro-Max_-blue-titanium_featured-image-packshot-review.jpg',
         category: 'Smartphones',
@@ -53,8 +53,8 @@ class EnhancedSampleDataService {
         name: 'Samsung Galaxy S24 Ultra',
         description:
             'Samsung flagship phone with S Pen and 200MP camera with advanced AI',
-        price: 2450000,
-        originalPrice: 2750000,
+        price: 245000,
+        originalPrice: 275000,
         image:
             'https://images.samsung.com/is/image/samsung/p6pim/levant/2401/gallery/levant-galaxy-s24-ultra-s928-sm-s928bztqmea-thumb-539573043',
         category: 'Smartphones',
@@ -87,8 +87,8 @@ class EnhancedSampleDataService {
         name: 'Google Pixel 8 Pro',
         description:
             'Google phone with best night photography camera and Google AI artificial intelligence',
-        price: 1950000,
-        originalPrice: 2200000,
+        price: 195000,
+        originalPrice: 220000,
         image:
             'https://lh3.googleusercontent.com/yJpJr_bQzQlVlzZBKZzKpNjhHT8Jq8xOQ7XzKZzKpNjhHT8Jq8xOQ7XzKZzKpNjhHT8Jq8xOQ7Xz=w1200-h630-p',
         category: 'Smartphones',
@@ -120,8 +120,8 @@ class EnhancedSampleDataService {
         id: '',
         name: 'OnePlus 12',
         description: 'OnePlus phone with 100W fast charging and powerful gaming performance',
-        price: 1650000,
-        originalPrice: 1850000,
+        price: 165000,
+        originalPrice: 185000,
         image:
             'https://oasis.opstatics.com/content/dam/oasis/page/2023/global/products/find-n3/pc/design.png',
         category: 'Smartphones',
@@ -154,8 +154,8 @@ class EnhancedSampleDataService {
         name: 'Xiaomi 14 Ultra',
         description:
             'Xiaomi flagship phone with Leica camera and excellent performance at competitive price',
-        price: 1450000,
-        originalPrice: 1650000,
+        price: 145000,
+        originalPrice: 165000,
         image:
             'https://i01.appmifile.com/v1/MI_18455B3E4DA706226CF7535A58E875F0267/pms_1708507847.83933468.png',
         category: 'Smartphones',

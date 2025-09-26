@@ -30,9 +30,7 @@ class _DatabaseInitScreenState extends State<DatabaseInitScreen> {
       await DatabaseSetupService.setupCategories(context);
       _addLog('✅ تم إنشاء الفئات بنجاح');
       
-      _addLog('إنشاء المنتجات التجريبية...');
-      await DatabaseSetupService.setupSampleProducts(context);
-      _addLog('✅ تم إنشاء المنتجات بنجاح');
+      _addLog('✅ تم إعداد قاعدة البيانات');
       
       setState(() {
         _status = '✅ تم تهيئة قاعدة البيانات بنجاح!';

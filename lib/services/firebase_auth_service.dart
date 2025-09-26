@@ -300,4 +300,54 @@ class FirebaseAuthService {
       debugPrint('${localizations.errorUpdatingUserStats}: $e');
     }
   }
+
+  // Check if user is admin
+  static Future<bool> isUserAdmin(String uid) async {
+    try {
+      final doc = await _firestore.collection('users').doc(uid).get().timeout(
+        const Duration(seconds: 8),
+        onTimeout: () {
+          debugPrint('Admin check timed out for uid: $uid');
+          throw Exception('Timeout checking admin status');
+        },
+      );
+      
+      if (doc.exists) {
+        final data = doc.data() as Map<String, dynamic>?;
+        if (data != null) {
+          return data['isAdmin'] == true || 
+                 data['role'] == 'admin' || 
+                 data['userType'] == 'admin';
+        }
+      }
+      return false;
+    } catch (e) {
+      debugPrint('Error checking admin status: $e');
+      return false;
+    }
+  }
+
+  // Get user role
+  static Future<String> getUserRole(String uid) async {
+    try {
+      final doc = await _firestore.collection('users').doc(uid).get().timeout(
+        const Duration(seconds: 8),
+        onTimeout: () {
+          debugPrint('User role check timed out for uid: $uid');
+          throw Exception('Timeout getting user role');
+        },
+      );
+      
+      if (doc.exists) {
+        final data = doc.data() as Map<String, dynamic>?;
+        if (data != null) {
+          return data['role'] ?? data['userType'] ?? 'user';
+        }
+      }
+      return 'user';
+    } catch (e) {
+      debugPrint('Error getting user role: $e');
+      return 'user';
+    }
+  }
 }

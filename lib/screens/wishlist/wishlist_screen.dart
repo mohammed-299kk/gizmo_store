@@ -8,6 +8,7 @@ import '../../providers/cart_provider.dart';
 import '../product/product_detail_screen.dart';
 import '../../models/cart_item.dart';
 import '../../services/firestore_service.dart';
+import '../../utils/image_helper.dart';
 
 class WishlistScreen extends StatefulWidget {
   const WishlistScreen({super.key});
@@ -22,9 +23,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<WishlistProvider>(context, listen: false).loadWishlist();
-    });
+    // WishlistProvider now uses real-time listener, no need to manually load
   }
 
   @override
@@ -88,7 +87,10 @@ class _WishlistScreenState extends State<WishlistScreen> {
           }
 
           return RefreshIndicator(
-            onRefresh: () => wishlistProvider.loadWishlist(),
+            onRefresh: () async {
+              // Data is automatically updated via real-time listener
+              await Future.delayed(const Duration(milliseconds: 500));
+            },
             color: Theme.of(context).colorScheme.primary,
             child: ListView.builder(
               padding: const EdgeInsets.all(16),
@@ -210,32 +212,10 @@ class _WishlistScreenState extends State<WishlistScreen> {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
-                    child: item.product.image != null &&
-                            item.product.image!.isNotEmpty
-                        ? Image.network(
-                            item.product.image!,
+                    child: item.product.imageUrl.isNotEmpty
+                        ? ImageHelper.buildCachedImage(
+                            imageUrl: item.product.imageUrl,
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      const Color(0xFFD32F2F),
-                const Color(0xFFB71C1C),
-                                    ],
-                                  ),
-                                ),
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.image_not_supported,
-                                    color: Colors.white,
-                                    size: 50,
-                                  ),
-                                ),
-                              );
-                            },
                           )
                         : Container(
                             decoration: BoxDecoration(

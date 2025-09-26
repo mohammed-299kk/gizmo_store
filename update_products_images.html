@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحديث صور المنتجات</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .log {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .success {
+            color: #28a745;
+        }
+        .error {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>تحديث صور المنتجات</h1>
+        <button class="btn" onclick="updateProductImages()">بدء تحديث الصور</button>
+        <div id="log" class="log"></div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, getDocs, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // إعدادات Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAo4-Ge1dC4LnIyG_wUjYgWc9KHCxEYUxM",
+            authDomain: "gizmostore-2a3ff.firebaseapp.com",
+            projectId: "gizmostore-2a3ff",
+            storageBucket: "gizmostore-2a3ff.firebasestorage.app",
+            messagingSenderId: "32902740595",
+            appId: "1:32902740595:web:7de8f1273a64f9f28fc806"
+        };
+
+        // تهيئة Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // بيانات الصور الجديدة
+        const productImages = {
+            headphones: [
+                "https://m.media-amazon.com/images/I/61SUj2aKoEL._AC_SL1500_.jpg",
+                "https://m.media-amazon.com/images/I/61f1YfTkTtL._AC_SL1500_.jpg",
+                "https://m.media-amazon.com/images/I/71o8Q5XJS5L._AC_SL1500_.jpg"
+            ],
+            laptop: [
+                "https://m.media-amazon.com/images/I/71jG+e7roXL._AC_SL1500_.jpg",
+                "https://m.media-amazon.com/images/I/81bc8mA3nKL._AC_SL1500_.jpg"
+            ],
+            phone: [
+                "https://m.media-amazon.com/images/I/71xb2xkN5qL._AC_SL1500_.jpg",
+                "https://m.media-amazon.com/images/I/71ZDY57yTQL._AC_SL1500_.jpg"
+            ],
+            tablet: [
+                "https://m.media-amazon.com/images/I/61NGnpjoRDL._AC_SL1500_.jpg"
+            ],
+            watch: [
+                "https://m.media-amazon.com/images/I/71u1JbqAJjL._AC_SL1500_.jpg"
+            ],
+            tv: [
+                "https://m.media-amazon.com/images/I/81ZZEG4CqaL._AC_SL1500_.jpg"
+            ]
+        };
+
+        function log(message, type = 'info') {
+            const logElement = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : '';
+            logElement.innerHTML += `<span class="${className}">[${timestamp}] ${message}</span>\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        window.updateProductImages = async function() {
+            log('بدء تحديث صور المنتجات...');
+            
+            try {
+                // الحصول على جميع المنتجات
+                const productsRef = collection(db, 'products');
+                const snapshot = await getDocs(productsRef);
+                
+                log(`تم العثور على ${snapshot.size} منتج في Firebase`);
+                
+                let updatedCount = 0;
+                const imagesCopy = JSON.parse(JSON.stringify(productImages));
+                
+                for (const productDoc of snapshot.docs) {
+                    const product = productDoc.data();
+                    const productName = product.name?.toLowerCase() || '';
+                    const currentImage = product.image || '';
+                    
+                    let newImage = null;
+                    
+                    // تحديد الفئة بناءً على اسم المنتج
+                    if (productName.includes('airpods') || productName.includes('headphone')) {
+                        if (imagesCopy.headphones && imagesCopy.headphones.length > 0) {
+                            newImage = imagesCopy.headphones.shift();
+                        }
+                    } else if (productName.includes('macbook') || productName.includes('laptop')) {
+                        if (imagesCopy.laptop && imagesCopy.laptop.length > 0) {
+                            newImage = imagesCopy.laptop.shift();
+                        }
+                    } else if (productName.includes('iphone') || productName.includes('phone')) {
+                        if (imagesCopy.phone && imagesCopy.phone.length > 0) {
+                            newImage = imagesCopy.phone.shift();
+                        }
+                    } else if (productName.includes('ipad') || productName.includes('tablet')) {
+                        if (imagesCopy.tablet && imagesCopy.tablet.length > 0) {
+                            newImage = imagesCopy.tablet.shift();
+                        }
+                    } else if (productName.includes('watch')) {
+                        if (imagesCopy.watch && imagesCopy.watch.length > 0) {
+                            newImage = imagesCopy.watch.shift();
+                        }
+                    } else if (productName.includes('tv') || productName.includes('samsung')) {
+                        if (imagesCopy.tv && imagesCopy.tv.length > 0) {
+                            newImage = imagesCopy.tv.shift();
+                        }
+                    }
+                    
+                    // تحديث الصورة إذا وُجدت صورة جديدة
+                    if (newImage && newImage !== currentImage) {
+                        try {
+                            const productRef = doc(db, 'products', productDoc.id);
+                            await updateDoc(productRef, {
+                                image: newImage
+                            });
+                            log(`تم تحديث صورة المنتج: ${product.name}`, 'success');
+                            updatedCount++;
+                        } catch (error) {
+                            log(`خطأ في تحديث المنتج ${product.name}: ${error.message}`, 'error');
+                        }
+                    }
+                }
+                
+                log(`انتهى التحديث. تم تحديث ${updatedCount} منتج بصور جديدة`, 'success');
+                
+            } catch (error) {
+                log(`خطأ في العملية: ${error.message}`, 'error');
+            }
+        };
+    </script>
+</body>
+</html>

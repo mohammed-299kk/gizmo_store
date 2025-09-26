@@ -269,13 +269,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noResults => 'لا توجد نتائج';
 
   @override
-  String get latestPhoneFromApple => 'أحدث هاتف من Apple';
-
-  @override
-  String get samsungFlagshipPhone => 'هاتف Samsung الرائد';
-
-  @override
-  String get resetFilters => 'إعادة تعيين الفلاتر';
+  String get resetFilters => 'إعادة تعيين المرشحات';
 
   @override
   String get loadMore => 'عرض المزيد';
@@ -496,6 +490,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get continueAsGuest => 'متابعة كضيف';
 
   @override
+  String get adminLogin => 'تسجيل دخول المدير';
+
+  @override
   String get signInSuccess => 'تم تسجيل الدخول بنجاح!';
 
   @override
@@ -603,7 +600,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get televisions => 'أجهزة التلفزيون';
 
   @override
-  String get currency => 'ر.س';
+  String get currency => 'ج.س';
 
   @override
   String get clearCart => 'مسح السلة';
@@ -618,10 +615,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get browseProducts => 'تصفح المنتجات';
 
   @override
-  String get tax => 'Tax (15%)';
+  String get tax => 'الضريبة';
 
   @override
-  String get finalTotal => 'Final Total';
+  String get finalTotal => 'المجموع النهائي';
 
   @override
   String get proceedToPayment => 'متابعة الدفع';
@@ -642,34 +639,34 @@ class AppLocalizationsAr extends AppLocalizations {
   String get clear => 'مسح';
 
   @override
-  String get paymentPageComingSoon => 'Payment page coming soon!';
+  String get paymentPageComingSoon => 'صفحة الدفع ستتوفر قريباً!';
 
   @override
-  String get orderCreatedSuccessfully => 'Order created successfully!';
+  String get orderCreatedSuccessfully => 'تم إنشاء الطلب بنجاح';
 
   @override
-  String get confirmOrder => 'Confirm Order';
+  String get confirmOrder => 'تأكيد الطلب';
 
   @override
-  String get filters => 'Filters';
+  String get filters => 'المرشحات';
 
   @override
-  String get minimumRating => 'Minimum Rating';
+  String get minimumRating => 'الحد الأدنى للتقييم';
 
   @override
-  String get reset => 'Reset';
+  String get reset => 'إعادة تعيين';
 
   @override
-  String get apply => 'Apply';
+  String get apply => 'تطبيق';
 
   @override
-  String get previousSearches => 'Previous Searches';
+  String get previousSearches => 'البحثات السابقة';
 
   @override
   String get clearAll => 'مسح الكل';
 
   @override
-  String get tryDifferentKeywords => 'Try different keywords or modify filters';
+  String get tryDifferentKeywords => 'جرب كلمات مفتاحية مختلفة';
 
   @override
   String get smartElectronicsStore => 'متجر الإلكترونيات الذكي';
@@ -705,120 +702,118 @@ class AppLocalizationsAr extends AppLocalizations {
   String get viewAllReviews => 'عرض جميع المراجعات';
 
   @override
-  String get products => 'Products';
+  String get products => 'المنتجات';
 
   @override
-  String get appName => 'App Name:';
+  String get appName => 'اسم التطبيق';
 
   @override
-  String get projectId => 'Project ID:';
+  String get projectId => 'معرف المشروع';
 
   @override
-  String get apiKey => 'API Key:';
+  String get apiKey => 'مفتاح API';
 
   @override
-  String get appId => 'App ID:';
+  String get appId => 'معرف التطبيق';
 
   @override
-  String get androidClientId => 'Android Client ID:';
+  String get androidClientId => 'معرف عميل Android';
 
   @override
-  String get iosClientId => 'iOS Client ID:';
+  String get iosClientId => 'معرف عميل iOS';
 
   @override
-  String get notAvailable => 'Not Available';
+  String get notAvailable => 'غير متوفر';
 
   @override
-  String get authStatus => 'Authentication Status';
+  String get authStatus => 'حالة المصادقة';
 
   @override
-  String get loginStatus => 'Login Status:';
+  String get loginStatus => 'حالة تسجيل الدخول';
 
   @override
-  String get loggedIn => 'Logged In';
+  String get loggedIn => 'مسجل الدخول';
 
   @override
-  String get notLoggedIn => 'Not Logged In';
+  String get notLoggedIn => 'غير مسجل الدخول';
 
   @override
-  String get displayName => 'Display Name:';
+  String get displayName => 'اسم العرض';
 
   @override
-  String get anonymous => 'Anonymous:';
+  String get anonymous => 'مجهول';
 
   @override
   String get servicesStatus => 'حالة الخدمات';
 
   @override
-  String get firestoreStatus => 'Firestore: Connected (if app is working)';
+  String get firestoreStatus => 'حالة Firestore';
 
   @override
-  String get messagingStatus => 'Messaging: Connected (if configured)';
+  String get messagingStatus => 'حالة الرسائل';
 
   @override
-  String get wishlistEmpty => 'Wishlist is empty';
+  String get wishlistEmpty => 'قائمة الأمنيات فارغة';
 
   @override
-  String get addFavoriteProducts =>
-      'Add your favorite products to access them easily later.';
+  String get addFavoriteProducts => 'أضف منتجات مفضلة';
 
   @override
   String get clearWishlist => 'مسح المفضلة';
 
   @override
-  String get clearWishlistConfirmation =>
-      'Are you sure you want to clear all products from wishlist?';
+  String get clearWishlistConfirmation => 'تأكيد مسح قائمة الأمنيات';
 
   @override
-  String get specialOffer => 'Special Offer';
+  String get specialOffer => 'عرض خاص';
 
   @override
-  String get upTo50Off => 'Up to 50% off';
+  String get upTo50Off => 'خصم يصل إلى 50%';
 
   @override
-  String get availableCoupons => 'Available Coupons';
+  String get availableCoupons => 'الكوبونات المتاحة';
 
   @override
-  String get myCoupons => 'My Coupons';
+  String get myCoupons => 'كوبوناتي';
 
   @override
-  String get haveCouponCode => 'Have a coupon code?';
+  String get haveCouponCode => 'لديك رمز كوبون؟';
 
   @override
-  String get enterCouponCode => 'Enter coupon code';
+  String get enterCouponCode => 'أدخل رمز الكوبون';
 
   @override
-  String get applyCoupon => 'Apply';
+  String get applyCoupon => 'تطبيق الكوبون';
 
   @override
-  String get couponApplied => 'Coupon applied:';
+  String get couponApplied => 'تم تطبيق الكوبون';
 
   @override
-  String get remove => 'Remove';
+  String get remove => 'إزالة';
 
   @override
-  String get noCouponsAvailable => 'No coupons available currently';
+  String get noCouponsAvailable => 'لا توجد كوبونات متاحة';
 
   @override
-  String get noCouponsInWallet => 'No coupons in your wallet';
+  String get noCouponsInWallet => 'لا توجد كوبونات في المحفظة';
 
   @override
-  String get minimumOrder => 'Minimum Order';
+  String get minimumOrder => 'الحد الأدنى للطلب';
 
   @override
-  String get maximumDiscount => 'Maximum Discount';
+  String get maximumDiscount => 'الحد الأقصى للخصم';
 
   @override
-  String get validUntil => 'Valid Until';
+  String get validUntil => 'صالح حتى';
 
   @override
-  String get codeCopied => 'Code copied';
+  String get codeCopied => 'تم نسخ الرمز';
 
   @override
-  String get use => 'Use';
+  String get use => 'استخدام';
 
   @override
-  String get expired => 'Expired';
+  String get expired => 'منتهي الصلاحية';
 
   @override
   String get couponAppliedSuccessfully => 'تم تطبيق الكوبون بنجاح';
@@ -921,9 +916,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adminPanelTitle => 'لوحة إدارة متجر جيزمو';
-
-  @override
-  String get adminLogin => 'تسجيل دخول المدير';
 
   @override
   String get unauthorizedAccess => 'غير مخول لك الوصول إلى لوحة الإدارة';
@@ -1111,9 +1103,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get categoriesCreatedSuccessfully => '✅ تم إنشاء الفئات بنجاح';
-
-  @override
-  String get creatingSampleProducts => 'إنشاء منتجات تجريبية...';
 
   @override
   String get productsCreatedSuccessfully => '✅ تم إنشاء المنتجات بنجاح';
@@ -1581,6 +1570,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get categoryCameras => 'كاميرات';
 
   @override
+  String get categoryGaming => 'ألعاب';
+
+  @override
   String get productIphone15ProDesc =>
       'أحدث هاتف من Apple مع شريحة A17 Pro وكاميرا محسنة';
 
@@ -1990,4 +1982,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dataUpdateFailed => 'فشل في تحديث البيانات';
+
+  @override
+  String get checkoutPageComingSoon => 'صفحة الدفع ستتوفر قريباً!';
+
+  @override
+  String errorAddingToCart(String error) {
+    return 'خطأ في إضافة المنتج إلى السلة: $error';
+  }
+
+  @override
+  String get logoutConfirmationMessage => 'هل أنت متأكد من تسجيل الخروج؟';
+
+  @override
+  String get pleaseLoginFirst =>
+      'يرجى تسجيل الدخول أولاً لإضافة المنتجات للمفضلة';
 }

@@ -5,6 +5,12 @@ import '../../models/order.dart' as order_model;
 import '../../services/firestore_service.dart';
 import '../../utils/app_exceptions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../../constants/app_spacing.dart';
+import '../../constants/app_colors.dart';
+import '../../constants/app_animations.dart';
+import '../../constants/app_buttons.dart';
+import '../../constants/app_navigation.dart';
+import '../../constants/app_cards.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -99,29 +105,19 @@ class _OrdersScreenState extends State<OrdersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('طلباتي'),
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-        foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
+      appBar: AppNavigation.buildSubPageAppBar(
+        context: context,
+        title: 'طلباتي',
         actions: [
           IconButton(
-            icon: const Icon(Icons.add_box),
-            onPressed: () async {
-              if (_currentUserId != null) {
-                await _firestoreService.addSampleOrders(_currentUserId!);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('تم إضافة طلبات تجريبية بنجاح'),
-                    backgroundColor: Colors.green,
-                  ),
-                );
-              }
+            icon: const Icon(Icons.filter_list),
+            onPressed: () {
+              // فتح فلتر الطلبات
             },
           ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
-              // Force rebuild to refresh the stream
               setState(() {});
             },
           ),
@@ -130,28 +126,68 @@ class _OrdersScreenState extends State<OrdersScreen> {
       body: Column(
         children: [
           // فلتر حالة الطلب
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: DropdownButtonFormField<String>(
-              value: _selectedStatus,
-              decoration: const InputDecoration(
-                labelText: 'فلتر حسب الحالة',
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 16),
+          Container(
+            margin: AppSpacing.screenPaddingHorizontal,
+            padding: AppSpacing.paddingMD,
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              borderRadius: AppSpacing.borderRadiusLG,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: AppAnimations.fadeInUp(
+              child: DropdownButtonFormField<String>(
+                value: _selectedStatus,
+                decoration: InputDecoration(
+                  labelText: 'فلتر حسب الحالة',
+                  border: OutlineInputBorder(
+                    borderRadius: AppSpacing.borderRadiusMD,
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: AppSpacing.borderRadiusMD,
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: AppSpacing.borderRadiusMD,
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.primary,
+                      width: 2,
+                    ),
+                  ),
+                  contentPadding: AppSpacing.paddingMD,
+                  prefixIcon: Icon(
+                    Icons.filter_list_outlined,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                items: _statusFilters.map((status) {
+                  return DropdownMenuItem(
+                    value: status,
+                    child: Text(
+                      status,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedStatus = value!;
+                  });
+                },
               ),
-              items: _statusFilters.map((status) {
-                return DropdownMenuItem(
-                  value: status,
-                  child: Text(status),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _selectedStatus = value!;
-                });
-              },
             ),
           ),
+          AppSpacing.verticalMD,
 
           // قائمة الطلبات مع StreamBuilder
           Expanded(
@@ -187,12 +223,16 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           // إعادة تحميل البيانات عن طريق إعادة بناء الـ Stream
                           setState(() {});
                         },
-                        child: ListView.builder(
-                          padding: const EdgeInsets.only(bottom: 16),
+                        child: ListView.separated(
+                          padding: AppSpacing.screenPaddingAll,
                           itemCount: orders.length,
+                          separatorBuilder: (context, index) => AppSpacing.verticalMD,
                           itemBuilder: (context, index) {
                             final order = orders[index];
-                            return _buildOrderCard(order);
+                            return AppAnimations.fadeInUp(
+                              delay: Duration(milliseconds: index * 100),
+                              child: _buildOrderCard(order),
+                            );
                           },
                         ),
                       );
@@ -207,24 +247,51 @@ class _OrdersScreenState extends State<OrdersScreen> {
   /// عرض رسالة للمستخدم غير المسجل
   Widget _buildNotLoggedInView() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.person_off,
-            size: 64,
-            color: Colors.grey[400],
+      child: Padding(
+        padding: AppSpacing.screenPaddingAll,
+        child: AppAnimations.fadeInUp(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: AppSpacing.paddingXXL,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.errorContainer.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.person_off_outlined,
+                  size: AppSpacing.iconSizeXLarge * 2,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+              ),
+              AppSpacing.verticalXL,
+              Text(
+                'يجب تسجيل الدخول لعرض الطلبات',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              AppSpacing.verticalMD,
+              Text(
+                'سجل دخولك لتتمكن من متابعة طلباتك',
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              AppSpacing.verticalXL,
+              AppButton(
+                text: 'تسجيل الدخول',
+                onPressed: () => Navigator.pushNamed(context, '/auth'),
+                icon: const Icon(Icons.login_outlined),
+                style: AppButtons.primaryButton,
+              ),
+            ],
           ),
-          const SizedBox(height: 16),
-          Text(
-            'يجب تسجيل الدخول لعرض الطلبات',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[600],
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -232,44 +299,64 @@ class _OrdersScreenState extends State<OrdersScreen> {
   /// عرض رسالة الخطأ
   Widget _buildErrorView(String error) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Colors.grey[400],
+      child: Padding(
+        padding: AppSpacing.screenPaddingAll,
+        child: AppAnimations.fadeInUp(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: AppSpacing.paddingXXL,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.errorContainer.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.error_outline,
+                  size: AppSpacing.iconSizeXLarge * 2,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+              ),
+              AppSpacing.verticalXL,
+              Text(
+                'حدث خطأ أثناء تحميل الطلبات',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              AppSpacing.verticalMD,
+              Container(
+                padding: AppSpacing.paddingMD,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: AppSpacing.borderRadiusMD,
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+                  ),
+                ),
+                child: Text(
+                  error,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                    fontFamily: 'monospace',
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              AppSpacing.verticalXL,
+              AppButton(
+                text: 'إعادة المحاولة',
+                onPressed: () {
+                  setState(() {}); // إعادة بناء الـ StreamBuilder
+                },
+                icon: const Icon(Icons.refresh_outlined),
+                style: AppButtons.primaryButton,
+              ),
+            ],
           ),
-          const SizedBox(height: 16),
-          Text(
-            'حدث خطأ أثناء تحميل الطلبات',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[600],
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            error,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[500],
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {}); // إعادة بناء الـ StreamBuilder
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Theme.of(context).colorScheme.onPrimary,
-            ),
-            child: const Text('إعادة المحاولة'),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -277,35 +364,53 @@ class _OrdersScreenState extends State<OrdersScreen> {
   /// عرض رسالة عدم وجود طلبات
   Widget _buildEmptyView() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.shopping_bag_outlined,
-            size: 64,
-            color: Colors.grey[400],
+      child: Padding(
+        padding: AppSpacing.screenPaddingAll,
+        child: AppAnimations.fadeInUp(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: AppSpacing.paddingXXL,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.shopping_bag_outlined,
+                  size: AppSpacing.iconSizeXLarge * 2,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+              AppSpacing.verticalXL,
+              Text(
+                _selectedStatus == 'الكل'
+                    ? 'لا توجد طلبات بعد'
+                    : 'لا توجد طلبات بحالة "$_selectedStatus"',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              AppSpacing.verticalMD,
+              Text(
+                'ابدأ التسوق لإنشاء طلبك الأول',
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              AppSpacing.verticalXL,
+              AppButton(
+                text: 'ابدأ التسوق',
+                onPressed: () => Navigator.pushNamed(context, '/'),
+                icon: const Icon(Icons.shopping_cart_outlined),
+                style: AppButtons.primaryButton,
+              ),
+            ],
           ),
-          const SizedBox(height: 16),
-          Text(
-            _selectedStatus == 'الكل'
-                ? 'لا توجد طلبات بعد'
-                : 'لا توجد طلبات بحالة "$_selectedStatus"',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[600],
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'ابدأ التسوق لإنشاء طلبك الأول',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[500],
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -313,89 +418,225 @@ class _OrdersScreenState extends State<OrdersScreen> {
   Widget _buildOrderCard(order_model.Order order) {
     final dateFormat = DateFormat('yyyy-MM-dd'); // استخدام DateFormat بشكل صحيح
 
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: ExpansionTile(
-        leading: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: _getStatusColor(order.status),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Text(
-            order.status,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+    return AppCard(
+      decoration: AppCards.orderCard,
+      margin: AppSpacing.paddingMD,
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          dividerColor: Colors.transparent,
+          expansionTileTheme: ExpansionTileThemeData(
+            backgroundColor: Colors.transparent,
+            collapsedBackgroundColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: AppSpacing.borderRadiusLG,
+            ),
+            collapsedShape: RoundedRectangleBorder(
+              borderRadius: AppSpacing.borderRadiusLG,
             ),
           ),
         ),
-        title: Text(
-          'طلب ${order.id}',
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        subtitle: Text('تاريخ: ${dateFormat.format(order.date)}'),
-        trailing: Text(
-          '${order.total.toStringAsFixed(0)} جنيه',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-        ),
-        children: [
-          ...order.items.map((item) => _buildOrderItem(item)),
-          const Divider(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                OutlinedButton(
-                  onPressed: () => _viewOrderDetails(order),
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: Theme.of(context).colorScheme.primary),
-                  ),
-                  child: Text('تفاصيل الطلب',
-                      style: TextStyle(color: Theme.of(context).colorScheme.primary)),
+        child: ExpansionTile(
+          tilePadding: AppSpacing.paddingLG,
+          childrenPadding: EdgeInsets.zero,
+          leading: Container(
+            padding: AppSpacing.paddingSM,
+            decoration: BoxDecoration(
+              color: _getStatusColor(order.status),
+              borderRadius: AppSpacing.borderRadiusSM,
+              boxShadow: [
+                BoxShadow(
+                  color: _getStatusColor(order.status).withOpacity(0.3),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
                 ),
-                if (order.status == 'قيد الشحن')
-                  ElevatedButton(
-                    onPressed: () => _trackOrder(order),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                    child: const Text('تتبع الطلب'),
+              ],
+            ),
+            child: Text(
+              order.status,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          title: Text(
+            'طلب ${order.id}',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+          subtitle: Padding(
+            padding: AppSpacing.paddingTopXS,
+            child: Row(
+              children: [
+                Icon(
+                  Icons.calendar_today_outlined,
+                  size: AppSpacing.iconSizeSmall,
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                ),
+                AppSpacing.horizontalXS,
+                Text(
+                  'تاريخ: ${dateFormat.format(order.date)}',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                   ),
+                ),
               ],
             ),
           ),
-        ],
+          trailing: Container(
+            padding: AppSpacing.paddingSM,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.2),
+              borderRadius: AppSpacing.borderRadiusSM,
+            ),
+            child: Text(
+              '${order.total.toStringAsFixed(0)} جنيه',
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          ),
+          children: [
+            Container(
+              padding: AppSpacing.paddingLG,
+              child: Column(
+                children: [
+                  ...order.items.map((item) => Padding(
+                    padding: AppSpacing.paddingBottomSM,
+                    child: _buildOrderItem(item),
+                  )),
+                  Divider(
+                    color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+                    thickness: 1,
+                  ),
+                  AppSpacing.verticalMD,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () => _viewOrderDetails(order),
+                          icon: Icon(
+                            Icons.visibility_outlined,
+                            size: AppSpacing.iconSizeSmall,
+                          ),
+                          label: const Text('تفاصيل الطلب'),
+                          style: OutlinedButton.styleFrom(
+                            padding: AppSpacing.buttonPaddingMedium,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: AppSpacing.buttonBorderRadius,
+                            ),
+                            side: BorderSide(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (order.status == 'قيد الشحن') ...[
+                        AppSpacing.horizontalMD,
+                        Expanded(
+                          child: AppButton(
+                            text: 'تتبع الطلب',
+                            onPressed: () => _trackOrder(order),
+                            icon: Icon(
+                              Icons.local_shipping_outlined,
+                              size: AppSpacing.iconSizeSmall,
+                            ),
+                            style: AppButtons.primaryButton,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildOrderItem(order_model.OrderItem item) {
-    return ListTile(
-      leading: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: _buildImageWidget(
-          item.image,
-          width: 60,
-          height: 60,
-          fit: BoxFit.cover,
-        ),
+    return AppCard(
+      decoration: AppCards.basicCard.copyWith(
+        color: Theme.of(context).colorScheme.surface.withOpacity(0.5),
       ),
-      title: Text(item.name),
-      subtitle: Text('الكمية: ${item.quantity}'),
-      trailing: Text(
-        '${(item.price * item.quantity).toStringAsFixed(0)} جنيه',
-        style: const TextStyle(fontWeight: FontWeight.bold),
+      padding: AppSpacing.paddingMD,
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: AppSpacing.borderRadiusMD,
+            child: Container(
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: _buildImageWidget(
+                item.image,
+                width: 60,
+                height: 60,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          AppSpacing.horizontalMD,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.name,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                AppSpacing.verticalXS,
+                Row(
+                  children: [
+                    Icon(
+                      Icons.shopping_cart_outlined,
+                      size: AppSpacing.iconSizeXSmall,
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                    ),
+                    AppSpacing.horizontalXS,
+                    Text(
+                      'الكمية: ${item.quantity}',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: AppSpacing.paddingSM,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.2),
+              borderRadius: AppSpacing.borderRadiusSM,
+            ),
+            child: Text(
+              '${(item.price * item.quantity).toStringAsFixed(0)} جنيه',
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -586,17 +827,10 @@ class OrderDetailsScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 24),
-          ElevatedButton(
+          AppButton(
+            text: 'إغلاق',
             onPressed: () => Navigator.pop(context),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Theme.of(context).colorScheme.onPrimary,
-              minimumSize: const Size(double.infinity, 50),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            child: const Text('إغلاق'),
+            style: AppButtons.primaryButton,
           ),
         ],
       ),

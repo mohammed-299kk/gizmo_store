@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../utils/image_helper.dart';
 
 class AddCategoryScreen extends StatefulWidget {
   const AddCategoryScreen({super.key});
@@ -254,12 +255,9 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                                   ? (_iconController.text.startsWith('http')
                                       ? ClipRRect(
                                           borderRadius: BorderRadius.circular(8),
-                                          child: Image.network(
-                                            _iconController.text,
+                                          child: ImageHelper.buildCachedImage(
+                                            imageUrl: _iconController.text,
                                             fit: BoxFit.cover,
-                                            errorBuilder: (context, error, stackTrace) {
-                                              return const Icon(Icons.error);
-                                            },
                                           ),
                                         )
                                       : const Icon(Icons.category))

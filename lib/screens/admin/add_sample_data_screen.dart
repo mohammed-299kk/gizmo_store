@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../services/sample_data_service.dart';
+//import '../../services/sample_data_service.dart';
 
 class AddSampleDataScreen extends StatefulWidget {
   const AddSampleDataScreen({super.key});
@@ -19,9 +19,9 @@ class _AddSampleDataScreenState extends State<AddSampleDataScreen> {
     });
 
     try {
-      final sampleDataService = SampleDataService();
-      await sampleDataService.addAllSampleData();
-      
+      // final sampleDataService = SampleDataService();
+      //await sampleDataService.addAllSampleData();
+
       setState(() {
         _message = 'تم إضافة البيانات النموذجية بنجاح!';
         _isLoading = false;
@@ -96,21 +96,19 @@ class _AddSampleDataScreenState extends State<AddSampleDataScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: _message.contains('خطأ') 
-                      ? Colors.red.shade100 
+                  color: _message.contains('خطأ')
+                      ? Colors.red.shade100
                       : Colors.green.shade100,
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: _message.contains('خطأ') 
-                        ? Colors.red 
-                        : Colors.green,
+                    color: _message.contains('خطأ') ? Colors.red : Colors.green,
                   ),
                 ),
                 child: Text(
                   _message,
                   style: TextStyle(
-                    color: _message.contains('خطأ') 
-                        ? Colors.red.shade800 
+                    color: _message.contains('خطأ')
+                        ? Colors.red.shade800
                         : Colors.green.shade800,
                     fontWeight: FontWeight.bold,
                   ),

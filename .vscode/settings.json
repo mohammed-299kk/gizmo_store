@@ -1,5 +1,6 @@
 {
     "cmake.sourceDirectory": "C:/Users/MOHAMMED/Desktop/gizmo_store/linux",
     "codium.codeCompletion.enable": true,
-    "git.ignoreLimitWarning": true
+    "git.ignoreLimitWarning": true,
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

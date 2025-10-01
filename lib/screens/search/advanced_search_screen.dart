@@ -273,7 +273,7 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          AppLocalizations.of(context)!.priceRange,
+          AppLocalizations.of(context)!.priceRange.toString(),
           style: TextStyle(
               color: Theme.of(context).textTheme.titleMedium?.color,
               fontWeight: FontWeight.w500),
@@ -404,7 +404,7 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'عمليات البحث السابقة',
                     style: TextStyle(
                       color: Theme.of(context).textTheme.titleMedium?.color,
@@ -416,7 +416,7 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                     onPressed: () {
                       searchProvider.clearSearchHistory();
                     },
-                    child: const Text(
+                    child: Text(
                       'مسح الكل',
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.primary),
@@ -456,7 +456,7 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
     return Consumer<SearchProvider>(
       builder: (context, searchProvider, child) {
         if (searchProvider.isLoading) {
-          return const Center(
+          return Center(
             child: CircularProgressIndicator(
               color: Theme.of(context).colorScheme.primary,
             ),
@@ -579,12 +579,13 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                     child: Container(
                       width: double.infinity,
                       color: Theme.of(context).colorScheme.secondary,
-                      child: product.imageUrl != null && product.imageUrl!.isNotEmpty
+                      child: product.imageUrl != null &&
+                              product.imageUrl!.isNotEmpty
                           ? ImageHelper.buildCachedImage(
                               imageUrl: product.imageUrl!,
                               fit: BoxFit.cover,
                             )
-                          : const Icon(
+                          : Icon(
                               Icons.image_not_supported,
                               color: Theme.of(context).iconTheme.color,
                               size: 40,
@@ -651,7 +652,7 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                   children: [
                     Text(
                       product.name,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                         color: Theme.of(context).textTheme.bodyMedium?.color,
@@ -688,7 +689,7 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
                     const Spacer(),
                     Text(
                       '${product.price.toStringAsFixed(0)} ${AppLocalizations.of(context)!.currency}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.bold,
                         fontSize: 12,

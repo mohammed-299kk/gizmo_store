@@ -5,6 +5,7 @@ import 'add_product_screen.dart';
 import 'add_category_screen.dart';
 import 'manage_products_screen.dart';
 import 'admin_products_screen.dart';
+import 'manage_categories_screen.dart';
 import '../product_management_screen.dart';
 
 class AdminPanel extends StatefulWidget {
@@ -16,7 +17,7 @@ class AdminPanel extends StatefulWidget {
 
 class _AdminPanelState extends State<AdminPanel> {
   int _selectedIndex = 0;
-  
+
   final List<Widget> _screens = [
     const AdminDashboard(),
     const AddProductScreen(),
@@ -121,6 +122,19 @@ class AdminDashboard extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => const AddCategoryScreen(),
+                      ),
+                    );
+                  },
+                ),
+                _buildDashboardCard(
+                  'إدارة الفئات',
+                  Icons.category_outlined,
+                  Colors.orange,
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ManageCategoriesScreen(),
                       ),
                     );
                   },

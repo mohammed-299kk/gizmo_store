@@ -40,7 +40,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
-    
+
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
@@ -48,7 +48,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
       parent: _fadeController,
       curve: Curves.easeInOut,
     ));
-    
+
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.3),
       end: Offset.zero,
@@ -130,26 +130,40 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
           context: context,
         );
       }
+
+      // Navigate immediately after successful sign in/up
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed('/home');
+      }
     } catch (e) {
       if (mounted) {
+        setState(() => isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
         );
       }
-    } finally {
-      setState(() => isLoading = false);
     }
   }
 
   // دالة تسجيل الدخول كضيف
   Future<void> _continueAsGuest() async {
+    // Prevent multiple clicks
+    if (isLoading) return;
+
+    setState(() => isLoading = true);
+
     try {
       final authProvider =
           Provider.of<auth.AuthProvider>(context, listen: false);
       await authProvider.signInAsGuest();
-      // لا حاجة للانتقال يدوياً - AuthGate سيتولى ذلك
+
+      // Navigate immediately after successful sign in
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed('/home');
+      }
     } catch (e) {
       if (mounted) {
+        setState(() => isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
         );
@@ -203,7 +217,8 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
                                     child: InkWell(
                                       borderRadius: BorderRadius.circular(25),
                                       onTap: () {
-                                        Navigator.pushNamed(context, '/admin_login');
+                                        Navigator.pushNamed(
+                                            context, '/admin_login');
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.all(12.0),
@@ -248,12 +263,14 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
                                       child: Padding(
                                         padding: const EdgeInsets.all(12.0),
                                         child: AnimatedSwitcher(
-                                          duration: const Duration(milliseconds: 300),
+                                          duration:
+                                              const Duration(milliseconds: 300),
                                           child: Icon(
                                             themeProvider.isDarkMode
                                                 ? Icons.light_mode
                                                 : Icons.dark_mode,
-                                            key: ValueKey(themeProvider.isDarkMode),
+                                            key: ValueKey(
+                                                themeProvider.isDarkMode),
                                             color: themeProvider.isDarkMode
                                                 ? Colors.yellow
                                                 : Colors.grey[700],
@@ -283,14 +300,18 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
                               height: 100,
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
-                                  colors: [Color(0xFFB71C1C), Color(0xFFD32F2F)],
+                                  colors: [
+                                    Color(0xFFB71C1C),
+                                    Color(0xFFD32F2F)
+                                  ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
                                 borderRadius: BorderRadius.circular(20),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFFB71C1C).withOpacity(0.3),
+                                    color: const Color(0xFFB71C1C)
+                                        .withOpacity(0.3),
                                     blurRadius: 15,
                                     offset: const Offset(0, 5),
                                   ),
@@ -354,331 +375,354 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
 
                       const SizedBox(height: 40),
 
-                  // Input fields
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 400),
-                    child: Column(
-                      key: ValueKey(isLogin),
-                      children: [
-                        if (!isLogin) ...[
-                          TweenAnimationBuilder<double>(
-                            duration: const Duration(milliseconds: 600),
-                            tween: Tween(begin: 0.0, end: 1.0),
-                            builder: (context, value, child) {
-                              return Transform.translate(
-                                offset: Offset(0, 20 * (1 - value)),
-                                child: Opacity(
-                                  opacity: value,
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: _buildTextField(
-                          controller: _firstNameController,
-                          label: AppLocalizations.of(context)!.firstName,
-                          icon: Icons.person,
-                          keyboardType: TextInputType.name,
-                          isDarkMode: themeProvider.isDarkMode,
-                        ),
+                      // Input fields
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 400),
+                        child: Column(
+                          key: ValueKey(isLogin),
+                          children: [
+                            if (!isLogin) ...[
+                              TweenAnimationBuilder<double>(
+                                duration: const Duration(milliseconds: 600),
+                                tween: Tween(begin: 0.0, end: 1.0),
+                                builder: (context, value, child) {
+                                  return Transform.translate(
+                                    offset: Offset(0, 20 * (1 - value)),
+                                    child: Opacity(
+                                      opacity: value,
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: _buildTextField(
+                                              controller: _firstNameController,
+                                              label:
+                                                  AppLocalizations.of(context)!
+                                                      .firstName,
+                                              icon: Icons.person,
+                                              keyboardType: TextInputType.name,
+                                              isDarkMode:
+                                                  themeProvider.isDarkMode,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 16),
+                                          Expanded(
+                                            child: _buildTextField(
+                                              controller: _lastNameController,
+                                              label:
+                                                  AppLocalizations.of(context)!
+                                                      .lastName,
+                                              icon: Icons.person_outline,
+                                              keyboardType: TextInputType.name,
+                                              isDarkMode:
+                                                  themeProvider.isDarkMode,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      const SizedBox(width: 16),
-                                      Expanded(
-                                        child: _buildTextField(
-                                          controller: _lastNameController,
-                                          label: AppLocalizations.of(context)!.lastName,
-                                          icon: Icons.person_outline,
-                                          keyboardType: TextInputType.name,
-                                          isDarkMode: themeProvider.isDarkMode,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 16),
-                        ],
-
-                        TweenAnimationBuilder<double>(
-                          duration: const Duration(milliseconds: 800),
-                          tween: Tween(begin: 0.0, end: 1.0),
-                          builder: (context, value, child) {
-                            return Transform.translate(
-                              offset: Offset(0, 20 * (1 - value)),
-                              child: Opacity(
-                                opacity: value,
-                                child: _buildTextField(
-                                  controller: _emailController,
-                                  label: AppLocalizations.of(context)!.email,
-                                  icon: Icons.email,
-                                  keyboardType: TextInputType.emailAddress,
-                                  isDarkMode: themeProvider.isDarkMode,
-                                ),
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
-
-                        const SizedBox(height: 16),
-
-                        TweenAnimationBuilder<double>(
-                          duration: const Duration(milliseconds: 900),
-                          tween: Tween(begin: 0.0, end: 1.0),
-                          builder: (context, value, child) {
-                            return Transform.translate(
-                              offset: Offset(0, 20 * (1 - value)),
-                              child: Opacity(
-                                opacity: value,
-                                child: _buildTextField(
-                                  controller: _passwordController,
-                                  label: AppLocalizations.of(context)!.password,
-                                  icon: Icons.lock,
-                                  isPassword: true,
-                                  isPasswordVisible: !_obscurePassword,
-                                  onToggleVisibility: () {
-                                    setState(() {
-                                      _obscurePassword = !_obscurePassword;
-                                    });
-                                  },
-                                  isDarkMode: themeProvider.isDarkMode,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-
-                        if (!isLogin) ...[
-                          const SizedBox(height: 16),
-                          TweenAnimationBuilder<double>(
-                            duration: const Duration(milliseconds: 1000),
-                            tween: Tween(begin: 0.0, end: 1.0),
-                            builder: (context, value, child) {
-                              return Transform.translate(
-                                offset: Offset(0, 20 * (1 - value)),
-                                child: Opacity(
-                                  opacity: value,
-                                  child: _buildTextField(
-                                    controller: _confirmPasswordController,
-                                    label: AppLocalizations.of(context)!.confirmPassword,
-                                    icon: Icons.lock_outline,
-                                    isPassword: true,
-                                    isPasswordVisible: !_obscureConfirmPassword,
-                                    onToggleVisibility: () {
-                                      setState(() {
-                                        _obscureConfirmPassword = !_obscureConfirmPassword;
-                                      });
-                                    },
-                                    isDarkMode: themeProvider.isDarkMode,
+                              const SizedBox(height: 16),
+                            ],
+                            TweenAnimationBuilder<double>(
+                              duration: const Duration(milliseconds: 800),
+                              tween: Tween(begin: 0.0, end: 1.0),
+                              builder: (context, value, child) {
+                                return Transform.translate(
+                                  offset: Offset(0, 20 * (1 - value)),
+                                  child: Opacity(
+                                    opacity: value,
+                                    child: _buildTextField(
+                                      controller: _emailController,
+                                      label:
+                                          AppLocalizations.of(context)!.email,
+                                      icon: Icons.email,
+                                      keyboardType: TextInputType.emailAddress,
+                                      isDarkMode: themeProvider.isDarkMode,
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 32),
-
-                  // Sign in/register button
-                  TweenAnimationBuilder<double>(
-                    duration: const Duration(milliseconds: 1100),
-                    tween: Tween(begin: 0.0, end: 1.0),
-                    builder: (context, value, child) {
-                      return Transform.scale(
-                        scale: value,
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          width: double.infinity,
-                          height: 56,
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFFB71C1C), Color(0xFFD32F2F)],
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
+                                );
+                              },
                             ),
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFFB71C1C).withOpacity(0.3),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
+                            const SizedBox(height: 16),
+                            TweenAnimationBuilder<double>(
+                              duration: const Duration(milliseconds: 900),
+                              tween: Tween(begin: 0.0, end: 1.0),
+                              builder: (context, value, child) {
+                                return Transform.translate(
+                                  offset: Offset(0, 20 * (1 - value)),
+                                  child: Opacity(
+                                    opacity: value,
+                                    child: _buildTextField(
+                                      controller: _passwordController,
+                                      label: AppLocalizations.of(context)!
+                                          .password,
+                                      icon: Icons.lock,
+                                      isPassword: true,
+                                      isPasswordVisible: !_obscurePassword,
+                                      onToggleVisibility: () {
+                                        setState(() {
+                                          _obscurePassword = !_obscurePassword;
+                                        });
+                                      },
+                                      isDarkMode: themeProvider.isDarkMode,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            if (!isLogin) ...[
+                              const SizedBox(height: 16),
+                              TweenAnimationBuilder<double>(
+                                duration: const Duration(milliseconds: 1000),
+                                tween: Tween(begin: 0.0, end: 1.0),
+                                builder: (context, value, child) {
+                                  return Transform.translate(
+                                    offset: Offset(0, 20 * (1 - value)),
+                                    child: Opacity(
+                                      opacity: value,
+                                      child: _buildTextField(
+                                        controller: _confirmPasswordController,
+                                        label: AppLocalizations.of(context)!
+                                            .confirmPassword,
+                                        icon: Icons.lock_outline,
+                                        isPassword: true,
+                                        isPasswordVisible:
+                                            !_obscureConfirmPassword,
+                                        onToggleVisibility: () {
+                                          setState(() {
+                                            _obscureConfirmPassword =
+                                                !_obscureConfirmPassword;
+                                          });
+                                        },
+                                        isDarkMode: themeProvider.isDarkMode,
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
                             ],
-                          ),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(16),
-                              onTap: isLoading ? null : _submit,
-                              child: Center(
-                                child: isLoading
-                                    ? const SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          valueColor: AlwaysStoppedAnimation<Color>(
-                                              Colors.white),
-                                        ),
-                                      )
-                                    : AnimatedSwitcher(
-                                        duration: const Duration(milliseconds: 200),
-                                        child: Text(
-                                          isLogin
-                                              ? AppLocalizations.of(context)!.signIn
-                                              : AppLocalizations.of(context)!.createAccount,
-                                          key: ValueKey(isLogin),
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // زر التبديل
-                  TweenAnimationBuilder<double>(
-                    duration: const Duration(milliseconds: 1200),
-                    tween: Tween(begin: 0.0, end: 1.0),
-                    builder: (context, value, child) {
-                      return Transform.translate(
-                        offset: Offset(0, 20 * (1 - value)),
-                        child: Opacity(
-                          opacity: value,
-                          child: TextButton(
-                            onPressed: () => setState(() => isLogin = !isLogin),
-                            style: TextButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-                            ),
-                            child: AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 300),
-                              child: Text(
-                                isLogin
-                                    ? AppLocalizations.of(context)!.noAccountCreateNew
-                                    : AppLocalizations.of(context)!.haveAccountSignIn,
-                                key: ValueKey(isLogin),
-                                style: const TextStyle(
-                                  color: Color(0xFFB71C1C),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // خط فاصل
-                  TweenAnimationBuilder<double>(
-                    duration: const Duration(milliseconds: 1300),
-                    tween: Tween(begin: 0.0, end: 1.0),
-                    builder: (context, value, child) {
-                      return Opacity(
-                        opacity: value,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 500),
-                                height: 1,
-                                color: themeProvider.isDarkMode
-                                    ? Colors.white24
-                                    : Colors.black26,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
-                              child: Text(
-                                AppLocalizations.of(context)!.or,
-                                style: TextStyle(
-                                  color: themeProvider.isDarkMode
-                                      ? Colors.white70
-                                      : Colors.black54,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 500),
-                                height: 1,
-                                color: themeProvider.isDarkMode
-                                    ? Colors.white24
-                                    : Colors.black26,
-                              ),
-                            ),
                           ],
                         ),
-                      );
-                    },
-                  ),
+                      ),
 
-                  const SizedBox(height: 24),
+                      const SizedBox(height: 32),
 
-                  // زر الدخول كضيف
-                  TweenAnimationBuilder<double>(
-                    duration: const Duration(milliseconds: 1400),
-                    tween: Tween(begin: 0.0, end: 1.0),
-                    builder: (context, value, child) {
-                      return Transform.scale(
-                        scale: value,
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          width: double.infinity,
-                          height: 56,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: const Color(0xFFB71C1C),
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(16),
-                              onTap: _continueAsGuest,
-                              child: Center(
-                                child: Text(
-                                  AppLocalizations.of(context)!.continueAsGuest,
-                                  style: TextStyle(
-                                    color: themeProvider.isDarkMode
-                                        ? Colors.white
-                                        : Colors.black,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
+                      // Sign in/register button
+                      TweenAnimationBuilder<double>(
+                        duration: const Duration(milliseconds: 1100),
+                        tween: Tween(begin: 0.0, end: 1.0),
+                        builder: (context, value, child) {
+                          return Transform.scale(
+                            scale: value,
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              width: double.infinity,
+                              height: 56,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFFB71C1C),
+                                    Color(0xFFD32F2F)
+                                  ],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                ),
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFFB71C1C)
+                                        .withOpacity(0.3),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(16),
+                                  onTap: isLoading ? null : _submit,
+                                  child: Center(
+                                    child: isLoading
+                                        ? const SizedBox(
+                                            height: 20,
+                                            width: 20,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                      Colors.white),
+                                            ),
+                                          )
+                                        : AnimatedSwitcher(
+                                            duration: const Duration(
+                                                milliseconds: 200),
+                                            child: Text(
+                                              isLogin
+                                                  ? AppLocalizations.of(
+                                                          context)!
+                                                      .signIn
+                                                  : AppLocalizations.of(
+                                                          context)!
+                                                      .createAccount,
+                                              key: ValueKey(isLogin),
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ),
-                      );
-                    },
+                          );
+                        },
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // زر التبديل
+                      TweenAnimationBuilder<double>(
+                        duration: const Duration(milliseconds: 1200),
+                        tween: Tween(begin: 0.0, end: 1.0),
+                        builder: (context, value, child) {
+                          return Transform.translate(
+                            offset: Offset(0, 20 * (1 - value)),
+                            child: Opacity(
+                              opacity: value,
+                              child: TextButton(
+                                onPressed: () =>
+                                    setState(() => isLogin = !isLogin),
+                                style: TextButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 12, horizontal: 24),
+                                ),
+                                child: AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 300),
+                                  child: Text(
+                                    isLogin
+                                        ? AppLocalizations.of(context)!
+                                            .noAccountCreateNew
+                                        : AppLocalizations.of(context)!
+                                            .haveAccountSignIn,
+                                    key: ValueKey(isLogin),
+                                    style: const TextStyle(
+                                      color: Color(0xFFB71C1C),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      // خط فاصل
+                      TweenAnimationBuilder<double>(
+                        duration: const Duration(milliseconds: 1300),
+                        tween: Tween(begin: 0.0, end: 1.0),
+                        builder: (context, value, child) {
+                          return Opacity(
+                            opacity: value,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 500),
+                                    height: 1,
+                                    color: themeProvider.isDarkMode
+                                        ? Colors.white24
+                                        : Colors.black26,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16),
+                                  child: Text(
+                                    AppLocalizations.of(context)!.or,
+                                    style: TextStyle(
+                                      color: themeProvider.isDarkMode
+                                          ? Colors.white70
+                                          : Colors.black54,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 500),
+                                    height: 1,
+                                    color: themeProvider.isDarkMode
+                                        ? Colors.white24
+                                        : Colors.black26,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      // زر الدخول كضيف
+                      TweenAnimationBuilder<double>(
+                        duration: const Duration(milliseconds: 1400),
+                        tween: Tween(begin: 0.0, end: 1.0),
+                        builder: (context, value, child) {
+                          return Transform.scale(
+                            scale: value,
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              width: double.infinity,
+                              height: 56,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: const Color(0xFFB71C1C),
+                                  width: 1.5,
+                                ),
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(16),
+                                  onTap: _continueAsGuest,
+                                  child: Center(
+                                    child: Text(
+                                      AppLocalizations.of(context)!
+                                          .continueAsGuest,
+                                      style: TextStyle(
+                                        color: themeProvider.isDarkMode
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
-  },
-);
   }
 
   // دالة لبناء حقل الإدخال
@@ -695,14 +739,10 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       decoration: BoxDecoration(
-        color: isDarkMode
-            ? const Color(0xFF2A2A2A)
-            : Colors.white,
+        color: isDarkMode ? const Color(0xFF2A2A2A) : Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDarkMode
-              ? Colors.white12
-              : Colors.black12,
+          color: isDarkMode ? Colors.white12 : Colors.black12,
           width: 1,
         ),
         boxShadow: [
@@ -748,9 +788,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
                             ? Icons.visibility
                             : Icons.visibility_off,
                         key: ValueKey(isPasswordVisible ?? false),
-                        color: isDarkMode
-                            ? Colors.white54
-                            : Colors.black54,
+                        color: isDarkMode ? Colors.white54 : Colors.black54,
                         size: 20,
                       ),
                     ),

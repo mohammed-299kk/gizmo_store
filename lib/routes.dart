@@ -1,6 +1,5 @@
 import 'package:gizmo_store/screens/categories_screen.dart';
 import 'package:gizmo_store/screens/shipping_screen.dart';
-import 'package:gizmo_store/screens/address_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:gizmo_store/screens/home/home_screen.dart';
 import 'package:gizmo_store/screens/main_screen.dart';
@@ -17,7 +16,7 @@ import 'package:gizmo_store/models/product.dart';
 import 'package:gizmo_store/screens/splash_screen.dart';
 import 'package:gizmo_store/screens/auth/auth_gate.dart';
 import 'package:gizmo_store/debug/image_debug_screen.dart';
-import 'package:gizmo_store/screens/create_admin_screen.dart';
+import 'package:gizmo_store/screens/profile/address_management_screen.dart';
 
 class AppRoutes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -43,13 +42,12 @@ class AppRoutes {
       case '/shipping':
         return MaterialPageRoute(builder: (_) => const ShippingScreen());
       case '/addresses':
-        return MaterialPageRoute(builder: (_) => const AddressScreen());
+        return MaterialPageRoute(
+            builder: (_) => const AddressManagementScreen());
       case '/admin_login':
         return MaterialPageRoute(builder: (_) => const AdminLoginScreen());
       case '/admin_panel':
         return MaterialPageRoute(builder: (_) => const AdminPanel());
-      case '/create_admin':
-        return MaterialPageRoute(builder: (_) => const CreateAdminScreen());
       case '/product_detail':
         final product = settings.arguments as Product;
         return MaterialPageRoute(

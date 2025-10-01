@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:gizmo_store/l10n/app_localizations.dart';
 import 'package:gizmo_store/models/product.dart';
 import 'package:gizmo_store/screens/home/components/product_card.dart';
-import 'package:gizmo_store/screens/product_detail_screen.dart';
+import 'package:gizmo_store/screens/product/product_detail_screen.dart';
 
 class FeaturedProductsSection extends StatelessWidget {
   final List<Product> products;
@@ -58,7 +58,7 @@ class FeaturedProductsSection extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => ProductDetailScreen(
-              product: product.toMap(),
+              product: product,
             ),
           ),
         );

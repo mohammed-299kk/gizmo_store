@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../models/product.dart';
-import '../../../utils/image_helper.dart';
+import '../../models/product.dart';
+import '../../utils/image_helper.dart';
 
-import '../../../providers/cart_provider.dart';
-import '../../../services/product_service.dart';
+import '../../providers/cart_provider.dart';
+import '../../services/product_service.dart';
 
 import 'components/search_bar.dart';
-import '../product_detail_screen.dart';
+import '../product/product_detail_screen.dart';
 import '../cart/cart_screen.dart';
 import '../search/search_screen.dart';
 import '../categories_screen.dart';
@@ -17,7 +17,7 @@ import 'components/featured_products_section.dart';
 
 class HomeScreen extends StatefulWidget {
   final Function(int)? onTabChange;
-  
+
   const HomeScreen({Key? key, this.onTabChange}) : super(key: key);
 
   @override
@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Product> _products = [];
   List<String> _categories = [
     'الهواتف الذكية',
-    'اللابتوبات', 
+    'اللابتوبات',
     'السماعات',
     'الساعات الذكية',
     'الأجهزة اللوحية',
@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _loadData() async {
     try {
       final products = await ProductService.getAllProducts();
-      
+
       setState(() {
         _products = products;
         _isLoading = false;
@@ -172,11 +172,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       return Stack(
                         children: [
                           IconButton(
-                            icon: Icon(Icons.shopping_cart, color: Colors.black, size: 24),
+                            icon: Icon(Icons.shopping_cart,
+                                color: Colors.black, size: 24),
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => CartScreen()),
+                                MaterialPageRoute(
+                                    builder: (context) => CartScreen()),
                               );
                             },
                           ),
@@ -229,19 +231,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => SearchScreen()),
+                          MaterialPageRoute(
+                              builder: (context) => SearchScreen()),
                         );
                       },
                     ),
-                    
+
                     // بانر الترويج
                     PromoBanner(),
-                    
+
                     // قسم المنتجات المميزة
                     FeaturedProductsSection(
                       products: _products,
                     ),
-                    
+
                     // قسم جميع المنتجات
                     Container(
                       padding: const EdgeInsets.all(16),
@@ -260,7 +263,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           GridView.builder(
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
-                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                               childAspectRatio: 0.75,
                               crossAxisSpacing: 16,
@@ -274,7 +278,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-                    
+
                     // قسم منتجات بتصميم Figma
                     Container(
                       padding: const EdgeInsets.all(16),
@@ -298,7 +302,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               itemBuilder: (context, index) {
                                 return Padding(
                                   padding: const EdgeInsets.only(right: 16),
-                                  child: _buildFigmaStyleProductCard(_products[index]),
+                                  child: _buildFigmaStyleProductCard(
+                                      _products[index]),
                                 );
                               },
                             ),
@@ -319,7 +324,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProductDetailScreen(product: product.toMap()),
+            builder: (context) => ProductDetailScreen(product: product),
           ),
         );
       },
@@ -359,7 +364,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            
+
             // معلومات المنتج
             Expanded(
               flex: 2,
@@ -379,9 +384,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    
+
                     const SizedBox(height: 4),
-                    
+
                     // وصف المنتج
                     Text(
                       product.description,
@@ -392,9 +397,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    
+
                     const Spacer(),
-                    
+
                     // السعر وزر الإضافة
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -416,7 +421,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ),
-                        
+
                         // السعر
                         Text(
                           'ج.س ${_formatPrice(product.price)}',
@@ -445,7 +450,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProductDetailScreen(product: product.toMap()),
+            builder: (context) => ProductDetailScreen(product: product),
           ),
         );
       },
@@ -491,7 +496,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       top: 8,
                       right: 8,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: Colors.green,
                           borderRadius: BorderRadius.circular(20),
@@ -510,7 +516,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            
+
             // معلومات المنتج
             Expanded(
               flex: 2,
@@ -531,9 +537,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.right,
                     ),
-                    
+
                     const SizedBox(height: 4),
-                    
+
                     // وصف المنتج
                     Text(
                       product.description,
@@ -545,9 +551,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.right,
                     ),
-                    
+
                     const Spacer(),
-                    
+
                     // السعر وزر الإضافة
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -569,7 +575,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ),
-                        
+
                         // السعر
                         Text(
                           'ج.س ${_formatPrice(product.price)}',
@@ -591,6 +597,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-
 }

@@ -135,8 +135,7 @@ class _SearchScreenState extends State<SearchScreen>
 
       if (mounted) {
         setState(() {
-          _searchResults =
-              products;
+          _searchResults = products;
           _isSearching = false;
         });
       }
@@ -151,8 +150,7 @@ class _SearchScreenState extends State<SearchScreen>
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content:
-                Text('تعذر تحميل المنتجات من الخادم'),
+            content: Text('تعذر تحميل المنتجات من الخادم'),
             backgroundColor: Colors.orange,
             duration: Duration(seconds: 2),
           ),
@@ -160,8 +158,6 @@ class _SearchScreenState extends State<SearchScreen>
       }
     }
   }
-
-
 
   @override
   void dispose() {
@@ -227,7 +223,7 @@ class _SearchScreenState extends State<SearchScreen>
       _searchResults = _searchResults.where((product) {
         bool categoryMatch =
             _selectedCategory == AppLocalizations.of(context)!.all ||
-                (product.category ?? '') == _selectedCategory;
+                product.category == _selectedCategory;
         bool priceMatch =
             product.price >= _minPrice && product.price <= _maxPrice;
 
@@ -244,7 +240,7 @@ class _SearchScreenState extends State<SearchScreen>
       } else if (_sortBy == AppLocalizations.of(context)!.priceHighToLow) {
         _searchResults.sort((a, b) => b.price.compareTo(a.price));
       } else if (_sortBy == AppLocalizations.of(context)!.topRated) {
-        _searchResults.sort((a, b) => (b.rating ?? 0).compareTo(a.rating ?? 0));
+        _searchResults.sort((a, b) => b.rating.compareTo(a.rating));
       }
       _currentPage = 0; // إعادة الصفحة إلى الصفر عند تغيير الفلتر
     });
@@ -886,7 +882,7 @@ class _SearchScreenState extends State<SearchScreen>
                                         int crossAxisCount;
                                         double childAspectRatio;
                                         double spacing;
-                                        
+
                                         if (constraints.maxWidth > 1200) {
                                           // شاشات كبيرة جداً (Desktop)
                                           crossAxisCount = 4;
@@ -908,10 +904,12 @@ class _SearchScreenState extends State<SearchScreen>
                                           childAspectRatio = 0.7;
                                           spacing = 10;
                                         }
-                                        
+
                                         return GridView.builder(
-                                          padding: const EdgeInsets.only(bottom: 16),
-                                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 16),
+                                          gridDelegate:
+                                              SliverGridDelegateWithFixedCrossAxisCount(
                                             crossAxisCount: crossAxisCount,
                                             childAspectRatio: childAspectRatio,
                                             crossAxisSpacing: spacing,
@@ -919,7 +917,8 @@ class _SearchScreenState extends State<SearchScreen>
                                           ),
                                           itemCount: _currentPageResults.length,
                                           itemBuilder: (context, index) {
-                                            final product = _currentPageResults[index];
+                                            final product =
+                                                _currentPageResults[index];
                                             return _buildProductItem(product);
                                           },
                                         );
@@ -1187,7 +1186,7 @@ class _SearchScreenState extends State<SearchScreen>
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          product.category ?? '',
+                          product.category,
                           style: TextStyle(
                             fontSize: 10,
                             color: Colors.grey.shade600,
@@ -1207,9 +1206,9 @@ class _SearchScreenState extends State<SearchScreen>
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (product.discount! > 0)
+                              if (product.discount > 0)
                                 Text(
-                                  '\$${_formatPrice(product.price * (1 + product.discount! / 100))}',
+                                  '\$${_formatPrice(product.price * (1 + product.discount / 100))}',
                                   style: TextStyle(
                                     fontSize: 10,
                                     color: Colors.grey.shade500,
@@ -1336,7 +1335,8 @@ class _SearchScreenState extends State<SearchScreen>
                               width: 24,
                               height: 24,
                               child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFD32F2F)),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Color(0xFFD32F2F)),
                                 strokeWidth: 2,
                               ),
                             ),
@@ -1385,7 +1385,7 @@ class _SearchScreenState extends State<SearchScreen>
                     ),
                   ),
                 ),
-                if (product.discount! > 0)
+                if (product.discount > 0)
                   Positioned(
                     top: 8,
                     left: 8,
@@ -1439,7 +1439,7 @@ class _SearchScreenState extends State<SearchScreen>
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          product.category ?? '',
+                          product.category,
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey.shade600,
@@ -1493,9 +1493,9 @@ class _SearchScreenState extends State<SearchScreen>
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (product.discount! > 0)
+                              if (product.discount > 0)
                                 Text(
-                                  '\$${_formatPrice(product.price * (1 + product.discount! / 100))}',
+                                  '\$${_formatPrice(product.price * (1 + product.discount / 100))}',
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: Colors.grey.shade500,

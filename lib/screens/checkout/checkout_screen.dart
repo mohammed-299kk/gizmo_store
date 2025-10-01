@@ -6,7 +6,7 @@ import '../../models/order.dart';
 import '../../services/cart_service.dart';
 import '../../services/firestore_service.dart';
 import '../../l10n/app_localizations.dart';
-import '../address_management_screen.dart';
+import '../profile/address_management_screen.dart';
 import '../payment/payment_simulation_screen.dart';
 
 class CheckoutScreen extends StatefulWidget {

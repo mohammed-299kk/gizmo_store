@@ -22,42 +22,40 @@ class AuthProvider with ChangeNotifier {
   final UserPreferencesService _preferencesService = UserPreferencesService();
 
   AuthProvider() {
+    // تحميل المستخدم الحالي فورًا
+    _user = _auth.currentUser;
+
     // الاستماع إلى تغييرات حالة المصادقة
-    _auth.authStateChanges().listen((User? user) async {
+    _auth.authStateChanges().listen((User? user) {
       final previousUser = _user;
       _user = user;
-      
-      try {
-        // Check admin status and role when user changes
-        if (user != null) {
-          await _checkUserRole(user.uid);
-          
-          // Handle preference syncing based on auth state changes
-          if (previousUser == null) {
-            // User just logged in - sync preferences from cloud
-            await _syncPreferencesOnLogin();
-          }
-        } else {
-          // User logged out - reset admin status and role
-          _isAdmin = false;
-          _userRole = 'user';
-          
-          if (previousUser != null) {
-            // User just logged out - reset to defaults
-            await _resetPreferencesOnLogout();
-          }
-        }
-      } catch (e) {
-        debugPrint('Error in auth state change: $e');
-        // Set safe defaults on error
-        _isAdmin = false;
-        _userRole = 'user';
-        _errorMessage = null; // Clear any previous errors
-      }
-      
-      // Always stop loading and notify listeners
+
+      // Set safe defaults immediately
+      _isAdmin = false;
+      _userRole = 'user';
       _isLoading = false;
+
+      // Notify listeners immediately so UI updates
       notifyListeners();
+
+      // Try to check user role in background (don't await)
+      if (user != null) {
+        _checkUserRole(user.uid).catchError((e) {
+          debugPrint('Error checking user role (non-blocking): $e');
+        });
+
+        // Handle preference syncing in background
+        if (previousUser == null) {
+          _syncPreferencesOnLogin().catchError((e) {
+            debugPrint('Error syncing preferences (non-blocking): $e');
+          });
+        }
+      } else if (previousUser != null) {
+        // User just logged out - reset to defaults in background
+        _resetPreferencesOnLogout().catchError((e) {
+          debugPrint('Error resetting preferences (non-blocking): $e');
+        });
+      }
     });
   }
 
@@ -66,29 +64,49 @@ class AuthProvider with ChangeNotifier {
     try {
       _setLoading(true);
       _errorMessage = null;
-      
+
+      debugPrint('🔐 Attempting to sign in with email: $email');
+
       // Clear previous session before signing in
       if (_auth.currentUser != null) {
         await _auth.signOut();
       }
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
+
+      final userCredential = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+
+      debugPrint('✅ Sign in successful! User: ${userCredential.user?.uid}');
+
+      // Update user immediately and notify
+      _user = userCredential.user;
+      _isLoading = false;
+
+      // Force immediate UI update
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        notifyListeners();
+        debugPrint('🔔 Notified listeners after sign in');
+      });
+
+      notifyListeners();
     } on FirebaseAuthException catch (e) {
+      debugPrint('❌ Sign in failed: ${e.code}');
       _errorMessage = _getAuthErrorMessage(e.code);
+      _isLoading = false;
       notifyListeners();
       throw Exception(_errorMessage);
-    } finally {
-      _setLoading(false);
     }
   }
 
   // تسجيل جديد
   Future<void> signUp(
-      String email, String password, String confirmPassword, {
-      String? firstName,
-      String? middleName,
-      String? lastName,
-      required BuildContext context,
-      }) async {
+    String email,
+    String password,
+    String confirmPassword, {
+    String? firstName,
+    String? middleName,
+    String? lastName,
+    required BuildContext context,
+  }) async {
     try {
       if (password != confirmPassword) {
         throw Exception('كلمات المرور غير متطابقة');
@@ -120,20 +138,36 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-
-
   // تسجيل الدخول كضيف
   Future<void> signInAsGuest() async {
     try {
       _setLoading(true);
       _errorMessage = null;
-      await _auth.signInAnonymously();
+
+      debugPrint('👤 Attempting to sign in as guest...');
+
+      final userCredential = await _auth.signInAnonymously();
+
+      debugPrint(
+          '✅ Guest sign in successful! User: ${userCredential.user?.uid}');
+
+      // Update user immediately and notify
+      _user = userCredential.user;
+      _isLoading = false;
+
+      // Force immediate UI update
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        notifyListeners();
+        debugPrint('🔔 Notified listeners after guest sign in');
+      });
+
+      notifyListeners();
     } on FirebaseAuthException catch (e) {
+      debugPrint('❌ Guest sign in failed: ${e.code}');
       _errorMessage = _getAuthErrorMessage(e.code);
+      _isLoading = false;
       notifyListeners();
       throw Exception(_errorMessage);
-    } finally {
-      _setLoading(false);
     }
   }
 
@@ -245,7 +279,7 @@ class AuthProvider with ChangeNotifier {
           return false;
         },
       );
-      
+
       final roleCheck = FirebaseAuthService.getUserRole(uid).timeout(
         const Duration(seconds: 10),
         onTimeout: () {
@@ -253,7 +287,7 @@ class AuthProvider with ChangeNotifier {
           return 'user';
         },
       );
-      
+
       _isAdmin = await adminCheck;
       _userRole = await roleCheck;
     } catch (e) {

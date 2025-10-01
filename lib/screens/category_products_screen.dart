@@ -219,7 +219,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      if (product.discount! > 0)
+                                      if (product.discount != null && product.discount! > 0)
                                         Container(
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 6, vertical: 2),

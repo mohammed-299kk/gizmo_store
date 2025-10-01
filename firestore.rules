@@ -63,7 +63,12 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
     
-    // User Preferences - Temporary: allow any authenticated user (for testing)
+    // User Preferences - Allow any authenticated user
+    match /user_preferences/{userId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Also support old naming convention
     match /userPreferences/{userId} {
       allow read, write: if request.auth != null;
     }

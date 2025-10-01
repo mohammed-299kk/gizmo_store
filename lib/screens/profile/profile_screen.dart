@@ -8,10 +8,9 @@ import 'package:gizmo_store/services/firestore_service.dart';
 import 'package:gizmo_store/services/firebase_auth_service.dart';
 import 'package:gizmo_store/screens/auth/auth_screen.dart';
 import 'package:gizmo_store/screens/order/orders_screen.dart';
-import 'package:gizmo_store/screens/firebase_details_screen.dart';
 import 'package:gizmo_store/screens/edit_profile_screen.dart';
-import 'package:gizmo_store/screens/security_settings_screen.dart'; // Added this line
-import 'package:gizmo_store/screens/settings_screen.dart';
+import 'package:gizmo_store/screens/security_settings_screen.dart';
+import 'package:gizmo_store/screens/settings/notification_settings_screen.dart';
 import 'package:gizmo_store/screens/profile/address_management_screen.dart';
 import 'package:gizmo_store/screens/profile/notifications_screen.dart';
 import 'package:gizmo_store/screens/profile/help_support_screen.dart';
@@ -62,10 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           Icon(Icons.person_off_outlined,
               size: 80,
-              color: Theme.of(context)
-                  .colorScheme
-                  .onSurface
-                  .withOpacity(0.4)),
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
           const SizedBox(height: 20),
           Text(
             AppLocalizations.of(context)!.youAreGuestNow,
@@ -78,10 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Text(
             AppLocalizations.of(context)!.loginToViewProfile,
             style: TextStyle(
-                color: Theme.of(context)
-                    .colorScheme
-                    .onSurface
-                    .withOpacity(0.7),
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                 fontSize: 16),
             textAlign: TextAlign.center,
             strutStyle: const StrutStyle(height: 1.5),
@@ -118,8 +111,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildUserInfo(context, user),
-            const SizedBox(height: 24),
-            _buildStatsRow(context, user, wishlistProvider),
+          const SizedBox(height: 24),
+          _buildStatsRow(context, user, wishlistProvider),
           const SizedBox(height: 24),
           _buildSettingsSection(context),
           const SizedBox(height: 24),
@@ -142,8 +135,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-
-
   String _formatDate(BuildContext context, dynamic timestamp) {
     if (timestamp == null) return AppLocalizations.of(context)!.notSpecified;
     try {
@@ -159,7 +150,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       future: FirebaseAuthService.getUserData(user.uid, context),
       builder: (context, snapshot) {
         final userData = snapshot.data;
-        
+
         return Material(
           color: Colors.transparent,
           child: InkWell(
@@ -210,7 +201,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ],
                         ),
-                        child: user.photoURL != null && user.photoURL!.isNotEmpty
+                        child: user.photoURL != null &&
+                                user.photoURL!.isNotEmpty
                             ? ClipOval(
                                 child: ImageHelper.buildCachedImage(
                                   imageUrl: user.photoURL!,
@@ -336,19 +328,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildStatsRow(BuildContext context, User user, WishlistProvider wishlistProvider) {
+  Widget _buildStatsRow(
+      BuildContext context, User user, WishlistProvider wishlistProvider) {
     return Row(
       children: [
         Expanded(
-          child: _buildStatCard(context, AppLocalizations.of(context)!.orders, '',
-              Icons.shopping_cart_outlined, () {
+          child: _buildStatCard(context, AppLocalizations.of(context)!.orders,
+              '', Icons.shopping_cart_outlined, () {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const OrdersScreen()));
           }),
         ),
         const SizedBox(width: 12),
         Expanded(
-          child: _buildStatCard(context, AppLocalizations.of(context)!.favorites, '',
+          child: _buildStatCard(
+              context,
+              AppLocalizations.of(context)!.favorites,
+              '',
               Icons.favorite_border, () {
             Navigator.push(
                 context,
@@ -360,8 +356,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildStatCard(BuildContext context,
-      String title, String value, IconData icon, VoidCallback? onTap) {
+  Widget _buildStatCard(BuildContext context, String title, String value,
+      IconData icon, VoidCallback? onTap) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -395,56 +391,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context,
       AppLocalizations.of(context)!.myAccount,
       [
-        _buildSettingsOption(
-            context,
+        _buildSettingsOption(context,
             icon: Icons.person_outline,
-            title: AppLocalizations.of(context)!.editProfile,
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const EditProfileScreen()));
-            }),
-        _buildSettingsOption(
-            context,
+            title: AppLocalizations.of(context)!.editProfile, onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const EditProfileScreen()));
+        }),
+        _buildSettingsOption(context,
             icon: Icons.shopping_cart_outlined,
-            title: AppLocalizations.of(context)!.myOrders,
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const OrdersScreen()));
-            }),
-        _buildSettingsOption(
-            context,
+            title: AppLocalizations.of(context)!.myOrders, onTap: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const OrdersScreen()));
+        }),
+        _buildSettingsOption(context,
             icon: Icons.favorite_border,
-            title: AppLocalizations.of(context)!.favorites,
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const WishlistScreen()));
-            }),
-        _buildSettingsOption(
-            context,
+            title: AppLocalizations.of(context)!.favorites, onTap: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const WishlistScreen()));
+        }),
+        _buildSettingsOption(context,
             icon: Icons.location_on_outlined,
-            title: AppLocalizations.of(context)!.addresses,
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const AddressManagementScreen()));
-            }),
-        _buildSettingsOption(
-            context,
+            title: AppLocalizations.of(context)!.addresses, onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const AddressManagementScreen()));
+        }),
+        _buildSettingsOption(context,
             icon: Icons.settings,
-            title: AppLocalizations.of(context)!.settings,
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SettingsScreen()));
-            }),
+            title: AppLocalizations.of(context)!.settings, onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const NotificationSettingsScreen()));
+        }),
         // Dark mode toggle removed - available in Settings screen
       ],
     );
@@ -455,58 +437,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context,
       AppLocalizations.of(context)!.app,
       [
-        _buildSettingsOption(
-            context,
+        _buildSettingsOption(context,
             icon: Icons.notifications_none,
-            title: AppLocalizations.of(context)!.notifications,
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const NotificationsScreen()));
-            }),
-        _buildSettingsOption(
-            context,
+            title: AppLocalizations.of(context)!.notifications, onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const NotificationsScreen()));
+        }),
+        _buildSettingsOption(context,
             icon: Icons.help_outline,
-            title: AppLocalizations.of(context)!.helpAndSupport,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const HelpSupportScreen(),
-                ),
-              );
-            }),
-        _buildSettingsOption(
+            title: AppLocalizations.of(context)!.helpAndSupport, onTap: () {
+          Navigator.push(
             context,
+            MaterialPageRoute(
+              builder: (context) => const HelpSupportScreen(),
+            ),
+          );
+        }),
+        _buildSettingsOption(context,
             icon: Icons.security_outlined,
-            title: AppLocalizations.of(context)!.privacyAndSecurity,
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SecuritySettingsScreen()));
-            }),
-        _buildSettingsOption(
-            context,
+            title: AppLocalizations.of(context)!.privacyAndSecurity, onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const SecuritySettingsScreen()));
+        }),
+        _buildSettingsOption(context,
             icon: Icons.info_outline,
             title: AppLocalizations.of(context)!.aboutApp,
             onTap: () => _showAboutDialog(context)),
-        _buildSettingsOption(
-            context,
-            icon: Icons.cloud_queue,
-            title: AppLocalizations.of(context)!.firebaseDetails,
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const FirebaseDetailsScreen()));
-            }),
       ],
     );
   }
 
-  Widget _buildSectionContainer(BuildContext context, String title, List<Widget> children) {
+  Widget _buildSectionContainer(
+      BuildContext context, String title, List<Widget> children) {
     List<Widget> spacedChildren = [];
     for (int i = 0; i < children.length; i++) {
       spacedChildren.add(children[i]);
@@ -528,10 +494,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Theme.of(context)
-                  .colorScheme
-                  .onSurface
-                  .withOpacity(0.7)),
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
         ),
         const SizedBox(height: 12),
         Container(
@@ -561,10 +524,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Row(
             children: [
               Icon(icon,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurface
-                      .withOpacity(0.7),
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                   size: 22),
               const SizedBox(width: 16),
               Expanded(

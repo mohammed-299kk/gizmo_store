@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:gizmo_store/models/category.dart';
 import 'package:gizmo_store/models/product.dart';
 import 'package:gizmo_store/services/database_setup_service.dart';
@@ -34,16 +33,15 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     try {
       // تحميل الفئات الافتراضية
       List<Category> loadedCategories = _getFallbackCategories();
-      
+
       // عرض الفئات فوراً بدون انتظار عدد المنتجات
       setState(() {
         categories = loadedCategories;
         _isLoading = false;
       });
-      
+
       // تحميل عدد المنتجات لكل فئة بشكل متوازي في الخلفية
       _loadProductCountsInBackground(loadedCategories);
-      
     } catch (e) {
       print('Error loading categories: $e');
       setState(() {
@@ -57,9 +55,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Future<void> _loadProductCountsInBackground(List<Category> categories) async {
     try {
       // تحميل عدد المنتجات لكل فئة بشكل متوازي
-      List<Future<MapEntry<String, int>>> futures = categories.map((category) async {
+      List<Future<MapEntry<String, int>>> futures =
+          categories.map((category) async {
         try {
-          List<Product> products = await DatabaseSetupService.getProductsByCategory(category.name);
+          List<Product> products =
+              await DatabaseSetupService.getProductsByCategory(category.name);
           return MapEntry(category.name, products.length);
         } catch (e) {
           print('Error loading products for category ${category.name}: $e');
@@ -69,10 +69,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
       // انتظار جميع العمليات المتوازية
       List<MapEntry<String, int>> results = await Future.wait(futures);
-      
+
       // تحديث عدد المنتجات
       Map<String, int> productCounts = Map.fromEntries(results);
-      
+
       if (mounted) {
         setState(() {
           categoryProductCounts = productCounts;
@@ -88,57 +88,57 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     return [
       Category(
         id: 'smartphones',
-        name: 'smartphones',
-        displayName: localizations.categorySmartphones,
-        imageUrl: 'https://cdn.pixabay.com/photo/2016/12/09/11/33/smartphone-1894723_960_720.jpg',
+        name: 'smartphones', // English name for Firebase query
+        displayName: localizations.categorySmartphones, // Arabic display name
+        imageUrl: '',
       ),
       Category(
         id: 'laptops',
         name: 'laptops',
         displayName: localizations.categoryLaptops,
-        imageUrl: 'https://cdn.pixabay.com/photo/2015/09/09/16/05/forest-931706_960_720.jpg',
+        imageUrl: '',
       ),
       Category(
         id: 'headphones',
         name: 'headphones',
         displayName: localizations.categoryHeadphones,
-        imageUrl: 'https://cdn.pixabay.com/photo/2018/09/17/14/27/headphones-3683983_960_720.jpg',
+        imageUrl: '',
       ),
       Category(
         id: 'smartwatches',
         name: 'smartwatches',
         displayName: localizations.categorySmartWatches,
-        imageUrl: 'https://cdn.pixabay.com/photo/2015/12/09/17/12/smartwatch-1085307_960_720.jpg',
+        imageUrl: '',
       ),
       Category(
         id: 'tablets',
         name: 'tablets',
         displayName: localizations.categoryTablets,
-        imageUrl: 'https://cdn.pixabay.com/photo/2015/01/08/18/25/desk-593327_960_720.jpg',
+        imageUrl: '',
       ),
       Category(
         id: 'accessories',
         name: 'accessories',
         displayName: localizations.categoryAccessories,
-        imageUrl: 'https://cdn.pixabay.com/photo/2017/08/10/08/47/laptop-2619564_960_720.jpg',
+        imageUrl: '',
       ),
       Category(
         id: 'cameras',
         name: 'cameras',
         displayName: localizations.categoryCameras,
-        imageUrl: 'https://cdn.pixabay.com/photo/2016/04/04/14/12/camera-1307199_960_720.jpg',
+        imageUrl: '',
       ),
       Category(
         id: 'tv',
         name: 'tv',
         displayName: localizations.categoryTv,
-        imageUrl: 'https://cdn.pixabay.com/photo/2019/06/30/20/09/tv-4308538_960_720.jpg',
+        imageUrl: '',
       ),
       Category(
         id: 'gaming',
         name: 'gaming',
         displayName: localizations.categoryGaming,
-        imageUrl: 'https://cdn.pixabay.com/photo/2017/11/15/15/27/nintendo-2951227_960_720.jpg',
+        imageUrl: '',
       ),
     ];
   }
@@ -149,7 +149,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.categoriesTitle,
-            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+            style: const TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.white)),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -157,7 +158,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               end: Alignment.bottomRight,
               colors: [
                 Color(0xFFD32F2F),
-            Color(0xFFB71C1C),
+                Color(0xFFB71C1C),
               ],
             ),
           ),
@@ -276,7 +277,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFFB71C1C),
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25),
                   ),
@@ -284,7 +286,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 ),
                 child: Text(
                   AppLocalizations.of(context)!.retry,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w600),
                 ),
               ),
             ],
@@ -306,7 +309,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.orange.withOpacity(0.1), Colors.red.withOpacity(0.1)],
+                  colors: [
+                    Colors.orange.withOpacity(0.1),
+                    Colors.red.withOpacity(0.1)
+                  ],
                 ),
                 border: Border.all(color: Colors.orange, width: 1.5),
                 borderRadius: BorderRadius.circular(15),
@@ -327,7 +333,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                       color: Colors.orange,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Icon(Icons.warning_rounded, color: Colors.white, size: 20),
+                    child: const Icon(Icons.warning_rounded,
+                        color: Colors.white, size: 20),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -352,7 +359,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   int crossAxisCount;
                   double childAspectRatio;
                   double spacing;
-                  
+
                   if (constraints.maxWidth > 1200) {
                     // شاشات كبيرة جداً (Desktop)
                     crossAxisCount = 4;
@@ -374,7 +381,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     childAspectRatio = 0.85;
                     spacing = 16;
                   }
-                  
+
                   return GridView.builder(
                     itemCount: categories.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -433,7 +440,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     end: Alignment.bottomRight,
                     colors: [
                       Color(0xFFD32F2F).withOpacity(0.8),
-            Color(0xFFB71C1C).withOpacity(0.9),
+                      Color(0xFFB71C1C).withOpacity(0.9),
                     ],
                   ),
                   borderRadius: const BorderRadius.only(
@@ -451,72 +458,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                           color: Colors.white.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: CachedNetworkImage(
-                            imageUrl: category.imageUrl,
-                            fit: BoxFit.cover,
-                            // تحسينات الأداء للفئات
-                            memCacheWidth: 160,
-                            memCacheHeight: 160,
-                            maxWidthDiskCache: 320,
-                            maxHeightDiskCache: 320,
-                            fadeInDuration: const Duration(milliseconds: 250),
-                            fadeOutDuration: const Duration(milliseconds: 150),
-                            httpHeaders: const {
-                              'Cache-Control': 'max-age=604800', // أسبوع للفئات
-                              'Accept': 'image/webp,image/jpeg,image/png,*/*',
-                            },
-                            placeholder: (context, url) => Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.white.withOpacity(0.3),
-                                    Colors.white.withOpacity(0.1),
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
-                              ),
-                              child: const Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    CircularProgressIndicator(
-                                      color: Colors.white,
-                                      strokeWidth: 2,
-                                    ),
-                                    SizedBox(height: 4),
-                                    Text(
-                                      'تحميل...',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 8,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            errorWidget: (context, url, error) => Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.red.withOpacity(0.3),
-                                    Colors.red.withOpacity(0.1),
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
-                              ),
-                              child: Icon(
-                                _getCategoryIcon(category.name),
-                                size: 40,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
+                        child: Icon(
+                          _getCategoryIcon(category.name),
+                          size: 48,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -558,7 +503,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      category.displayName ?? category.name, // استخدام displayName إذا كان متوفراً
+                      category.displayName ??
+                          category.name, // استخدام displayName إذا كان متوفراً
                       style: TextStyle(
                         color: Colors.grey[800],
                         fontSize: 14,
@@ -618,7 +564,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   Widget _buildProductCount(String categoryName) {
     final count = categoryProductCounts[categoryName];
-    
+
     if (count == null) {
       // عرض مؤشر تحميل صغير أثناء تحميل عدد المنتجات
       return Row(
@@ -644,7 +590,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         ],
       );
     }
-    
+
     return Text(
       '$count منتج',
       style: TextStyle(

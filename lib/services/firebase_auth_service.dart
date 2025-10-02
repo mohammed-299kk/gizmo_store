@@ -25,12 +25,12 @@ class FirebaseAuthService {
         email: email,
         password: password,
       );
-      
+
       // Update last login
       if (credential.user != null) {
         await _updateUserLastLogin(credential.user!.uid, context);
       }
-      
+
       return credential;
     } on FirebaseAuthException catch (e) {
       throw _handleAuthException(e, context);
@@ -85,12 +85,12 @@ class FirebaseAuthService {
   static Future<UserCredential?> signInAnonymously(BuildContext context) async {
     try {
       final credential = await _auth.signInAnonymously();
-      
+
       if (credential.user != null) {
         // Create guest profile in Firestore
         await _createGuestProfile(credential.user!.uid, context);
       }
-      
+
       return credential;
     } on FirebaseAuthException catch (e) {
       throw _handleAuthException(e, context);
@@ -111,7 +111,8 @@ class FirebaseAuthService {
   }
 
   // Send password reset email
-  static Future<void> sendPasswordResetEmail(String email, BuildContext context) async {
+  static Future<void> sendPasswordResetEmail(
+      String email, BuildContext context) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (e) {
@@ -169,7 +170,8 @@ class FirebaseAuthService {
   }
 
   // Create guest profile in Firestore
-  static Future<void> _createGuestProfile(String uid, BuildContext context) async {
+  static Future<void> _createGuestProfile(
+      String uid, BuildContext context) async {
     try {
       final localizations = AppLocalizations.of(context)!;
       await _firestore.collection('users').doc(uid).set({
@@ -199,7 +201,8 @@ class FirebaseAuthService {
   }
 
   // Update last login
-  static Future<void> _updateUserLastLogin(String uid, BuildContext context) async {
+  static Future<void> _updateUserLastLogin(
+      String uid, BuildContext context) async {
     try {
       await _firestore.collection('users').doc(uid).update({
         'lastLoginAt': FieldValue.serverTimestamp(),
@@ -211,19 +214,43 @@ class FirebaseAuthService {
   }
 
   // Get user data from Firestore
-  static Future<Map<String, dynamic>?> getUserData(String uid, BuildContext context) async {
+  static Future<Map<String, dynamic>?> getUserData(
+      String uid, BuildContext context) async {
     try {
-      final doc = await _firestore.collection('users').doc(uid).get();
-      return doc.exists ? doc.data() : null;
+      debugPrint('📥 Fetching user data for uid: $uid');
+      final doc = await _firestore.collection('users').doc(uid).get().timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          debugPrint('⏱️ Timeout fetching user data for uid: $uid');
+          throw Exception('Timeout fetching user data');
+        },
+      );
+
+      if (!doc.exists) {
+        debugPrint('⚠️ User document does not exist for uid: $uid');
+        return null;
+      }
+
+      final data = doc.data();
+      if (data == null) {
+        debugPrint('⚠️ User document data is null for uid: $uid');
+        return null;
+      }
+
+      debugPrint('✅ Successfully fetched user data for uid: $uid');
+      // تحويل البيانات إلى Map<String, dynamic> بشكل صريح
+      return Map<String, dynamic>.from(data);
     } catch (e) {
       final localizations = AppLocalizations.of(context)!;
-      debugPrint('${localizations.errorFetchingUserData}: $e');
+      debugPrint('❌ ${localizations.errorFetchingUserData}: $e');
+      debugPrint('📊 Error details: ${e.toString()}');
       return null;
     }
   }
 
   // Update user data
-  static Future<void> updateUserData(String uid, Map<String, dynamic> data, BuildContext context) async {
+  static Future<void> updateUserData(
+      String uid, Map<String, dynamic> data, BuildContext context) async {
     try {
       await _firestore.collection('users').doc(uid).update(data);
     } catch (e) {
@@ -233,9 +260,10 @@ class FirebaseAuthService {
   }
 
   // Handle Firebase Auth exceptions
-  static Exception _handleAuthException(FirebaseAuthException e, BuildContext context) {
+  static Exception _handleAuthException(
+      FirebaseAuthException e, BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-    
+
     switch (e.code) {
       case 'user-not-found':
         return Exception(localizations.userNotFound);
@@ -290,7 +318,8 @@ class FirebaseAuthService {
   }
 
   // Update user statistics
-  static Future<void> updateUserStats(String uid, Map<String, dynamic> stats, BuildContext context) async {
+  static Future<void> updateUserStats(
+      String uid, Map<String, dynamic> stats, BuildContext context) async {
     try {
       await _firestore.collection('users').doc(uid).update({
         'stats': stats,
@@ -311,13 +340,13 @@ class FirebaseAuthService {
           throw Exception('Timeout checking admin status');
         },
       );
-      
+
       if (doc.exists) {
-        final data = doc.data() as Map<String, dynamic>?;
+        final data = doc.data();
         if (data != null) {
-          return data['isAdmin'] == true || 
-                 data['role'] == 'admin' || 
-                 data['userType'] == 'admin';
+          return data['isAdmin'] == true ||
+              data['role'] == 'admin' ||
+              data['userType'] == 'admin';
         }
       }
       return false;
@@ -337,9 +366,9 @@ class FirebaseAuthService {
           throw Exception('Timeout getting user role');
         },
       );
-      
+
       if (doc.exists) {
-        final data = doc.data() as Map<String, dynamic>?;
+        final data = doc.data();
         if (data != null) {
           return data['role'] ?? data['userType'] ?? 'user';
         }

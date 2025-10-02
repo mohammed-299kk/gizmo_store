@@ -1,9 +1,12 @@
-2025/10/02-02:36:42.734 f00 Reusing MANIFEST C:\Users\HUAWEI\AppData\Local\Temp\flutter_tools.b576306e\flutter_tools_chrome_device.3aeba732\Default\shared_proto_db/MANIFEST-000001
-2025/10/02-02:36:42.735 f00 Recovering log #15
-2025/10/02-02:36:42.737 f00 Reusing old log C:\Users\HUAWEI\AppData\Local\Temp\flutter_tools.b576306e\flutter_tools_chrome_device.3aeba732\Default\shared_proto_db/000015.log 
-2025/10/02-02:36:42.738 f00 Delete type=0 #3
-2025/10/02-02:36:42.738 f00 Delete type=2 #7
-2025/10/02-02:36:42.738 f00 Delete type=0 #9
-2025/10/02-02:36:42.738 f00 Delete type=2 #10
-2025/10/02-02:36:42.739 f00 Delete type=0 #12
-2025/10/02-02:36:42.739 f00 Delete type=2 #13
+2025/10/02-07:45:40.103 29fc Reusing MANIFEST C:\Users\HUAWEI\AppData\Local\Temp\flutter_tools.a862a133\flutter_tools_chrome_device.1dd1ad47\Default\shared_proto_db/MANIFEST-000001
+2025/10/02-07:45:40.104 29fc Recovering log #15
+2025/10/02-07:45:40.106 29fc Reusing old log C:\Users\HUAWEI\AppData\Local\Temp\flutter_tools.a862a133\flutter_tools_chrome_device.1dd1ad47\Default\shared_proto_db/000015.log 
+2025/10/02-07:45:40.107 29fc Delete type=0 #3
+2025/10/02-07:45:40.107 29fc Delete type=2 #7
+2025/10/02-07:45:40.107 29fc Delete type=0 #9
+2025/10/02-07:45:40.108 29fc Delete type=2 #10
+2025/10/02-07:45:40.108 29fc Delete type=0 #12
+2025/10/02-07:45:40.108 29fc Delete type=2 #13
+2025/10/02-07:46:16.866 23b4 Level-0 table #20: started
+2025/10/02-07:46:16.872 23b4 Level-0 table #20: 132046 bytes OK
+2025/10/02-07:46:16.874 23b4 Delete type=0 #15

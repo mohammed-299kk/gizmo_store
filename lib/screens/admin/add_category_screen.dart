@@ -17,7 +17,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   final _iconController = TextEditingController();
   final _imageController = TextEditingController();
   final _orderController = TextEditingController();
-  
+
   bool _isActive = true;
   bool _isLoading = false;
 
@@ -32,7 +32,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
 
     try {
       final order = int.tryParse(_orderController.text) ?? 0;
-      
+
       await FirebaseFirestore.instance.collection('categories').add({
         'name': _nameController.text,
         'nameEn': _nameEnController.text,
@@ -78,21 +78,21 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('إضافة فئة جديدة'),
+        backgroundColor: const Color(0xFFB71C1C),
+        foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: ListView(
             children: [
-              const Text(
-                'إضافة فئة جديدة',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 20),
-              
               // Category Name (Arabic)
               TextFormField(
                 controller: _nameController,
@@ -109,7 +109,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              
+
               // Category Name (English)
               TextFormField(
                 controller: _nameEnController,
@@ -126,7 +126,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              
+
               // Description
               TextFormField(
                 controller: _descriptionController,
@@ -138,7 +138,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                 maxLines: 3,
               ),
               const SizedBox(height: 16),
-              
+
               // Icon
               TextFormField(
                 controller: _iconController,
@@ -156,7 +156,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              
+
               // Image
               TextFormField(
                 controller: _imageController,
@@ -174,7 +174,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              
+
               // Order
               TextFormField(
                 controller: _orderController,
@@ -187,7 +187,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 16),
-              
+
               // Active Status
               Card(
                 child: Padding(
@@ -206,7 +206,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                       SwitchListTile(
                         title: Text(_isActive ? 'نشطة' : 'غير نشطة'),
                         subtitle: Text(
-                          _isActive 
+                          _isActive
                               ? 'الفئة ستظهر للمستخدمين'
                               : 'الفئة لن تظهر للمستخدمين',
                         ),
@@ -223,9 +223,10 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              
+
               // Preview Card
-              if (_nameController.text.isNotEmpty || _imageController.text.isNotEmpty)
+              if (_nameController.text.isNotEmpty ||
+                  _imageController.text.isNotEmpty)
                 Card(
                   elevation: 4,
                   child: Padding(
@@ -254,7 +255,8 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                               child: _iconController.text.isNotEmpty
                                   ? (_iconController.text.startsWith('http')
                                       ? ClipRRect(
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                           child: ImageHelper.buildCachedImage(
                                             imageUrl: _iconController.text,
                                             fit: BoxFit.cover,
@@ -269,8 +271,8 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    _nameController.text.isNotEmpty 
-                                        ? _nameController.text 
+                                    _nameController.text.isNotEmpty
+                                        ? _nameController.text
                                         : 'اسم الفئة',
                                     style: const TextStyle(
                                       fontSize: 16,
@@ -305,7 +307,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                   ),
                 ),
               const SizedBox(height: 32),
-              
+
               // Action Buttons
               Row(
                 children: [

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/product.dart';
 import '../../utils/image_helper.dart';
+import '../../utils/formatters.dart';
 
 import '../../providers/cart_provider.dart';
 import '../../services/product_service.dart';
@@ -73,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   String _formatPrice(double price) {
-    return price.toStringAsFixed(2);
+    return Formatters.formatPrice(price);
   }
 
   Widget _buildImageWidget(Product product) {
@@ -112,9 +113,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         elevation: 0,
         automaticallyImplyLeading: false,
         title: Row(
@@ -147,7 +148,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   // Search Icon
                   IconButton(
-                    icon: Icon(Icons.search, color: Colors.black, size: 24),
+                    icon: Icon(Icons.search,
+                        color: Theme.of(context).iconTheme.color, size: 24),
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -157,7 +159,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   // Profile Icon
                   IconButton(
-                    icon: Icon(Icons.person, color: Colors.black, size: 24),
+                    icon: Icon(Icons.person,
+                        color: Theme.of(context).iconTheme.color, size: 24),
                     onPressed: () {
                       if (widget.onTabChange != null) {
                         widget.onTabChange!(2); // Index 2 is Profile tab
@@ -173,7 +176,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           IconButton(
                             icon: Icon(Icons.shopping_cart,
-                                color: Colors.black, size: 24),
+                                color: Theme.of(context).iconTheme.color,
+                                size: 24),
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -256,7 +260,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                              color:
+                                  Theme.of(context).textTheme.titleLarge?.color,
                             ),
                           ),
                           const SizedBox(height: 16),
@@ -274,39 +279,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             itemBuilder: (context, index) {
                               return _buildProductCard(_products[index]);
                             },
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // قسم منتجات بتصميم Figma
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'منتجات مميزة',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          Container(
-                            height: 300,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: _products.length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 16),
-                                  child: _buildFigmaStyleProductCard(
-                                      _products[index]),
-                                );
-                              },
-                            ),
                           ),
                         ],
                       ),
@@ -330,11 +302,11 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardTheme.color,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Theme.of(context).shadowColor.withValues(alpha: 0.1),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -379,7 +351,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -457,11 +429,11 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Container(
         width: 250,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardTheme.color,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Theme.of(context).shadowColor.withValues(alpha: 0.1),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -531,7 +503,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

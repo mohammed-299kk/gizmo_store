@@ -17,6 +17,19 @@ class ProductCard extends StatelessWidget {
     required this.onTap,
   });
 
+  String _formatPrice(double price) {
+    // إضافة فواصل الآلاف لتسهيل القراءة
+    String priceStr = price.toStringAsFixed(0);
+    String formattedInteger = '';
+    for (int i = 0; i < priceStr.length; i++) {
+      if (i > 0 && (priceStr.length - i) % 3 == 0) {
+        formattedInteger += ',';
+      }
+      formattedInteger += priceStr[i];
+    }
+    return formattedInteger;
+  }
+
   @override
   Widget build(BuildContext context) {
     // تحديد حجم البطاقة بناءً على حجم الشاشة
@@ -56,19 +69,19 @@ class ProductCard extends StatelessWidget {
                         : 140, // أصغر جداً للهاتف المحمول
                     width: double.infinity,
                     color: Colors.grey[100],
-                    child: product.imageUrl != null &&
-                            product.imageUrl!.isNotEmpty
-                        ? ImageHelper.buildCachedImage(
-                            imageUrl: product.imageUrl!,
-                            width: double.infinity,
-                            height: screenWidth < 600 ? 90 : 140,
-                            fit: BoxFit.cover,
-                          )
-                        : const Icon(
-                            Icons.image_not_supported,
-                            color: Colors.grey,
-                            size: 50,
-                          ),
+                    child:
+                        product.imageUrl != null && product.imageUrl!.isNotEmpty
+                            ? ImageHelper.buildCachedImage(
+                                imageUrl: product.imageUrl!,
+                                width: double.infinity,
+                                height: screenWidth < 600 ? 90 : 140,
+                                fit: BoxFit.cover,
+                              )
+                            : const Icon(
+                                Icons.image_not_supported,
+                                color: Colors.grey,
+                                size: 50,
+                              ),
                   ),
                 ),
                 if (product.discount != null && product.discount! > 0)
@@ -198,7 +211,8 @@ class ProductCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(
-                        height: screenWidth < 600 ? 2 : 6), // تقليل المسافة أكثر
+                        height:
+                            screenWidth < 600 ? 2 : 6), // تقليل المسافة أكثر
                     // التقييم
                     if (product.rating != null)
                       Row(
@@ -233,7 +247,7 @@ class ProductCard extends StatelessWidget {
                       children: [
                         if (product.originalPrice != null)
                           Text(
-                            '${product.originalPrice!.toStringAsFixed(0)} ${AppLocalizations.of(context)!.currency}',
+                            '${_formatPrice(product.originalPrice!)} ${AppLocalizations.of(context)!.currency}',
                             style: TextStyle(
                               color: Colors.grey[500],
                               fontSize: 11,
@@ -241,7 +255,7 @@ class ProductCard extends StatelessWidget {
                             ),
                           ),
                         Text(
-                          '${product.price.toStringAsFixed(0)} ${AppLocalizations.of(context)!.currency}',
+                          '${_formatPrice(product.price)} ${AppLocalizations.of(context)!.currency}',
                           style: TextStyle(
                             color: Color(0xFFB71C1C),
                             fontWeight: FontWeight.bold,

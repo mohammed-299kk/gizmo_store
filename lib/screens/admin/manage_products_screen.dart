@@ -62,7 +62,8 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
                   controller: _searchController,
                   decoration: InputDecoration(
                     hintText: AppLocalizations.of(context)!.searchProducts,
-                    prefixIcon: const Icon(Icons.search, color: Color(0xFFB71C1C)),
+                    prefixIcon:
+                        const Icon(Icons.search, color: Color(0xFFB71C1C)),
                     suffixIcon: _searchQuery.isNotEmpty
                         ? IconButton(
                             icon: const Icon(Icons.clear),
@@ -99,7 +100,14 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
                       child: _buildFilterDropdown(
                         label: 'الفئة',
                         value: _selectedCategory,
-                        items: ['الكل', 'لابتوب', 'هاتف', 'سماعات', 'ساعة ذكية', 'تابلت'],
+                        items: [
+                          'الكل',
+                          'لابتوب',
+                          'هاتف',
+                          'سماعات',
+                          'ساعة ذكية',
+                          'تابلت'
+                        ],
                         onChanged: (value) {
                           setState(() {
                             _selectedCategory = value!;
@@ -195,7 +203,8 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
                   }
 
                   // Category filter
-                  if (_selectedCategory != 'الكل' && category != _selectedCategory) {
+                  if (_selectedCategory != 'الكل' &&
+                      category != _selectedCategory) {
                     return false;
                   }
 
@@ -255,7 +264,7 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
     if (value.isNotEmpty && items.contains(value)) {
       validValue = value;
     }
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
@@ -313,10 +322,11 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
     );
   }
 
-  Widget _buildProductCard(String productId, Map<String, dynamic> data, bool isGrid) {
+  Widget _buildProductCard(
+      String productId, Map<String, dynamic> data, bool isGrid) {
     final isAvailable = data['isAvailable'] ?? true;
     final stock = data['stock'] ?? 0;
-    
+
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -327,7 +337,9 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
         onTap: () => _editProduct(productId, data),
         child: Container(
           padding: const EdgeInsets.all(12),
-          child: isGrid ? _buildGridCardContent(productId, data) : _buildListCardContent(productId, data),
+          child: isGrid
+              ? _buildGridCardContent(productId, data)
+              : _buildListCardContent(productId, data),
         ),
       ),
     );
@@ -336,7 +348,7 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
   Widget _buildGridCardContent(String productId, Map<String, dynamic> data) {
     final isAvailable = data['isAvailable'] ?? true;
     final stock = data['stock'] ?? 0;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -359,7 +371,8 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
                 top: 8,
                 right: 8,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
                     color: isAvailable ? Colors.green : Colors.red,
                     borderRadius: BorderRadius.circular(12),
@@ -388,9 +401,11 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
                     ),
                     const SizedBox(width: 4),
                     _buildQuickActionButton(
-                      icon: isAvailable ? Icons.visibility_off : Icons.visibility,
+                      icon:
+                          isAvailable ? Icons.visibility_off : Icons.visibility,
                       color: isAvailable ? Colors.orange : Colors.green,
-                      onPressed: () => _toggleAvailability(productId, isAvailable),
+                      onPressed: () =>
+                          _toggleAvailability(productId, isAvailable),
                     ),
                   ],
                 ),
@@ -454,7 +469,7 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
   Widget _buildListCardContent(String productId, Map<String, dynamic> data) {
     final isAvailable = data['isAvailable'] ?? true;
     final stock = data['stock'] ?? 0;
-    
+
     return Row(
       children: [
         // Product Image
@@ -487,7 +502,8 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: isAvailable ? Colors.green : Colors.red,
                       borderRadius: BorderRadius.circular(12),
@@ -633,7 +649,8 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
     );
   }
 
-  Future<void> _editProduct(String productId, Map<String, dynamic> productData) async {
+  Future<void> _editProduct(
+      String productId, Map<String, dynamic> productData) async {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -660,7 +677,8 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(AppLocalizations.of(context)!.confirmDelete),
-        content: Text(AppLocalizations.of(context)!.deleteProductConfirmation(productName)),
+        content: Text(AppLocalizations.of(context)!
+            .deleteProductConfirmation(productName)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -670,12 +688,13 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
             onPressed: () async {
               try {
                 await ProductService.deleteProduct(productId, context);
-                
+
                 if (mounted) {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(AppLocalizations.of(context)!.productDeletedSuccessfully),
+                      content: Text(AppLocalizations.of(context)!
+                          .productDeletedSuccessfully),
                       backgroundColor: Colors.green,
                     ),
                   );
@@ -685,7 +704,8 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('${AppLocalizations.of(context)!.errorDeletingProduct}: $e'),
+                      content: Text(
+                          '${AppLocalizations.of(context)!.errorDeletingProduct}: $e'),
                       backgroundColor: Colors.red,
                     ),
                   );
@@ -704,8 +724,9 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
 
   void _toggleAvailability(String productId, bool currentAvailability) async {
     try {
-      await ProductService.toggleProductAvailability(productId, !currentAvailability, context);
-      
+      await ProductService.toggleProductAvailability(
+          productId, !currentAvailability, context);
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -722,7 +743,8 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${AppLocalizations.of(context)!.errorUpdatingProduct}: $e'),
+            content: Text(
+                '${AppLocalizations.of(context)!.errorUpdatingProduct}: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -731,23 +753,76 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
   }
 
   void _viewProductDetails(Map<String, dynamic> productData) {
+    // التحقق من وجود رابط الصورة
+    final imageUrl = productData['imageUrl'] ?? productData['image'] ?? '';
+    final hasValidImage = imageUrl.isNotEmpty &&
+        (imageUrl.startsWith('http://') || imageUrl.startsWith('https://'));
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(productData['name'] ?? AppLocalizations.of(context)!.productDetails),
+        title: Text(productData['name'] ?? 'تفاصيل المنتج'),
         content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (productData['imageUrl'] != null && productData['imageUrl'].isNotEmpty)
+              // عرض الصورة إذا كانت متوفرة
+              if (hasValidImage)
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: ImageHelper.buildCachedImage(
-                    imageUrl: productData['imageUrl'],
+                  child: Image.network(
+                    imageUrl,
                     height: 200,
                     width: double.infinity,
                     fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Container(
+                        height: 200,
+                        width: double.infinity,
+                        color: Colors.grey[200],
+                        child: const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        height: 200,
+                        width: double.infinity,
+                        color: Colors.grey[200],
+                        child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.broken_image,
+                                size: 50, color: Colors.grey),
+                            SizedBox(height: 8),
+                            Text('فشل تحميل الصورة',
+                                style: TextStyle(color: Colors.grey)),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                )
+              else
+                Container(
+                  height: 200,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.image_not_supported,
+                          size: 50, color: Colors.grey),
+                      SizedBox(height: 8),
+                      Text('لا توجد صورة',
+                          style: TextStyle(color: Colors.grey)),
+                    ],
                   ),
                 ),
               const SizedBox(height: 16),
@@ -768,7 +843,8 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              if (productData['discount'] != null && productData['discount'] > 0) ...{
+              if (productData['discount'] != null &&
+                  productData['discount'] > 0) ...{
                 const SizedBox(height: 8),
                 Text(
                   '${AppLocalizations.of(context)!.discountLabel}${productData['discount']}%',

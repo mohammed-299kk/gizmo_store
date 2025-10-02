@@ -146,11 +146,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.categoriesTitle,
-            style: const TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.white)),
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).appBarTheme.foregroundColor)),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -193,11 +194,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).cardTheme.color,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.3),
+                    color: Theme.of(context).shadowColor.withValues(alpha: 0.3),
                     spreadRadius: 2,
                     blurRadius: 10,
                     offset: const Offset(0, 4),
@@ -233,11 +234,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           margin: const EdgeInsets.all(32),
           padding: const EdgeInsets.all(32),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).cardTheme.color,
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.3),
+                color: Theme.of(context).shadowColor.withValues(alpha: 0.3),
                 spreadRadius: 2,
                 blurRadius: 10,
                 offset: const Offset(0, 4),
@@ -416,11 +417,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       child: Container(
         height: 220,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardTheme.color,
           borderRadius: BorderRadius.circular(25),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
+              color: Theme.of(context).shadowColor.withValues(alpha: 0.2),
               spreadRadius: 2,
               blurRadius: 15,
               offset: const Offset(0, 8),

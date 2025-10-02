@@ -502,6 +502,35 @@ class FirestoreService {
   }
 
   // ------------------------------
+  // User Data
+  // ------------------------------
+
+  /// Get user data as Stream for real-time updates
+  Stream<Map<String, dynamic>?> getUserDataStream(String userId) {
+    try {
+      return _db.collection('users').doc(userId).snapshots().map((snapshot) {
+        if (!snapshot.exists) {
+          print('⚠️ User document does not exist for userId: $userId');
+          return null;
+        }
+        final data = snapshot.data();
+        if (data == null) {
+          print('⚠️ User document data is null for userId: $userId');
+          return null;
+        }
+        return Map<String, dynamic>.from(data);
+      }).handleError((error) {
+        print('❌ Error in user data stream: $error');
+        return null;
+      });
+    } catch (e) {
+      print('❌ Error creating user data stream: $e');
+      // Return stream with null instead of error to avoid breaking UI
+      return Stream.value(null);
+    }
+  }
+
+  // ------------------------------
   // Address management
   // ------------------------------
 
@@ -696,6 +725,155 @@ class FirestoreService {
       print('Error setting addresses non-default: $e');
       throw FirestoreException(
           'An unexpected error occurred while updating addresses: $e');
+    }
+  }
+
+  // ==================== Product Ratings ====================
+
+  /// Add or update a product rating
+  /// Returns the new average rating for the product
+  Future<double> addOrUpdateRating({
+    required String productId,
+    required String userId,
+    required double rating,
+  }) async {
+    try {
+      // Validate rating
+      if (rating < 1 || rating > 5) {
+        throw FirestoreException('Rating must be between 1 and 5');
+      }
+
+      // Create rating document ID from userId and productId
+      final ratingId = '${userId}_$productId';
+
+      // Check if user already rated this product
+      final existingRating =
+          await _db.collection('ratings').doc(ratingId).get();
+
+      if (existingRating.exists) {
+        // Update existing rating
+        await _db.collection('ratings').doc(ratingId).update({
+          'rating': rating,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+      } else {
+        // Add new rating
+        await _db.collection('ratings').doc(ratingId).set({
+          'userId': userId,
+          'productId': productId,
+          'rating': rating,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+      }
+
+      // Calculate and update product's average rating
+      return await _updateProductAverageRating(productId);
+    } on FirebaseException catch (e) {
+      print('Firebase Error adding/updating rating: ${e.message}');
+      throw FirestoreException('Failed to add rating: ${e.message}');
+    } catch (e) {
+      print('Error adding/updating rating: $e');
+      throw FirestoreException(
+          'An unexpected error occurred while adding rating: $e');
+    }
+  }
+
+  /// Get user's rating for a specific product
+  Future<double?> getUserRating({
+    required String productId,
+    required String userId,
+  }) async {
+    try {
+      final ratingId = '${userId}_$productId';
+      final ratingDoc = await _db.collection('ratings').doc(ratingId).get();
+
+      if (ratingDoc.exists) {
+        final data = ratingDoc.data();
+        return (data?['rating'] as num?)?.toDouble();
+      }
+      return null;
+    } catch (e) {
+      print('Error getting user rating: $e');
+      return null;
+    }
+  }
+
+  /// Get all ratings for a product
+  Stream<List<Map<String, dynamic>>> getProductRatings(String productId) {
+    return _db
+        .collection('ratings')
+        .where('productId', isEqualTo: productId)
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        return {
+          'id': doc.id,
+          'userId': data['userId'],
+          'rating': data['rating'],
+          'timestamp': data['timestamp'],
+        };
+      }).toList();
+    });
+  }
+
+  /// Calculate and update product's average rating
+  Future<double> _updateProductAverageRating(String productId) async {
+    try {
+      // Get all ratings for this product
+      final ratingsSnapshot = await _db
+          .collection('ratings')
+          .where('productId', isEqualTo: productId)
+          .get();
+
+      if (ratingsSnapshot.docs.isEmpty) {
+        // No ratings, set to 0
+        await _db.collection('products').doc(productId).update({
+          'rating': 0.0,
+          'reviewsCount': 0,
+        });
+        return 0.0;
+      }
+
+      // Calculate average
+      double totalRating = 0;
+      for (var doc in ratingsSnapshot.docs) {
+        totalRating += (doc.data()['rating'] as num).toDouble();
+      }
+      final averageRating = totalRating / ratingsSnapshot.docs.length;
+
+      // Update product with new average rating
+      await _db.collection('products').doc(productId).update({
+        'rating': double.parse(averageRating.toStringAsFixed(1)),
+        'reviewsCount': ratingsSnapshot.docs.length,
+      });
+
+      return averageRating;
+    } catch (e) {
+      print('Error updating product average rating: $e');
+      throw FirestoreException('Failed to update product rating: $e');
+    }
+  }
+
+  /// Delete a rating
+  Future<void> deleteRating({
+    required String productId,
+    required String userId,
+  }) async {
+    try {
+      final ratingId = '${userId}_$productId';
+      await _db.collection('ratings').doc(ratingId).delete();
+
+      // Update product's average rating
+      await _updateProductAverageRating(productId);
+    } on FirebaseException catch (e) {
+      print('Firebase Error deleting rating: ${e.message}');
+      throw FirestoreException('Failed to delete rating: ${e.message}');
+    } catch (e) {
+      print('Error deleting rating: $e');
+      throw FirestoreException(
+          'An unexpected error occurred while deleting rating: $e');
     }
   }
 }

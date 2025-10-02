@@ -24,7 +24,8 @@ class PaymentSimulationScreen extends StatefulWidget {
   });
 
   @override
-  State<PaymentSimulationScreen> createState() => _PaymentSimulationScreenState();
+  State<PaymentSimulationScreen> createState() =>
+      _PaymentSimulationScreenState();
 }
 
 class _PaymentSimulationScreenState extends State<PaymentSimulationScreen> {
@@ -56,9 +57,9 @@ class _PaymentSimulationScreenState extends State<PaymentSimulationScreen> {
     final prefs = await SharedPreferences.getInstance();
     final cardsJson = prefs.getStringList('saved_cards') ?? [];
     setState(() {
-      _savedCards = cardsJson.map((cardJson) => 
-        Map<String, String>.from(json.decode(cardJson))
-      ).toList();
+      _savedCards = cardsJson
+          .map((cardJson) => Map<String, String>.from(json.decode(cardJson)))
+          .toList();
     });
   }
 
@@ -111,7 +112,7 @@ class _PaymentSimulationScreenState extends State<PaymentSimulationScreen> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  
+
                   // خيارات الدفع
                   const Text(
                     'اختر طريقة الدفع:',
@@ -121,7 +122,7 @@ class _PaymentSimulationScreenState extends State<PaymentSimulationScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // زر الدفع بالبطاقة
                   ElevatedButton.icon(
                     onPressed: () => _showCardPaymentDialog(),
@@ -134,7 +135,7 @@ class _PaymentSimulationScreenState extends State<PaymentSimulationScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  
+
                   // زر الدفع نقداً
                   ElevatedButton.icon(
                     onPressed: () => _processCashPayment(),
@@ -147,7 +148,7 @@ class _PaymentSimulationScreenState extends State<PaymentSimulationScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  
+
                   // زر الإلغاء
                   OutlinedButton.icon(
                     onPressed: () => Navigator.pop(context),
@@ -157,9 +158,9 @@ class _PaymentSimulationScreenState extends State<PaymentSimulationScreen> {
                       padding: const EdgeInsets.all(16),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // ملاحظة المحاكاة
                   Container(
                     padding: const EdgeInsets.all(12),
@@ -209,7 +210,8 @@ class _PaymentSimulationScreenState extends State<PaymentSimulationScreen> {
                     final index = entry.key;
                     final card = entry.value;
                     return RadioListTile<String>(
-                      title: Text('${card['type']} **** ${card['number']!.substring(card['number']!.length - 4)}'),
+                      title: Text(
+                          '${card['type']} **** ${card['number']!.substring(card['number']!.length - 4)}'),
                       subtitle: Text('${card['holder']} - ${card['expiry']}'),
                       value: index.toString(),
                       groupValue: _selectedSavedCard,
@@ -218,8 +220,10 @@ class _PaymentSimulationScreenState extends State<PaymentSimulationScreen> {
                           _selectedSavedCard = value;
                           if (value != null) {
                             final selectedCard = _savedCards[int.parse(value)];
-                            _cardHolderController.text = selectedCard['holder']!;
-                            _cardNumberController.text = selectedCard['number']!;
+                            _cardHolderController.text =
+                                selectedCard['holder']!;
+                            _cardNumberController.text =
+                                selectedCard['number']!;
                             _expiryController.text = selectedCard['expiry']!;
                             _cvvController.text = selectedCard['cvv']!;
                           }
@@ -383,11 +387,12 @@ class _PaymentSimulationScreenState extends State<PaymentSimulationScreen> {
 
     try {
       User? user = FirebaseAuth.instance.currentUser;
-      
+
       // If user is not logged in, sign them in anonymously as guest
       if (user == null) {
         try {
-          final credential = await FirebaseAuthService.signInAnonymously(context);
+          final credential =
+              await FirebaseAuthService.signInAnonymously(context);
           user = credential?.user;
           if (user == null) {
             throw Exception('فشل في تسجيل الدخول كضيف');
@@ -423,6 +428,9 @@ class _PaymentSimulationScreenState extends State<PaymentSimulationScreen> {
       // تحديث معرف الطلب
       await docRef.update({'id': docRef.id});
 
+      // خصم المنتجات من المخزون
+      await _updateProductStock(widget.cartItems);
+
       // مسح السلة
       CartService.clear();
 
@@ -448,9 +456,65 @@ class _PaymentSimulationScreenState extends State<PaymentSimulationScreen> {
     }
   }
 
+  /// دالة لخصم المنتجات من المخزون بعد إتمام الطلب
+  Future<void> _updateProductStock(List<CartItem> cartItems) async {
+    try {
+      final db = firestore.FirebaseFirestore.instance;
+
+      // معالجة كل منتج في السلة
+      for (final cartItem in cartItems) {
+        final productId = cartItem.product.id;
+        final purchasedQuantity = cartItem.quantity;
+
+        // الحصول على المنتج من Firestore
+        final productDoc = await db.collection('products').doc(productId).get();
+
+        if (!productDoc.exists) {
+          print('⚠️ المنتج $productId غير موجود في قاعدة البيانات');
+          continue;
+        }
+
+        final productData = productDoc.data()!;
+        final currentStock =
+            productData['stock'] ?? productData['stockQuantity'] ?? 0;
+
+        // التحقق من توفر الكمية الكافية
+        if (currentStock < purchasedQuantity) {
+          print('⚠️ تحذير: المخزون غير كافٍ للمنتج ${cartItem.product.name}');
+          print(
+              '   المخزون الحالي: $currentStock، الكمية المطلوبة: $purchasedQuantity');
+          // يمكن إضافة معالجة إضافية هنا (مثل إرسال إشعار للأدمن)
+        }
+
+        // حساب المخزون الجديد
+        final newStock = (currentStock - purchasedQuantity)
+            .clamp(0, double.infinity)
+            .toInt();
+
+        // تحديث المخزون في Firestore
+        await db.collection('products').doc(productId).update({
+          'stock': newStock,
+          'stockQuantity': newStock, // للتوافق مع الحقول القديمة
+          'isAvailable': newStock > 0, // تحديث حالة التوفر
+          'inStock': newStock > 0, // للتوافق
+          'updatedAt': firestore.FieldValue.serverTimestamp(),
+        });
+
+        print(
+            '✅ تم تحديث مخزون ${cartItem.product.name}: $currentStock → $newStock');
+      }
+
+      print('🎉 تم تحديث المخزون بنجاح لجميع المنتجات');
+    } catch (e) {
+      print('❌ خطأ في تحديث المخزون: $e');
+      // لا نرمي الخطأ لأننا لا نريد إيقاف عملية الطلب
+      // يمكن إضافة معالجة إضافية هنا (مثل إرسال تنبيه للأدمن)
+    }
+  }
+
   void _showSuccessDialog(String paymentMethod, String orderId) {
     final isCardPayment = paymentMethod == 'credit_card';
-    
+
     showDialog(
       context: context,
       barrierDismissible: false,

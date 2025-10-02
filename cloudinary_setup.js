@@ -2,9 +2,9 @@ const cloudinary = require('cloudinary').v2;
 
 // إعداد Cloudinary
 cloudinary.config({
-  cloud_name: 'dq1anqzzx',
-  api_key: '123456789012345', // يجب استبدالها بالمفتاح الحقيقي
-  api_secret: 'your_api_secret_here' // يجب استبدالها بالسر الحقيقي
+  cloud_name: 'dvnh28qtz',
+  api_key: '833666144724123',
+  api_secret: 'BVUme5tWtYpNl-qAWsHq0bUOF6g'
 });
 
 // قائمة الصور للمنتجات المختلفة

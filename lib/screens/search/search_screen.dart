@@ -70,21 +70,16 @@ class _SearchScreenState extends State<SearchScreen>
       ];
 
   String _formatPrice(double price) {
-    String priceStr = price.toStringAsFixed(2);
-    List<String> parts = priceStr.split('.');
-    String integerPart = parts[0];
-    String decimalPart = parts[1];
-
-    // Add thousand separators
+    // إضافة فواصل الآلاف لتسهيل القراءة
+    String priceStr = price.toStringAsFixed(0);
     String formattedInteger = '';
-    for (int i = 0; i < integerPart.length; i++) {
-      if (i > 0 && (integerPart.length - i) % 3 == 0) {
+    for (int i = 0; i < priceStr.length; i++) {
+      if (i > 0 && (priceStr.length - i) % 3 == 0) {
         formattedInteger += ',';
       }
-      formattedInteger += integerPart[i];
+      formattedInteger += priceStr[i];
     }
-
-    return '$formattedInteger.$decimalPart';
+    return formattedInteger;
   }
 
   @override
@@ -432,11 +427,13 @@ class _SearchScreenState extends State<SearchScreen>
                   // Search bar with enhanced design
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).cardTheme.color,
                       borderRadius: BorderRadius.circular(30),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Theme.of(context)
+                              .shadowColor
+                              .withValues(alpha: 0.1),
                           blurRadius: 10,
                           offset: const Offset(0, 3),
                         ),
@@ -477,7 +474,7 @@ class _SearchScreenState extends State<SearchScreen>
                               )
                             : null,
                         filled: true,
-                        fillColor: Colors.white,
+                        fillColor: Theme.of(context).cardTheme.color,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
                           borderSide: BorderSide.none,
@@ -553,11 +550,12 @@ class _SearchScreenState extends State<SearchScreen>
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).cardTheme.color,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color:
+                        Theme.of(context).shadowColor.withValues(alpha: 0.05),
                     blurRadius: 10,
                     offset: const Offset(0, 3),
                   ),
@@ -998,23 +996,16 @@ class _SearchScreenState extends State<SearchScreen>
       },
       child: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.white,
-              Colors.grey.shade50,
-            ],
-          ),
+          color: Theme.of(context).cardTheme.color,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: Theme.of(context).shadowColor.withValues(alpha: 0.08),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Theme.of(context).shadowColor.withValues(alpha: 0.04),
               blurRadius: 6,
               offset: const Offset(0, 2),
             ),
@@ -1176,10 +1167,10 @@ class _SearchScreenState extends State<SearchScreen>
                       children: [
                         Text(
                           product.name,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
-                            color: Colors.black87,
+                            color: Theme.of(context).textTheme.bodyLarge?.color,
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -1280,11 +1271,11 @@ class _SearchScreenState extends State<SearchScreen>
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardTheme.color,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: Theme.of(context).shadowColor.withValues(alpha: 0.08),
               spreadRadius: 1,
               blurRadius: 12,
               offset: const Offset(0, 4),
@@ -1429,10 +1420,10 @@ class _SearchScreenState extends State<SearchScreen>
                       children: [
                         Text(
                           product.name,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
-                            color: Colors.black87,
+                            color: Theme.of(context).textTheme.bodyLarge?.color,
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gizmo_store/l10n/app_localizations.dart';
-import 'add_product_screen.dart';
+import 'add_product_screen_simple.dart';
 import 'add_category_screen.dart';
 import 'manage_products_screen.dart';
 import 'admin_products_screen.dart';
 import 'manage_categories_screen.dart';
-import '../product_management_screen.dart';
 
 class AdminPanel extends StatefulWidget {
   const AdminPanel({super.key});
@@ -20,7 +19,7 @@ class _AdminPanelState extends State<AdminPanel> {
 
   final List<Widget> _screens = [
     const AdminDashboard(),
-    const AddProductScreen(),
+    const AddProductScreenSimple(),
     const AddCategoryScreen(),
     const AdminProductsScreen(),
   ];
@@ -108,7 +107,7 @@ class AdminDashboard extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const AddProductScreen(),
+                        builder: (context) => const AddProductScreenSimple(),
                       ),
                     );
                   },
@@ -153,24 +152,11 @@ class AdminDashboard extends StatelessWidget {
                   },
                 ),
                 _buildDashboardCard(
-                  'إدارة المنتجات المتقدمة',
-                  Icons.settings_applications,
-                  Colors.orange,
-                  () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ProductManagementScreen(),
-                      ),
-                    );
-                  },
-                ),
-                _buildDashboardCard(
                   AppLocalizations.of(context)!.manageOrders,
                   Icons.shopping_cart,
                   Color(0xFFB71C1C),
                   () {
-                    // Navigate to manage orders
+                    Navigator.pushNamed(context, '/admin/orders');
                   },
                 ),
               ],

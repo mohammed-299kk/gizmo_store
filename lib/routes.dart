@@ -12,6 +12,7 @@ import 'package:gizmo_store/screens/product/products_screen.dart';
 import 'package:gizmo_store/screens/product/product_detail_screen.dart';
 import 'package:gizmo_store/screens/admin/admin_login_screen.dart';
 import 'package:gizmo_store/screens/admin/admin_panel.dart';
+import 'package:gizmo_store/screens/admin/orders_management_screen.dart';
 import 'package:gizmo_store/models/product.dart';
 import 'package:gizmo_store/screens/splash_screen.dart';
 import 'package:gizmo_store/screens/auth/auth_gate.dart';
@@ -48,6 +49,9 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const AdminLoginScreen());
       case '/admin_panel':
         return MaterialPageRoute(builder: (_) => const AdminPanel());
+      case '/admin/orders':
+        return MaterialPageRoute(
+            builder: (_) => const OrdersManagementScreen());
       case '/product_detail':
         final product = settings.arguments as Product;
         return MaterialPageRoute(

@@ -2,6 +2,23 @@
 import 'package:intl/intl.dart';
 
 class Formatters {
+  // تنسيق السعر مع فواصل الآلاف
+  static String formatPrice(double price) {
+    // تحويل السعر إلى string بدون أرقام عشرية
+    String priceStr = price.toStringAsFixed(0);
+
+    // إضافة فواصل الآلاف
+    String formattedInteger = '';
+    for (int i = 0; i < priceStr.length; i++) {
+      if (i > 0 && (priceStr.length - i) % 3 == 0) {
+        formattedInteger += ',';
+      }
+      formattedInteger += priceStr[i];
+    }
+
+    return formattedInteger;
+  }
+
   // تنسيق العملة بالدولار
   static String currency(double amount, {String symbol = '\$'}) {
     final formatter = NumberFormat.currency(symbol: symbol, decimalDigits: 2);

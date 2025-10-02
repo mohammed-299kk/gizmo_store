@@ -54,10 +54,10 @@ class WishlistProvider with ChangeNotifier {
   Future<void> _handleWishlistSnapshot(QuerySnapshot snapshot) async {
     try {
       final List<WishlistItem> newItems = [];
-      
+
       for (var doc in snapshot.docs) {
         final data = doc.data() as Map<String, dynamic>;
-        
+
         try {
           // إنشاء WishlistItem من البيانات المحفوظة مباشرة
           final wishlistItem = WishlistItem.fromMap(data);
@@ -70,13 +70,15 @@ class WishlistProvider with ChangeNotifier {
                 .collection('products')
                 .doc(data['productId'])
                 .get();
-            
+
             if (productSnapshot.exists) {
-              final product = Product.fromMap(productSnapshot.data()!, productSnapshot.id);
+              final product =
+                  Product.fromMap(productSnapshot.data()!, productSnapshot.id);
               final wishlistItem = WishlistItem(
                 id: data['id'] ?? '',
                 product: product,
-                dateAdded: DateTime.parse(data['dateAdded'] ?? DateTime.now().toIso8601String()),
+                dateAdded: DateTime.parse(
+                    data['dateAdded'] ?? DateTime.now().toIso8601String()),
               );
               newItems.add(wishlistItem);
             }
@@ -85,7 +87,7 @@ class WishlistProvider with ChangeNotifier {
           }
         }
       }
-      
+
       _items.clear();
       _items.addAll(newItems);
       notifyListeners();
@@ -119,10 +121,21 @@ class WishlistProvider with ChangeNotifier {
 
   // Add product to wishlist
   Future<void> addToWishlist(Product product) async {
-    final user = _auth.currentUser;
-    if (user == null) return;
+    print('🔄 WishlistProvider.addToWishlist - بدء إضافة المنتج...');
+    print('📦 اسم المنتج: ${product.name}');
+    print('🆔 معرف المنتج: ${product.id}');
 
-    if (isInWishlist(product.id)) return;
+    final user = _auth.currentUser;
+    if (user == null) {
+      print('❌ المستخدم غير مسجل الدخول');
+      return;
+    }
+    print('👤 معرف المستخدم: ${user.uid}');
+
+    if (isInWishlist(product.id)) {
+      print('⚠️ المنتج موجود بالفعل في المفضلة');
+      return;
+    }
 
     _isLoading = true;
     notifyListeners();
@@ -134,6 +147,9 @@ class WishlistProvider with ChangeNotifier {
         dateAdded: DateTime.now(),
       );
 
+      print('💾 حفظ المنتج في Firebase...');
+      print('📍 المسار: users/${user.uid}/wishlist/${wishlistItem.id}');
+
       // Save to Firebase - the listener will handle updating the list automatically
       await _firestore
           .collection('users')
@@ -142,9 +158,12 @@ class WishlistProvider with ChangeNotifier {
           .doc(wishlistItem.id)
           .set(wishlistItem.toMap());
 
+      print('✅ تم حفظ المنتج في Firebase بنجاح!');
       _isLoading = false;
       notifyListeners();
     } catch (e) {
+      print('❌ خطأ في إضافة المنتج للمفضلة: $e');
+      print('📊 نوع الخطأ: ${e.runtimeType}');
       _isLoading = false;
       notifyListeners();
       throw Exception('Failed to add product to wishlist: $e');
@@ -160,7 +179,8 @@ class WishlistProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final itemIndex = _items.indexWhere((item) => item.product.id == productId);
+      final itemIndex =
+          _items.indexWhere((item) => item.product.id == productId);
       if (itemIndex == -1) {
         _isLoading = false;
         notifyListeners();
@@ -199,7 +219,8 @@ class WishlistProvider with ChangeNotifier {
   @deprecated
   Future<void> loadWishlist() async {
     // This method is no longer needed as the real-time listener handles updates automatically
-    print('loadWishlist is deprecated. Real-time listener handles updates automatically.');
+    print(
+        'loadWishlist is deprecated. Real-time listener handles updates automatically.');
   }
 
   // Clear all wishlist items

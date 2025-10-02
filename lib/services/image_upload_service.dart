@@ -1,14 +1,16 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'cloudinary_service.dart';
+import 'package:http/http.dart' as http;
 
 /// خدمة رفع الصور مع دعم جميع الصيغ الشائعة
 /// الصيغ المدعومة: JPG, JPEG, PNG, GIF, WEBP, BMP, TIFF
 /// بدون قيود على الحجم أو الأبعاد
 class ImageUploadService {
   static final ImagePicker _picker = ImagePicker();
-  
+
   // دعم جميع صيغ الصور الشائعة: JPG, JPEG, PNG, GIF, WEBP, BMP
   // بدون قيود على الحجم أو الأبعاد
 
@@ -19,7 +21,7 @@ class ImageUploadService {
       folder: 'gizmo_store/products',
     );
   }
-  
+
   // رفع صورة الفئة
   static Future<String> uploadCategoryImage(File image) async {
     return await CloudinaryService.uploadImage(
@@ -27,7 +29,7 @@ class ImageUploadService {
       folder: 'gizmo_store/categories',
     );
   }
-  
+
   // رفع صورة الملف الشخصي
   static Future<String> uploadProfileImage(File image, String userId) async {
     return await CloudinaryService.uploadImage(
@@ -37,19 +39,19 @@ class ImageUploadService {
   }
 
   // اختيار صورة واحدة من المعرض
-  static Future<File?> pickImageFromGallery() async {
+  static Future<XFile?> pickImageFromGallery() async {
     try {
       print('📱 بدء اختيار صورة من المعرض...');
-      
+
       final XFile? pickedFile = await _picker.pickImage(
         source: ImageSource.gallery,
         imageQuality: 100, // جودة عالية
       );
-      
+
       if (pickedFile != null) {
         print('✅ تم اختيار الصورة: ${pickedFile.path}');
         print('📏 حجم الملف: ${await pickedFile.length()} bytes');
-        return File(pickedFile.path);
+        return pickedFile;
       } else {
         print('⚠️ لم يتم اختيار أي صورة');
         return null;
@@ -62,19 +64,19 @@ class ImageUploadService {
   }
 
   // اختيار صورة واحدة من الكاميرا
-  static Future<File?> pickImageFromCamera() async {
+  static Future<XFile?> pickImageFromCamera() async {
     try {
       print('📷 بدء التقاط صورة من الكاميرا...');
-      
+
       final XFile? pickedFile = await _picker.pickImage(
         source: ImageSource.camera,
         imageQuality: 100, // جودة عالية
       );
-      
+
       if (pickedFile != null) {
         print('✅ تم التقاط الصورة: ${pickedFile.path}');
         print('📏 حجم الملف: ${await pickedFile.length()} bytes');
-        return File(pickedFile.path);
+        return pickedFile;
       } else {
         print('⚠️ لم يتم التقاط أي صورة');
         return null;
@@ -87,23 +89,21 @@ class ImageUploadService {
   }
 
   // اختيار عدة صور من المعرض - دعم جميع الصيغ والأحجام
-  static Future<List<File>> pickMultipleImages() async {
+  static Future<List<XFile>> pickMultipleImages() async {
     try {
       print('📱 بدء اختيار عدة صور من المعرض...');
-      
+
       final List<XFile> pickedFiles = await _picker.pickMultiImage(
         imageQuality: 100, // جودة عالية بدون قيود حجم
       );
-      
+
       print('📊 تم اختيار ${pickedFiles.length} صورة');
-      
-      final List<File> files = pickedFiles.map((file) => File(file.path)).toList();
-      
-      for (int i = 0; i < files.length; i++) {
-        print('📸 الصورة ${i + 1}: ${files[i].path}');
+
+      for (int i = 0; i < pickedFiles.length; i++) {
+        print('📸 الصورة ${i + 1}: ${pickedFiles[i].path}');
       }
-      
-      return files;
+
+      return pickedFiles;
     } catch (e) {
       print('❌ خطأ في اختيار الصور المتعددة: $e');
       print('📊 نوع الخطأ: ${e.runtimeType}');
@@ -112,7 +112,7 @@ class ImageUploadService {
   }
 
   // عرض خيارات اختيار الصورة
-  static Future<File?> showImageSourceDialog(context) async {
+  static Future<XFile?> showImageSourceDialog(context) async {
     final result = await showDialog<String>(
       context: context,
       builder: (BuildContext context) {
@@ -146,7 +146,7 @@ class ImageUploadService {
     } else if (result == 'camera') {
       return await pickImageFromCamera();
     }
-    
+
     return null;
   }
 
@@ -157,10 +157,11 @@ class ImageUploadService {
   }) async {
     try {
       print('📱 بدء اختيار ورفع صورة واحدة...');
-      final File? imageFile = await showImageSourceDialog(context);
+      final XFile? imageFile = await showImageSourceDialog(context);
       if (imageFile != null) {
         print('📤 رفع الصورة إلى المجلد: $folder');
-        final url = await CloudinaryService.uploadImage(imageFile, folder: folder);
+        final url =
+            await CloudinaryService.uploadXFile(imageFile, folder: folder);
         print('✅ تم رفع الصورة بنجاح: $url');
         return url;
       } else {
@@ -181,14 +182,28 @@ class ImageUploadService {
   }) async {
     try {
       print('📱 بدء اختيار ورفع عدة صور...');
-      final List<File> imageFiles = await pickMultipleImages();
-      
+      final List<XFile> imageFiles = await pickMultipleImages();
+
       if (imageFiles.isNotEmpty) {
         print('📤 رفع ${imageFiles.length} صورة إلى المجلد: $folder');
-        final urls = await CloudinaryService.uploadMultipleImages(
-          imageFiles,
-          folder: folder,
-        );
+
+        // رفع كل صورة على حدة
+        List<String> urls = [];
+        for (int i = 0; i < imageFiles.length; i++) {
+          try {
+            print('📤 رفع الصورة ${i + 1}/${imageFiles.length}');
+            final url = await CloudinaryService.uploadXFile(
+              imageFiles[i],
+              folder: folder,
+            );
+            urls.add(url);
+            print('✅ تم رفع الصورة ${i + 1} بنجاح');
+          } catch (e) {
+            print('❌ فشل في رفع الصورة ${i + 1}: $e');
+            rethrow;
+          }
+        }
+
         print('✅ تم رفع ${urls.length} من أصل ${imageFiles.length} صورة بنجاح');
         return urls;
       } else {

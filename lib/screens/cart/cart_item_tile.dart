@@ -9,21 +9,16 @@ class CartItemTile extends StatelessWidget {
   const CartItemTile({super.key, required this.cartItem});
 
   String _formatPrice(double price) {
-    String priceStr = price.toStringAsFixed(2);
-    List<String> parts = priceStr.split('.');
-    String integerPart = parts[0];
-    String decimalPart = parts[1];
-    
-    // Add thousand separators
+    // إضافة فواصل الآلاف لتسهيل القراءة
+    String priceStr = price.toStringAsFixed(0);
     String formattedInteger = '';
-    for (int i = 0; i < integerPart.length; i++) {
-      if (i > 0 && (integerPart.length - i) % 3 == 0) {
+    for (int i = 0; i < priceStr.length; i++) {
+      if (i > 0 && (priceStr.length - i) % 3 == 0) {
         formattedInteger += ',';
       }
-      formattedInteger += integerPart[i];
+      formattedInteger += priceStr[i];
     }
-    
-    return '$formattedInteger.$decimalPart';
+    return formattedInteger;
   }
 
   @override

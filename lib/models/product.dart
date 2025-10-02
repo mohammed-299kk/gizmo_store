@@ -12,9 +12,20 @@ class Product {
   final List<String>? images;
 
   // Getter for imageUrl compatibility
-  String? get imageUrl => image?.isNotEmpty == true
-      ? image
-      : 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=300&h=300&fit=crop&crop=center';
+  // يعيد أول صورة من القائمة، أو الصورة الرئيسية، أو صورة افتراضية
+  String? get imageUrl {
+    // أولاً: جرب الصورة الرئيسية
+    if (image != null && image!.isNotEmpty) {
+      return image;
+    }
+    // ثانياً: جرب أول صورة من القائمة
+    if (images != null && images!.isNotEmpty) {
+      return images!.first;
+    }
+    // أخيراً: صورة افتراضية
+    return 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=300&h=300&fit=crop&crop=center';
+  }
+
   final double rating;
   final int reviewsCount;
   final String category;
@@ -111,13 +122,15 @@ class Product {
 
   // تحويل Product إلى Map
   Map<String, dynamic> toMap() {
+    final imagesList = images ?? [];
     return {
       'name': name,
       'description': description,
       'price': price,
       'originalPrice': originalPrice,
-      'image': image,
-      'images': images,
+      'image': image ?? (imagesList.isNotEmpty ? imagesList.first : null),
+      'imageUrl': image ?? (imagesList.isNotEmpty ? imagesList.first : null),
+      'images': imagesList,
       'rating': rating,
       'reviewsCount': reviewsCount,
       'category': category,

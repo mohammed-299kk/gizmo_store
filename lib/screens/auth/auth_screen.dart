@@ -73,6 +73,12 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
+    // التحقق من الاختصار السري للأدمن
+    if (email.toLowerCase() == 'admin' && password == 'admin') {
+      Navigator.of(context).pushReplacementNamed('/admin_login');
+      return;
+    }
+
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -189,51 +195,8 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          // Admin access icon
-                          TweenAnimationBuilder<double>(
-                            duration: const Duration(milliseconds: 600),
-                            tween: Tween(begin: 0.0, end: 1.0),
-                            builder: (context, value, child) {
-                              return Transform.scale(
-                                scale: value,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: themeProvider.isDarkMode
-                                        ? const Color(0xFF2A2A2A)
-                                        : Colors.white,
-                                    borderRadius: BorderRadius.circular(25),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.1),
-                                        blurRadius: 8,
-                                        offset: const Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(25),
-                                      onTap: () {
-                                        Navigator.pushNamed(
-                                            context, '/admin_login');
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: Icon(
-                                          Icons.admin_panel_settings,
-                                          color: Colors.orange,
-                                          size: 24,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
                           // Theme toggle button
                           TweenAnimationBuilder<double>(
                             duration: const Duration(milliseconds: 800),

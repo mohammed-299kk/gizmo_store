@@ -14,6 +14,7 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   String _formatPrice(double price) {
+    // إضافة فواصل الآلاف لتسهيل القراءة
     String priceStr = price.toStringAsFixed(0);
     String formattedInteger = '';
     for (int i = 0; i < priceStr.length; i++) {
@@ -39,7 +40,7 @@ class _CartScreenState extends State<CartScreen> {
             builder: (context, snapshot) {
               final items = snapshot.data ?? [];
               if (items.isEmpty) return const SizedBox.shrink();
-              
+
               return IconButton(
                 icon: const Icon(Icons.delete_sweep),
                 onPressed: () => _showClearCartDialog(),
@@ -53,11 +54,11 @@ class _CartScreenState extends State<CartScreen> {
         stream: CartService.cartStream,
         builder: (context, snapshot) {
           final items = snapshot.data ?? CartService.getItems();
-          
+
           if (items.isEmpty) {
             return _buildEmptyCart();
           }
-          
+
           return Column(
             children: [
               Expanded(
@@ -94,13 +95,19 @@ class _CartScreenState extends State<CartScreen> {
                   child: Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
                       Icons.shopping_cart_outlined,
                       size: 80,
-                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withValues(alpha: 0.7),
                     ),
                   ),
                 );
@@ -113,9 +120,12 @@ class _CartScreenState extends State<CartScreen> {
               child: Text(
                 AppLocalizations.of(context)!.emptyCart,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
-                  fontWeight: FontWeight.bold,
-                ),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.8),
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
             ),
             const SizedBox(height: 16),
@@ -126,8 +136,11 @@ class _CartScreenState extends State<CartScreen> {
                 AppLocalizations.of(context)!.continueShopping,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                ),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.6),
+                    ),
               ),
             ),
             const SizedBox(height: 40),
@@ -151,8 +164,10 @@ class _CartScreenState extends State<CartScreen> {
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).colorScheme.primary,
-                        foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                        foregroundColor:
+                            Theme.of(context).colorScheme.onPrimary,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 32, vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -220,235 +235,256 @@ class _CartScreenState extends State<CartScreen> {
             ),
           ],
         ),
-      child: Row(
-        children: [
-          // صورة المنتج
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: item.product.imageUrl != null && item.product.imageUrl!.isNotEmpty
-                ? ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: CachedNetworkImage(
-                      imageUrl: item.product.imageUrl!,
-                      fit: BoxFit.cover,
-                      // تحسينات الأداء للصور الصغيرة
-                      memCacheWidth: 160, // ضعف حجم العرض للشاشات عالية الدقة
-                      memCacheHeight: 160,
-                      maxWidthDiskCache: 320,
-                      maxHeightDiskCache: 320,
-                      fadeInDuration: const Duration(milliseconds: 150),
-                      fadeOutDuration: const Duration(milliseconds: 100),
-                      httpHeaders: const {
-                        'Cache-Control': 'max-age=86400',
-                      },
-                      errorWidget: (context, url, error) => Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.error.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8),
+        child: Row(
+          children: [
+            // صورة المنتج
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                color: Theme.of(context)
+                    .colorScheme
+                    .primary
+                    .withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: item.product.imageUrl != null &&
+                      item.product.imageUrl!.isNotEmpty
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: CachedNetworkImage(
+                        imageUrl: item.product.imageUrl!,
+                        fit: BoxFit.cover,
+                        // تحسينات الأداء للصور الصغيرة
+                        memCacheWidth: 160, // ضعف حجم العرض للشاشات عالية الدقة
+                        memCacheHeight: 160,
+                        maxWidthDiskCache: 320,
+                        maxHeightDiskCache: 320,
+                        fadeInDuration: const Duration(milliseconds: 150),
+                        fadeOutDuration: const Duration(milliseconds: 100),
+                        httpHeaders: const {
+                          'Cache-Control': 'max-age=86400',
+                        },
+                        errorWidget: (context, url, error) => Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .error
+                                .withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            Icons.image_not_supported,
+                            color: Theme.of(context).colorScheme.error,
+                            size: 40,
+                          ),
                         ),
-                        child: Icon(
-                          Icons.image_not_supported,
-                          color: Theme.of(context).colorScheme.error,
-                          size: 40,
+                        placeholder: (context, url) => Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.grey[200]!,
+                                Colors.grey[100]!,
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'تحميل...',
+                                  style: TextStyle(
+                                    fontSize: 8,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
-                      placeholder: (context, url) => Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.grey[200]!,
-                              Colors.grey[100]!,
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                        ),
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                'تحميل...',
-                                style: TextStyle(
-                                  fontSize: 8,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                    )
+                  : Icon(
+                      Icons.shopping_bag,
+                      color: Theme.of(context).colorScheme.primary,
+                      size: 40,
+                    ),
+            ),
+            const SizedBox(width: 16),
+
+            // معلومات المنتج
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.product.name,
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.titleMedium?.color,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  if (item.product.category != null)
+                    Text(
+                      item.product.category!,
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodySmall?.color,
+                        fontSize: 12,
                       ),
                     ),
-                  )
-                : Icon(
-                    Icons.shopping_bag,
-                    color: Theme.of(context).colorScheme.primary,
-                    size: 40,
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Text(
+                        '${_formatPrice(item.product.price)} ${AppLocalizations.of(context)!.currency}',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'x ${item.quantity}',
+                        style: TextStyle(
+                          color: Theme.of(context).textTheme.bodySmall?.color,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
                   ),
-          ),
-          const SizedBox(width: 16),
-          
-          // معلومات المنتج
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+                ],
+              ),
+            ),
+
+            // Quantity control buttons
+            Column(
               children: [
+                // Total price
                 Text(
-                  item.product.name,
+                  '${_formatPrice(item.totalPrice)} ${AppLocalizations.of(context)!.currency}',
                   style: TextStyle(
                     color: Theme.of(context).textTheme.titleMedium?.color,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 4),
-                if (item.product.category != null)
-                  Text(
-                    item.product.category!,
-                    style: TextStyle(
-                      color: Theme.of(context).textTheme.bodySmall?.color,
-                      fontSize: 12,
+                const SizedBox(height: 8),
+
+                // أزرار الكمية
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Theme.of(context).dividerColor),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _buildQuantityButton(
+                        icon: Icons.remove,
+                        onPressed: () async {
+                          if (item.quantity > 1) {
+                            CartService.updateQuantity(
+                              item.product.id,
+                              item.quantity - 1,
+                            );
+                          } else {
+                            await _showRemoveItemDialog(item);
+                          }
+                        },
+                      ),
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 200),
+                        child: Container(
+                          key: ValueKey(item.quantity),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surface,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .outline
+                                  .withValues(alpha: 0.3),
+                              width: 1,
+                            ),
+                          ),
+                          child: Text(
+                            '${item.quantity}',
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.color,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      _buildQuantityButton(
+                        icon: Icons.add,
+                        onPressed: () {
+                          CartService.updateQuantity(
+                            item.product.id,
+                            item.quantity + 1,
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+
+                // زر الحذف
+                GestureDetector(
+                  onTap: () async => await _showRemoveItemDialog(item),
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .error
+                          .withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .error
+                            .withValues(alpha: 0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.delete_outline,
+                      color: Theme.of(context).colorScheme.error,
+                      size: 18,
                     ),
                   ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Text(
-                      '${_formatPrice(item.product.price)} ${AppLocalizations.of(context)!.currency}',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'x ${item.quantity}',
-                      style: TextStyle(
-                        color: Theme.of(context).textTheme.bodySmall?.color,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),
-          ),
-          
-          // Quantity control buttons
-          Column(
-            children: [
-              // Total price
-              Text(
-                '${_formatPrice(item.totalPrice)} ${AppLocalizations.of(context)!.currency}',
-                style: TextStyle(
-                  color: Theme.of(context).textTheme.titleMedium?.color,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              
-              // أزرار الكمية
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Theme.of(context).dividerColor),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _buildQuantityButton(
-                      icon: Icons.remove,
-                      onPressed: () async {
-                        if (item.quantity > 1) {
-                          CartService.updateQuantity(
-                            item.product.id,
-                            item.quantity - 1,
-                          );
-                        } else {
-                          await _showRemoveItemDialog(item);
-                        }
-                      },
-                    ),
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 200),
-                      child: Container(
-                        key: ValueKey(item.quantity),
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
-                            width: 1,
-                          ),
-                        ),
-                        child: Text(
-                          '${item.quantity}',
-                          style: TextStyle(
-                            color: Theme.of(context).textTheme.titleMedium?.color,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    _buildQuantityButton(
-                      icon: Icons.add,
-                      onPressed: () {
-                        CartService.updateQuantity(
-                          item.product.id,
-                          item.quantity + 1,
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 8),
-              
-              // زر الحذف
-              GestureDetector(
-                onTap: () async => await _showRemoveItemDialog(item),
-                child: Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.error.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(
-                      color: Theme.of(context).colorScheme.error.withValues(alpha: 0.3),
-                      width: 1,
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.delete_outline,
-                    color: Theme.of(context).colorScheme.error,
-                    size: 18,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
     );
   }
 
@@ -467,10 +503,14 @@ class _CartScreenState extends State<CartScreen> {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+              color:
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
-                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                color: Theme.of(context)
+                    .colorScheme
+                    .primary
+                    .withValues(alpha: 0.3),
                 width: 1,
               ),
             ),
@@ -488,7 +528,7 @@ class _CartScreenState extends State<CartScreen> {
   Widget _buildCartSummary(List<CartItem> items) {
     final totalPrice = CartService.totalPrice;
     final totalItems = CartService.totalQuantity;
-    
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       padding: const EdgeInsets.all(20),
@@ -524,9 +564,13 @@ class _CartScreenState extends State<CartScreen> {
                 duration: const Duration(milliseconds: 300),
                 child: Container(
                   key: ValueKey(totalItems),
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -579,7 +623,7 @@ class _CartScreenState extends State<CartScreen> {
             ],
           ),
           const SizedBox(height: 20),
-          
+
           // Checkout button
           AnimatedContainer(
             duration: const Duration(milliseconds: 200),
@@ -648,7 +692,8 @@ class _CartScreenState extends State<CartScreen> {
           ],
         ),
         content: Text(
-          AppLocalizations.of(context)!.removeProductConfirmation(item.product.name),
+          AppLocalizations.of(context)!
+              .removeProductConfirmation(item.product.name),
           style: TextStyle(
             color: Theme.of(context).textTheme.bodyMedium?.color,
             fontSize: 16,
@@ -684,7 +729,8 @@ class _CartScreenState extends State<CartScreen> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          AppLocalizations.of(context)!.productRemovedFromCart(item.product.name),
+                          AppLocalizations.of(context)!
+                              .productRemovedFromCart(item.product.name),
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.onSecondary,
                           ),
@@ -735,7 +781,8 @@ class _CartScreenState extends State<CartScreen> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.error.withValues(alpha: 0.1),
+                color:
+                    Theme.of(context).colorScheme.error.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
@@ -749,9 +796,9 @@ class _CartScreenState extends State<CartScreen> {
               child: Text(
                 AppLocalizations.of(context)!.clearCart,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).textTheme.titleLarge?.color,
-                ),
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).textTheme.titleLarge?.color,
+                    ),
               ),
             ),
           ],
@@ -759,8 +806,8 @@ class _CartScreenState extends State<CartScreen> {
         content: Text(
           AppLocalizations.of(context)!.clearCartConfirmation,
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            color: Theme.of(context).textTheme.bodyMedium?.color,
-          ),
+                color: Theme.of(context).textTheme.bodyMedium?.color,
+              ),
         ),
         actions: [
           TextButton(
@@ -774,7 +821,10 @@ class _CartScreenState extends State<CartScreen> {
             child: Text(
               AppLocalizations.of(context)!.cancel,
               style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                color: Theme.of(context)
+                    .colorScheme
+                    .onSurface
+                    .withValues(alpha: 0.7),
                 fontWeight: FontWeight.w600,
               ),
             ),

@@ -10,7 +10,7 @@ import 'package:gizmo_store/screens/auth/auth_screen.dart';
 import 'package:gizmo_store/screens/order/orders_screen.dart';
 import 'package:gizmo_store/screens/edit_profile_screen.dart';
 import 'package:gizmo_store/screens/security_settings_screen.dart';
-import 'package:gizmo_store/screens/settings/notification_settings_screen.dart';
+import 'package:gizmo_store/screens/settings_screen.dart';
 import 'package:gizmo_store/screens/profile/address_management_screen.dart';
 import 'package:gizmo_store/screens/profile/notifications_screen.dart';
 import 'package:gizmo_store/screens/profile/help_support_screen.dart';
@@ -146,9 +146,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildUserInfo(BuildContext context, User user) {
-    return FutureBuilder<Map<String, dynamic>?>(
-      future: FirebaseAuthService.getUserData(user.uid, context),
+    // استخدام StreamBuilder بدلاً من FutureBuilder لتجنب مشاكل timeout
+    // عرض المعلومات من Firebase Auth مباشرة، وتحديثها من Firestore عند توفرها
+    return StreamBuilder<Map<String, dynamic>?>(
+      stream: _firestoreService.getUserDataStream(user.uid),
+      initialData: null, // لا ننتظر البيانات، نعرض من Firebase Auth مباشرة
       builder: (context, snapshot) {
+        // عرض المعلومات الأساسية من Firebase Auth مباشرة
+        // وتحديثها من Firestore عند توفرها
         final userData = snapshot.data;
 
         return Material(
@@ -422,10 +427,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _buildSettingsOption(context,
             icon: Icons.settings,
             title: AppLocalizations.of(context)!.settings, onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const NotificationSettingsScreen()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const SettingsScreen()));
         }),
         // Dark mode toggle removed - available in Settings screen
       ],

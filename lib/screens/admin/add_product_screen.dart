@@ -629,7 +629,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         context,
         folder: 'gizmo_store/products',
       );
-      
+
       if (imageUrl != null) {
         setState(() {
           _formData.images = [..._formData.images, imageUrl];
@@ -679,7 +679,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
         'featured': _formData.featured,
         'tags': _formData.tags,
         'images': _formData.images,
+        // إضافة الصورة الرئيسية (أول صورة من القائمة)
+        'image': _formData.images.isNotEmpty ? _formData.images.first : null,
+        'imageUrl': _formData.images.isNotEmpty ? _formData.images.first : null,
         'specifications': _formData.specifications,
+        'isAvailable': _formData.availability == 'متوفر',
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
       };

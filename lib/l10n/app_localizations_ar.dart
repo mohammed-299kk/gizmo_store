@@ -765,10 +765,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get clearWishlistConfirmation => 'تأكيد مسح قائمة الأمنيات';
 
   @override
-  String get specialOffer => 'عرض خاص';
+  String get specialOffer => 'أهلاً بك في عالم التوفير!';
 
   @override
-  String get upTo50Off => 'خصم يصل إلى 50%';
+  String get upTo50Off => 'عالم جيزمو هنا مع خصومات تصل إلى 35% بانتظارك!';
 
   @override
   String get availableCoupons => 'الكوبونات المتاحة';

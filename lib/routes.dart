@@ -1,8 +1,8 @@
 import 'package:gizmo_store/screens/categories_screen.dart';
 import 'package:gizmo_store/screens/shipping_screen.dart';
-import 'package:gizmo_store/screens/address_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:gizmo_store/screens/home/home_screen.dart';
+import 'package:gizmo_store/screens/main_screen.dart';
 import 'package:gizmo_store/screens/profile/profile_screen.dart';
 import 'package:gizmo_store/screens/cart/cart_screen.dart';
 import 'package:gizmo_store/screens/order/orders_screen.dart';
@@ -10,16 +10,21 @@ import 'package:gizmo_store/screens/search/search_screen.dart';
 import 'package:gizmo_store/screens/auth/auth_screen.dart';
 import 'package:gizmo_store/screens/product/products_screen.dart';
 import 'package:gizmo_store/screens/product/product_detail_screen.dart';
+import 'package:gizmo_store/screens/admin/admin_login_screen.dart';
+import 'package:gizmo_store/screens/admin/admin_panel.dart';
 import 'package:gizmo_store/models/product.dart';
 import 'package:gizmo_store/screens/splash_screen.dart';
+import 'package:gizmo_store/screens/auth/auth_gate.dart';
+import 'package:gizmo_store/debug/image_debug_screen.dart';
+import 'package:gizmo_store/screens/profile/address_management_screen.dart';
 
 class AppRoutes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => const SplashScreen());
+        return MaterialPageRoute(builder: (_) => const AuthGate());
       case '/home':
-        return MaterialPageRoute(builder: (_) => const HomeScreen());
+        return MaterialPageRoute(builder: (_) => const MainScreen());
       case '/profile':
         return MaterialPageRoute(builder: (_) => const ProfileScreen());
       case '/cart':
@@ -37,7 +42,12 @@ class AppRoutes {
       case '/shipping':
         return MaterialPageRoute(builder: (_) => const ShippingScreen());
       case '/addresses':
-        return MaterialPageRoute(builder: (_) => const AddressScreen());
+        return MaterialPageRoute(
+            builder: (_) => const AddressManagementScreen());
+      case '/admin_login':
+        return MaterialPageRoute(builder: (_) => const AdminLoginScreen());
+      case '/admin_panel':
+        return MaterialPageRoute(builder: (_) => const AdminPanel());
       case '/product_detail':
         final product = settings.arguments as Product;
         return MaterialPageRoute(

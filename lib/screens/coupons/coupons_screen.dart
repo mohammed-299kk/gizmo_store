@@ -43,7 +43,7 @@ class _CouponsScreenState extends State<CouponsScreen>
       backgroundColor: const Color(0xFF1A1A1A),
       appBar: AppBar(
         title: const Text('الكوبونات والعروض'),
-        backgroundColor: const Color(0xFFB71C1C),
+        backgroundColor: Color(0xFFB71C1C),
         foregroundColor: Colors.white,
         elevation: 0,
         bottom: TabBar(
@@ -121,7 +121,7 @@ class _CouponsScreenState extends State<CouponsScreen>
                         ? null
                         : () => _applyCouponCode(couponProvider, cartProvider),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFB71C1C),
+                      backgroundColor: Color(0xFFB71C1C),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20,
@@ -187,7 +187,7 @@ class _CouponsScreenState extends State<CouponsScreen>
                         child: const Text(
                           'إزالة',
                           style: TextStyle(
-                            color: Colors.orange,
+                            color: Color(0xFFB71C1C),
                             fontSize: 12,
                           ),
                         ),
@@ -221,7 +221,7 @@ class _CouponsScreenState extends State<CouponsScreen>
 
         return RefreshIndicator(
           onRefresh: () => couponProvider.loadAvailableCoupons(),
-          color: const Color(0xFFB71C1C),
+          color: Color(0xFFB71C1C),
           child: ListView.builder(
             padding: const EdgeInsets.all(16),
             itemCount: couponProvider.availableCoupons.length,
@@ -252,7 +252,7 @@ class _CouponsScreenState extends State<CouponsScreen>
 
         return RefreshIndicator(
           onRefresh: () => couponProvider.loadUserCoupons(),
-          color: const Color(0xFFB71C1C),
+          color: Color(0xFFB71C1C),
           child: ListView.builder(
             padding: const EdgeInsets.all(16),
             itemCount: couponProvider.userCoupons.length,
@@ -299,7 +299,7 @@ class _CouponsScreenState extends State<CouponsScreen>
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(
-          color: isValid ? const Color(0xFFB71C1C) : Colors.grey[600]!,
+          color: isValid ? Color(0xFFB71C1C) : Colors.grey[600]!,
           width: 1,
         ),
       ),
@@ -330,7 +330,7 @@ class _CouponsScreenState extends State<CouponsScreen>
                             coupon.typeText,
                             style: TextStyle(
                               color: isValid
-                                  ? const Color(0xFFB71C1C)
+                                  ? Color(0xFFB71C1C)
                                   : Colors.grey[600],
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -453,7 +453,7 @@ class _CouponsScreenState extends State<CouponsScreen>
                             onPressed: () => _applyCoupon(
                                 coupon, couponProvider, cartProvider),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFB71C1C),
+                              backgroundColor: Color(0xFFB71C1C),
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 16,

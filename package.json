@@ -1,0 +1,32 @@
+{
+  "name": "gizmo-store",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Gizmo Store - Electronics E-commerce App",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "update-products": "node update_products_images.js",
+    "verify": "node verify_app_status.js",
+    "check-images": "node check_image_status.js",
+    "fix-images": "node fix_broken_images.js",
+    "delete-belkin": "node delete_belkin_product.js",
+    "add-products": "node add_category_products.js"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.55.0",
+    "axios": "^1.12.2",
+    "cloudinary": "^2.7.0",
+    "firebase": "^12.3.0",
+    "firebase-admin": "^13.5.0",
+    "node-fetch": "^3.3.2"
+  },
+  "keywords": [
+    "flutter",
+    "firebase",
+    "ecommerce",
+    "electronics"
+  ],
+  "author": "Gizmo Store Team",
+  "license": "MIT"
+}

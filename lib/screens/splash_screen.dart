@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'auth_screen.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
+import 'auth/auth_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -87,11 +88,11 @@ class _SplashScreenState extends State<SplashScreen>
                       width: 150,
                       height: 150,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFB71C1C),
+                        color: Color(0xFFB71C1C),
                         borderRadius: BorderRadius.circular(25),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.4),
+                            color: Colors.black.withValues(alpha: 0.4),
                             blurRadius: 20,
                             offset: const Offset(0, 10),
                           ),
@@ -116,9 +117,9 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                     ),
                     const SizedBox(height: 15),
-                    const Text(
-                      'متجر الإلكترونيات الذكي',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.smartElectronicsStore,
+                      style: const TextStyle(
                         fontSize: 20,
                         color: Colors.white70,
                         fontWeight: FontWeight.w300,
@@ -138,9 +139,9 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                     ),
                     const SizedBox(height: 20),
-                    const Text(
-                      'جاري التحميل...',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.loading,
+                      style: const TextStyle(
                         color: Colors.white70,
                         fontSize: 16,
                       ),

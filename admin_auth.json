@@ -1,0 +1,20 @@
+{
+  "users": [
+    {
+      "localId": "q3x9weNlEmYpRnM4NSGB8I8kvd73",
+      "email": "admin@gizmo.com",
+      "emailVerified": true,
+      "passwordHash": "Z2l6bW8xMjM0",
+      "salt": "salt123",
+      "displayName": "Admin User",
+      "disabled": false,
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "lastLoginAt": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "hashAlgorithm": "HMAC_SHA256",
+  "signerKey": "key123",
+  "saltSeparator": "Bw==",
+  "rounds": 8,
+  "memoryCost": 14
+}

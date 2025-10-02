@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gizmo_store/providers/auth_provider.dart' as auth;
-import 'package:gizmo_store/providers/app_state.dart';
 import 'package:gizmo_store/providers/wishlist_provider.dart';
 import 'package:gizmo_store/services/firestore_service.dart';
 import 'package:gizmo_store/services/firebase_auth_service.dart';
 import 'package:gizmo_store/screens/auth/auth_screen.dart';
 import 'package:gizmo_store/screens/order/orders_screen.dart';
-import 'package:gizmo_store/screens/firebase_details_screen.dart';
 import 'package:gizmo_store/screens/edit_profile_screen.dart';
-import 'package:gizmo_store/screens/security_settings_screen.dart'; // Added this line
-import 'package:gizmo_store/screens/settings_screen.dart';
-import 'wishlist_screen.dart';
+import 'package:gizmo_store/screens/security_settings_screen.dart';
+import 'package:gizmo_store/screens/settings/notification_settings_screen.dart';
+import 'package:gizmo_store/screens/profile/address_management_screen.dart';
+import 'package:gizmo_store/screens/profile/notifications_screen.dart';
+import 'package:gizmo_store/screens/profile/help_support_screen.dart';
+import 'package:gizmo_store/screens/wishlist/wishlist_screen.dart';
+import 'package:gizmo_store/utils/image_helper.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -27,12 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final authProvider = Provider.of<auth.AuthProvider>(context, listen: false);
-      if (authProvider.user != null) {
-        Provider.of<WishlistProvider>(context, listen: false).loadWishlist();
-      }
-    });
+    // WishlistProvider now uses real-time listener, no need to manually load
   }
 
   @override
@@ -41,11 +39,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final User? user = authProvider.user;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('الملف الشخصي', style: TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: const Color(0xFF1F1F1F),
-        foregroundColor: Colors.white,
+        title: Text(AppLocalizations.of(context)!.profile,
+            style: const TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
         elevation: 0,
         centerTitle: true,
       ),
@@ -60,23 +59,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.person_off_outlined, size: 80, color: Colors.white38),
+          Icon(Icons.person_off_outlined,
+              size: 80,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
           const SizedBox(height: 20),
-          const Text(
-            'أنت زائر الآن',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+          Text(
+            AppLocalizations.of(context)!.youAreGuestNow,
+            style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSurface),
           ),
           const SizedBox(height: 10),
-          const Text(
-            'سجل الدخول لعرض ملفك الشخصي والاستفادة من ميزات التطبيق الكاملة.',
-            style: TextStyle(color: Colors.white70, fontSize: 16),
+          Text(
+            AppLocalizations.of(context)!.loginToViewProfile,
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                fontSize: 16),
             textAlign: TextAlign.center,
-            strutStyle: StrutStyle(height: 1.5),
+            strutStyle: const StrutStyle(height: 1.5),
           ),
           const SizedBox(height: 30),
           ElevatedButton.icon(
             icon: const Icon(Icons.login),
-            label: const Text('الانتقال إلى صفحة التسجيل'),
+            label: Text(AppLocalizations.of(context)!.goToRegistrationPage),
             onPressed: () {
               Navigator.pushReplacement(
                 context,
@@ -84,10 +90,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFB71C1C),
-              foregroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30)),
             ),
           ),
         ],
@@ -97,28 +104,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildUserProfile(User user, BuildContext context) {
     final wishlistProvider = Provider.of<WishlistProvider>(context);
-    final appState = Provider.of<AppState>(context, listen: false);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildUserInfoCard(user),
+          _buildUserInfo(context, user),
           const SizedBox(height: 24),
-          _buildStatsRow(user, wishlistProvider),
+          _buildStatsRow(context, user, wishlistProvider),
           const SizedBox(height: 24),
-          _buildSettingsSection(appState),
+          _buildSettingsSection(context),
           const SizedBox(height: 24),
-          _buildInfoSection(),
+          _buildInfoSection(context),
           const SizedBox(height: 32),
           Center(
             child: TextButton.icon(
               icon: const Icon(Icons.logout, color: Colors.redAccent),
-              label: const Text('تسجيل الخروج', style: TextStyle(color: Colors.redAccent, fontSize: 16)),
+              label: Text(AppLocalizations.of(context)!.logout,
+                  style: TextStyle(color: Colors.redAccent, fontSize: 16)),
               onPressed: () => _showLogoutDialog(context),
               style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
               ),
             ),
           ),
@@ -127,9 +135,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildUserInfoCard(User user) {
+  String _formatDate(BuildContext context, dynamic timestamp) {
+    if (timestamp == null) return AppLocalizations.of(context)!.notSpecified;
+    try {
+      final date = timestamp.toDate();
+      return '${date.day}/${date.month}/${date.year}';
+    } catch (e) {
+      return AppLocalizations.of(context)!.notSpecified;
+    }
+  }
+
+  Widget _buildUserInfo(BuildContext context, User user) {
     return FutureBuilder<Map<String, dynamic>?>(
-      future: FirebaseAuthService.getUserData(user.uid),
+      future: FirebaseAuthService.getUserData(user.uid, context),
       builder: (context, snapshot) {
         final userData = snapshot.data;
 
@@ -139,24 +157,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const EditProfileScreen()),
+                MaterialPageRoute(
+                    builder: (context) => const EditProfileScreen()),
               );
             },
             borderRadius: BorderRadius.circular(20),
-            splashColor: Colors.white.withValues(alpha: 0.1),
-            highlightColor: Colors.white.withValues(alpha: 0.05),
+            splashColor: Colors.white.withOpacity(0.1),
+            highlightColor: Colors.white.withOpacity(0.05),
             child: Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFFB71C1C), Color(0xFF8E0000)],
+                gradient: LinearGradient(
+                  colors: [
+                    Theme.of(context).colorScheme.primary,
+                    Theme.of(context).colorScheme.primary.withOpacity(0.8)
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
+                    color: Colors.black.withOpacity(0.3),
                     spreadRadius: 2,
                     blurRadius: 10,
                     offset: const Offset(0, 5),
@@ -165,121 +187,138 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               child: Column(
                 children: [
-              Row(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.3),
-                          spreadRadius: 2,
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
+                  Row(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.3),
+                              spreadRadius: 2,
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Colors.white.withValues(alpha: 0.2),
-                      backgroundImage: user.photoURL != null ? NetworkImage(user.photoURL!) : null,
-                      child: user.photoURL == null
-                          ? Text(
-                              user.displayName?.substring(0, 1).toUpperCase() ?? 'U',
-                              style: const TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.bold),
-                            )
-                          : null,
-                    ),
-                  ),
-                  const SizedBox(width: 20),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+                        child: user.photoURL != null &&
+                                user.photoURL!.isNotEmpty
+                            ? ClipOval(
+                                child: ImageHelper.buildCachedImage(
+                                  imageUrl: user.photoURL!,
+                                  width: 80,
+                                  height: 80,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : CircleAvatar(
+                                radius: 40,
+                                backgroundColor: Colors.white.withOpacity(0.2),
+                                child: Text(
+                                  user.displayName
+                                          ?.substring(0, 1)
+                                          .toUpperCase() ??
+                                      'U',
+                                  style: const TextStyle(
+                                      fontSize: 32,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                      ),
+                      const SizedBox(width: 20),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: Text(
-                                user.displayName ?? 'مستخدم جديد',
-                                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    user.displayName ??
+                                        AppLocalizations.of(context)!.newUser,
+                                    style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                StreamBuilder<User?>(
+                                  stream:
+                                      FirebaseAuth.instance.authStateChanges(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const Icon(Icons.cloud_sync,
+                                          color: Colors.white54, size: 20);
+                                    } else if (snapshot.hasData) {
+                                      return const Icon(Icons.cloud_done,
+                                          color: Colors.greenAccent, size: 20);
+                                    } else if (snapshot.hasError) {
+                                      return const Icon(Icons.cloud_off,
+                                          color: Colors.redAccent, size: 20);
+                                    }
+                                    return const Icon(Icons.cloud_off,
+                                        color: Colors.redAccent, size: 20);
+                                  },
+                                ),
+                                const SizedBox(width: 8),
+                                const Icon(Icons.edit,
+                                    color: Colors.white70, size: 18),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            if (user.email != null)
+                              Text(
+                                user.email!,
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white.withValues(alpha: 0.8)),
                                 overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                            const SizedBox(width: 10),
-                            StreamBuilder<User?>(
-                              stream: FirebaseAuth.instance.authStateChanges(),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return const Icon(Icons.cloud_sync, color: Colors.white54, size: 20);
-                                } else if (snapshot.hasData) {
-                                  return const Icon(Icons.cloud_done, color: Colors.greenAccent, size: 20);
-                                } else if (snapshot.hasError) {
-                                  return const Icon(Icons.cloud_off, color: Colors.redAccent, size: 20);
-                                }
-                                return const Icon(Icons.cloud_off, color: Colors.redAccent, size: 20);
-                              },
-                            ),
-                            const SizedBox(width: 8),
-                            const Icon(Icons.edit, color: Colors.white70, size: 18),
-                          ],
-                        ),
-                        const SizedBox(height: 6),
-                        if (user.email != null)
-                          Text(
-                            user.email!,
-                            style: TextStyle(fontSize: 14, color: Colors.white.withValues(alpha: 0.8)),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              if (userData != null) ...[
-                const SizedBox(height: 16),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'معرف المستخدم',
-                              style: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.7)),
-                            ),
-                            Text(
-                              '${user.uid.substring(0, 8)}...',
-                              style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'تاريخ التسجيل',
-                              style: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.7)),
-                            ),
-                            Text(
-                              _formatDate(userData['createdAt']),
-                              style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500),
-                            ),
                           ],
                         ),
                       ),
                     ],
                   ),
-                ),
-              ],
+                  if (userData != null) ...[
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(Icons.calendar_today,
+                                  color: Colors.white70, size: 16),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Member since',
+                                style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.white70,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              const Spacer(),
+                              Text(
+                                _formatDate(context, userData['createdAt']),
+                                style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -289,134 +328,158 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  String _formatDate(dynamic timestamp) {
-    if (timestamp == null) return 'غير محدد';
-    try {
-      final date = timestamp.toDate();
-      return '${date.day}/${date.month}/${date.year}';
-    } catch (e) {
-      return 'غير محدد';
-    }
-  }
-
-
-
-  Widget _buildStatsRow(User user, WishlistProvider wishlistProvider) {
+  Widget _buildStatsRow(
+      BuildContext context, User user, WishlistProvider wishlistProvider) {
     return Row(
       children: [
         Expanded(
-          child: FutureBuilder<int>(
-            future: _firestoreService.getUserOrderCount(user.uid),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return _buildStatCard('الطلبات', '...', Icons.shopping_bag_outlined);
-              } else if (snapshot.hasError) {
-                // Handle the error, e.g., show a message or a specific icon
-                debugPrint('Error loading order count: ${snapshot.error}'); // For debugging
-                return _buildStatCard('الطلبات', 'خطأ', Icons.error_outline); // Display 'Error'
-              } else {
-                String count = snapshot.data?.toString() ?? '0';
-                return _buildStatCard('الطلبات', count, Icons.shopping_bag_outlined);
-              }
-            },
-          ),
+          child: _buildStatCard(context, AppLocalizations.of(context)!.orders,
+              '', Icons.shopping_cart_outlined, () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const OrdersScreen()));
+          }),
         ),
         const SizedBox(width: 12),
         Expanded(
-          child: _buildStatCard('المفضلة', wishlistProvider.itemCount.toString(), Icons.favorite_border),
+          child: _buildStatCard(
+              context,
+              AppLocalizations.of(context)!.favorites,
+              '',
+              Icons.favorite_border, () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const WishlistScreen()));
+          }),
         ),
       ],
     );
   }
 
-  Widget _buildStatCard(String title, String value, IconData icon) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1F1F1F),
+  Widget _buildStatCard(BuildContext context, String title, String value,
+      IconData icon, VoidCallback? onTap) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(15),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: const Color(0xFFB71C1C), size: 28),
-          const SizedBox(height: 8),
-          Text(value, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
-          const SizedBox(height: 4),
-          Text(title, style: const TextStyle(fontSize: 14, color: Colors.white70)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSettingsSection(AppState appState) {
-    return _buildSectionContainer(
-      'حسابي',
-      [
-        _buildSettingsOption(icon: Icons.person_outline, title: 'تعديل الملف الشخصي', onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const EditProfileScreen()));
-        }),
-        _buildSettingsOption(icon: Icons.shopping_bag_outlined, title: 'طلباتي', onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const OrdersScreen()));
-        }),
-        _buildSettingsOption(icon: Icons.favorite_border, title: 'المفضلة', onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const WishlistScreen()));
-        }),
-        _buildSettingsOption(icon: Icons.location_on_outlined, title: 'العناوين', onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('إدارة العناوين قيد التطوير')),
-          );
-        }),
-        _buildSettingsOption(icon: Icons.settings, title: 'الإعدادات', onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
-        }),
-        _buildSettingsOption(
-          icon: Icons.color_lens_outlined,
-          title: 'المظهر الداكن',
-          trailing: Switch(
-            value: appState.isDarkMode,
-            onChanged: (value) => appState.toggleDarkMode(),
-            activeThumbColor: const Color(0xFFB71C1C),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Column(
+            children: [
+              Icon(icon,
+                  color: Theme.of(context).colorScheme.primary, size: 32),
+              const SizedBox(height: 12),
+              Text(title,
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).colorScheme.onSurface)),
+            ],
           ),
         ),
-      ],
+      ),
     );
   }
 
-  Widget _buildInfoSection() {
+  Widget _buildSettingsSection(BuildContext context) {
     return _buildSectionContainer(
-      'التطبيق',
+      context,
+      AppLocalizations.of(context)!.myAccount,
       [
-        _buildSettingsOption(icon: Icons.notifications_none, title: 'الإشعارات', onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('إدارة الإشعارات قيد التطوير')),
-          );
+        _buildSettingsOption(context,
+            icon: Icons.person_outline,
+            title: AppLocalizations.of(context)!.editProfile, onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const EditProfileScreen()));
         }),
-        _buildSettingsOption(icon: Icons.help_outline, title: 'المساعدة والدعم', onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('المساعدة والدعم قيد التطوير')),
-          );
+        _buildSettingsOption(context,
+            icon: Icons.shopping_cart_outlined,
+            title: AppLocalizations.of(context)!.myOrders, onTap: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const OrdersScreen()));
         }),
-        _buildSettingsOption(icon: Icons.security_outlined, title: 'الخصوصية والأمان', onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('إعدادات الخصوصية والأمان قيد التطوير')),
-          );
+        _buildSettingsOption(context,
+            icon: Icons.favorite_border,
+            title: AppLocalizations.of(context)!.favorites, onTap: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const WishlistScreen()));
         }),
-        _buildSettingsOption(icon: Icons.info_outline, title: 'عن التطبيق', onTap: () => _showAboutDialog(context)),
-        _buildSettingsOption(icon: Icons.cloud_queue, title: 'تفاصيل Firebase', onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const FirebaseDetailsScreen()));
+        _buildSettingsOption(context,
+            icon: Icons.location_on_outlined,
+            title: AppLocalizations.of(context)!.addresses, onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const AddressManagementScreen()));
         }),
+        _buildSettingsOption(context,
+            icon: Icons.settings,
+            title: AppLocalizations.of(context)!.settings, onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const NotificationSettingsScreen()));
+        }),
+        // Dark mode toggle removed - available in Settings screen
       ],
     );
   }
 
-  Widget _buildSectionContainer(String title, List<Widget> children) {
+  Widget _buildInfoSection(BuildContext context) {
+    return _buildSectionContainer(
+      context,
+      AppLocalizations.of(context)!.app,
+      [
+        _buildSettingsOption(context,
+            icon: Icons.notifications_none,
+            title: AppLocalizations.of(context)!.notifications, onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const NotificationsScreen()));
+        }),
+        _buildSettingsOption(context,
+            icon: Icons.help_outline,
+            title: AppLocalizations.of(context)!.helpAndSupport, onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const HelpSupportScreen(),
+            ),
+          );
+        }),
+        _buildSettingsOption(context,
+            icon: Icons.security_outlined,
+            title: AppLocalizations.of(context)!.privacyAndSecurity, onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const SecuritySettingsScreen()));
+        }),
+        _buildSettingsOption(context,
+            icon: Icons.info_outline,
+            title: AppLocalizations.of(context)!.aboutApp,
+            onTap: () => _showAboutDialog(context)),
+      ],
+    );
+  }
+
+  Widget _buildSectionContainer(
+      BuildContext context, String title, List<Widget> children) {
     List<Widget> spacedChildren = [];
     for (int i = 0; i < children.length; i++) {
       spacedChildren.add(children[i]);
       if (i < children.length - 1) {
         spacedChildren.add(Divider(
           height: 1,
-          color: Colors.white.withValues(alpha: 0.1),
+          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
           indent: 16,
           endIndent: 16,
         ));
@@ -428,12 +491,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
       children: [
         Text(
           title,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white70),
+          style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
         ),
         const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
-            color: const Color(0xFF1F1F1F),
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(15),
           ),
           child: Column(children: spacedChildren), // Use spacedChildren here
@@ -442,20 +508,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildSettingsOption({required IconData icon, required String title, Widget? trailing, VoidCallback? onTap}) {
+  Widget _buildSettingsOption(BuildContext context,
+      {required IconData icon,
+      required String title,
+      Widget? trailing,
+      VoidCallback? onTap}) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         // Removed borderRadius here, will be handled by parent Container
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14), // Increased vertical padding
+          padding: const EdgeInsets.symmetric(
+              horizontal: 16, vertical: 14), // Increased vertical padding
           child: Row(
             children: [
-              Icon(icon, color: Colors.white70, size: 22),
+              Icon(icon,
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                  size: 22),
               const SizedBox(width: 16),
-              Expanded(child: Text(title, style: const TextStyle(color: Colors.white, fontSize: 16))),
-              trailing ?? const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.white38),
+              Expanded(
+                  child: Text(title,
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontSize: 16))),
+              trailing ??
+                  Icon(Icons.arrow_forward_ios,
+                      size: 16,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.38)),
             ],
           ),
         ),
@@ -468,18 +552,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: const Color(0xFF1F1F1F),
-          title: const Text('تسجيل الخروج', style: TextStyle(color: Colors.white)),
-          content: const Text('هل أنت متأكد أنك تريد تسجيل الخروج؟', style: TextStyle(color: Colors.white70)),
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          title: Text(AppLocalizations.of(context)!.logout,
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
+          content: Text(AppLocalizations.of(context)!.areYouSureYouWantToLogout,
+              style: TextStyle(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withOpacity(0.7))),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('إلغاء', style: TextStyle(color: Colors.white70))),
+            TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(AppLocalizations.of(context)!.cancel,
+                    style: TextStyle(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.7)))),
             TextButton(
               onPressed: () async {
                 Navigator.of(context).pop();
-                final authProvider = Provider.of<auth.AuthProvider>(context, listen: false);
+                final authProvider =
+                    Provider.of<auth.AuthProvider>(context, listen: false);
                 await authProvider.signOut();
               },
-              child: const Text('تأكيد', style: TextStyle(color: Colors.redAccent)),
+              child: Text(AppLocalizations.of(context)!.confirm,
+                  style: const TextStyle(color: Colors.redAccent)),
             ),
           ],
         );
@@ -492,18 +591,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: const Color(0xFF1F1F1F),
-          title: const Text('عن Gizmo Store', style: TextStyle(color: Colors.white)),
-          content: const Column(
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          title: Text(AppLocalizations.of(context)!.aboutGizmoStore,
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
+          content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('الإصدار: 1.0.0', style: TextStyle(color: Colors.white70)),
-              SizedBox(height: 8),
-              Text('تطبيق متجر إلكتروني تجريبي.', style: TextStyle(color: Colors.white70)),
+              Text(AppLocalizations.of(context)!.version100,
+                  style: TextStyle(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.7))),
+              const SizedBox(height: 8),
+              Text(AppLocalizations.of(context)!.demoEcommerceApp,
+                  style: TextStyle(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.7))),
             ],
           ),
-          actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('موافق'))],
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(AppLocalizations.of(context)!.ok,
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary)))
+          ],
         );
       },
     );

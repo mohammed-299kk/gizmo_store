@@ -1,0 +1,51 @@
+{
+  "uid": "q3x9weNlEmYpRnM4NSGB8I8kvd73",
+  "email": "admin@gizmo.com",
+  "displayName": "Admin User",
+  "isAdmin": true,
+  "role": "admin",
+  "userType": "admin",
+  "permissions": {
+    "products": {
+      "create": true,
+      "read": true,
+      "update": true,
+      "delete": true
+    },
+    "users": {
+      "create": true,
+      "read": true,
+      "update": true,
+      "delete": true
+    },
+    "orders": {
+      "create": true,
+      "read": true,
+      "update": true,
+      "delete": true
+    },
+    "categories": {
+      "create": true,
+      "read": true,
+      "update": true,
+      "delete": true
+    },
+    "coupons": {
+      "create": true,
+      "read": true,
+      "update": true,
+      "delete": true
+    },
+    "analytics": {
+      "read": true
+    },
+    "settings": {
+      "read": true,
+      "update": true
+    }
+  },
+  "createdAt": "2025-09-15T23:40:52.822Z",
+  "updatedAt": "2025-09-15T23:40:52.823Z",
+  "lastLogin": "2025-09-15T23:40:52.823Z",
+  "lastLoginAt": "2025-09-15T23:40:52.823Z"
+}

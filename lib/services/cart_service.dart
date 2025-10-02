@@ -1,32 +1,32 @@
 import 'dart:async';
 import '../models/cart_item.dart';
 
-/// خدمة إدارة السلة (Cart) بشكل ثابت (Static) عبر التطبيق
+/// Cart management service (Cart) statically across the application
 class CartService {
-  // قائمة العناصر في السلة (خاصة بالخدمة)
+  ///// List of items in cart (service-specific)
   static final List<CartItem> _items = [];
   
-  // Stream Controller لتتبع تغييرات السلة
+  // Stream Controller to track cart changes
   static final StreamController<List<CartItem>> _cartController = 
       StreamController<List<CartItem>>.broadcast();
   
   static final StreamController<int> _cartCountController = 
       StreamController<int>.broadcast();
 
-  /// Stream للاستماع لتغييرات السلة
+  /// Stream to listen to cart changes
   static Stream<List<CartItem>> get cartStream => _cartController.stream;
   
-  /// Stream لتتبع عدد العناصر في السلة
+  /// Stream to track number of items in cart
   static Stream<int> get cartCountStream => _cartCountController.stream;
 
-  /// الحصول على كل العناصر بدون السماح بالتعديل من الخارج
+  /// Get all items without allowing external modification
   static List<CartItem> getItems() => List.unmodifiable(_items);
 
-  /// إضافة عنصر للسلة
+  /// Add item to cart
   static void addItem(CartItem item) {
     final index = _items.indexWhere((e) => e.product.id == item.product.id);
     if (index >= 0) {
-      // إذا العنصر موجود، زيادة الكمية
+      // If item exists, increase quantity
       _items[index].quantity += item.quantity;
     } else {
       _items.add(item);
@@ -34,43 +34,43 @@ class CartService {
     _notifyListeners();
   }
 
-  /// تحديث كمية عنصر معين
+  /// Update quantity of specific item
   static void updateQuantity(String productId, int quantity) {
     final index = _items.indexWhere((e) => e.product.id == productId);
     if (index >= 0) {
       if (quantity > 0) {
         _items[index].quantity = quantity;
       } else {
-        // إزالة العنصر إذا كانت الكمية صفر أو أقل
+        // Remove item if quantity is zero or less
         _items.removeAt(index);
       }
       _notifyListeners();
     }
   }
 
-  /// إزالة عنصر من السلة
+  /// Remove item from cart
   static Future<void> removeItem(String productId) async {
     _items.removeWhere((e) => e.product.id == productId);
     _notifyListeners();
   }
 
-  /// تنظيف السلة بالكامل
+  /// Clear entire cart
   static Future<void> clear() async {
     _items.clear();
     _notifyListeners();
   }
 
-  /// حساب المجموع الكلي للسلة
+  /// Calculate total cart amount
   static double get totalPrice =>
       _items.fold(0, (sum, item) => sum + item.totalPrice);
 
-  /// التحقق إذا كانت السلة فارغة
+  /// Check if cart is empty
   static bool get isEmpty => _items.isEmpty;
   
-  /// عدد العناصر في السلة
+  /// Number of items in cart
   static int get itemCount => _items.length;
   
-  /// إجمالي الكمية في السلة
+  /// Total quantity in cart
   static int get totalQuantity => 
       _items.fold(0, (sum, item) => sum + item.quantity);
 
@@ -106,24 +106,24 @@ class CartService {
     };
   }
 
-  /// إشعار المستمعين بالتغييرات
+  /// Notify listeners of changes
   static void _notifyListeners() {
     _cartController.add(List.unmodifiable(_items));
     _cartCountController.add(totalQuantity);
   }
 
-  /// التحقق من وجود منتج في السلة
+  /// Check if product exists in cart
   static bool containsProduct(String productId) {
     return _items.any((item) => item.product.id == productId);
   }
 
-  /// الحصول على كمية منتج معين في السلة
+  /// Get quantity of specific product in cart
   static int getProductQuantity(String productId) {
     final index = _items.indexWhere((e) => e.product.id == productId);
     return index >= 0 ? _items[index].quantity : 0;
   }
 
-  /// تنظيف الموارد
+  /// Clean up resources
   static void dispose() {
     _cartController.close();
     _cartCountController.close();

@@ -1,5 +1,6 @@
 // lib/screens/home/components/promo_banner.dart
 import 'package:flutter/material.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
 
 class PromoBanner extends StatelessWidget {
   const PromoBanner({super.key});
@@ -10,28 +11,28 @@ class PromoBanner extends StatelessWidget {
       margin: const EdgeInsets.all(16),
       height: 150,
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFFB71C1C), Color(0xFFD32F2F)],
+        gradient: LinearGradient(
+          colors: [Color(0xFFB71C1C), Color(0xFFB71C1C).withOpacity(0.8)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: const Center(
+      child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'عرض خاص',
-              style: TextStyle(
+              AppLocalizations.of(context)!.specialOffer,
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
             ),
             Text(
-              'خصم يصل إلى 50%',
-              style: TextStyle(fontSize: 16, color: Colors.white),
+              AppLocalizations.of(context)!.upTo50Off,
+              style: const TextStyle(fontSize: 16, color: Colors.white),
             ),
           ],
         ),

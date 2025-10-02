@@ -17,15 +17,17 @@ class WishlistItem {
     return {
       'id': id,
       'productId': product.id,
-      'productName': product.name,
-      'productPrice': product.price,
-      'productImage': product.image,
+      'productData': product.toMap(), // حفظ بيانات المنتج كاملة
       'dateAdded': dateAdded.toIso8601String(),
     };
   }
 
   // إنشاء من Map
-  factory WishlistItem.fromMap(Map<String, dynamic> map, Product product) {
+  factory WishlistItem.fromMap(Map<String, dynamic> map) {
+    // إنشاء المنتج من البيانات المحفوظة
+    final productData = map['productData'] as Map<String, dynamic>? ?? {};
+    final product = Product.fromMap(productData, map['productId'] ?? '');
+    
     return WishlistItem(
       id: map['id'] ?? '',
       product: product,

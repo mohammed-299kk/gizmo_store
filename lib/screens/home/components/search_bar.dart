@@ -1,5 +1,6 @@
 // lib/screens/home/components/search_bar.dart
 import 'package:flutter/material.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
 
 class SearchBarWidget extends StatelessWidget {
   final TextEditingController controller;
@@ -18,7 +19,7 @@ class SearchBarWidget extends StatelessWidget {
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
-          hintText: 'البحث عن المنتجات...',
+          hintText: AppLocalizations.of(context)!.searchForProducts,
           prefixIcon: const Icon(Icons.search),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),

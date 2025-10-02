@@ -4,45 +4,45 @@ import '../models/product.dart';
 class EnhancedSampleDataService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  // إضافة 40+ منتج مع تفاصيل شاملة
+  // Add 40+ products with comprehensive details
   Future<void> addEnhancedProducts() async {
     final products = [
-      // الهواتف الذكية - 15 منتج
+      // Smartphones - 15 products
       Product(
         id: '',
         name: 'iPhone 15 Pro Max',
         description:
-            'أحدث هاتف من آبل مع معالج A17 Pro وكاميرا 48 ميجابكسل المتطورة، تصميم من التيتانيوم وأداء استثنائي',
-        price: 2850000,
-        originalPrice: 3200000,
+            'Latest iPhone from Apple with A17 Pro processor and advanced 48MP camera, titanium design and exceptional performance',
+        price: 285000,
+        originalPrice: 320000,
         image:
             'https://cdn.dxomark.com/wp-content/uploads/medias/post-155689/Apple-iPhone-15-Pro-Max_-blue-titanium_featured-image-packshot-review.jpg',
-        category: 'الهواتف الذكية',
+        category: 'Smartphones',
         featured: true,
         discount: 11,
         rating: 4.9,
         reviewsCount: 1247,
         specifications: [
-          'شاشة 6.7 بوصة Super Retina XDR مع ProMotion',
-          'معالج A17 Pro بتقنية 3 نانومتر',
-          'كاميرا رئيسية 48 ميجابكسل مع تقريب بصري 5x',
-          'ذاكرة تخزين 256 جيجابايت',
-          'مقاوم للماء IP68',
-          'شحن لاسلكي MagSafe',
-          'بطارية تدوم طوال اليوم',
-          'نظام iOS 17'
+          '6.7-inch Super Retina XDR display with ProMotion',
+          'A17 Pro processor with 3nm technology',
+          '48MP main camera with 5x optical zoom',
+          '256GB storage',
+          'IP68 water resistant',
+          'MagSafe wireless charging',
+          'All-day battery life',
+          'iOS 17 system'
         ],
         reviews: [
           {
-            'userName': 'أحمد محمد - الخرطوم',
+            'userName': 'Ahmed Mohamed - Khartoum',
             'rating': 5.0,
-            'comment': 'هاتف رائع جداً، الكاميرا مذهلة والأداء سريع جداً',
+            'comment': 'Amazing phone, the camera is stunning and performance is very fast',
             'date': '2024-12-15'
           },
           {
-            'userName': 'فاطمة علي - الخرطوم بحري',
+            'userName': 'Fatima Ali - Khartoum North',
             'rating': 4.8,
-            'comment': 'جودة البناء ممتازة، لكن السعر مرتفع قليلاً',
+            'comment': 'Excellent build quality, but the price is a bit high',
             'date': '2024-12-10'
           }
         ],
@@ -52,31 +52,31 @@ class EnhancedSampleDataService {
         id: '',
         name: 'Samsung Galaxy S24 Ultra',
         description:
-            'هاتف سامسونج الرائد مع قلم S Pen وكاميرا 200 ميجابكسل وذكاء اصطناعي متطور',
-        price: 2450000,
-        originalPrice: 2750000,
+            'Samsung flagship phone with S Pen and 200MP camera with advanced AI',
+        price: 245000,
+        originalPrice: 275000,
         image:
             'https://images.samsung.com/is/image/samsung/p6pim/levant/2401/gallery/levant-galaxy-s24-ultra-s928-sm-s928bztqmea-thumb-539573043',
-        category: 'الهواتف الذكية',
+        category: 'Smartphones',
         featured: true,
         discount: 11,
         rating: 4.8,
         reviewsCount: 892,
         specifications: [
-          'شاشة 6.8 بوصة Dynamic AMOLED 2X',
-          'معالج Snapdragon 8 Gen 3',
-          'كاميرا 200 ميجابكسل مع تقريب 100x',
-          'ذاكرة 512 جيجابايت',
-          'قلم S Pen مدمج',
-          'مقاوم للماء IP68',
-          'شحن سريع 45 واط',
-          'نظام Android 14'
+          '6.8-inch Dynamic AMOLED 2X display',
+          'Snapdragon 8 Gen 3 processor',
+          '200MP camera with 100x zoom',
+          '512GB storage',
+          'Built-in S Pen',
+          'IP68 water resistant',
+          '45W fast charging',
+          'Android 14 system'
         ],
         reviews: [
           {
-            'userName': 'سارة أحمد',
+            'userName': 'Sarah Ahmed',
             'rating': 5.0,
-            'comment': 'قلم S Pen مفيد جداً للرسم والكتابة، والكاميرا خرافية',
+            'comment': 'S Pen is very useful for drawing and writing, and the camera is amazing',
             'date': '2024-01-12'
           }
         ],
@@ -86,31 +86,31 @@ class EnhancedSampleDataService {
         id: '',
         name: 'Google Pixel 8 Pro',
         description:
-            'هاتف جوجل مع أفضل كاميرا للتصوير الليلي وذكاء اصطناعي Google AI',
-        price: 1950000,
-        originalPrice: 2200000,
+            'Google phone with best night photography camera and Google AI artificial intelligence',
+        price: 195000,
+        originalPrice: 220000,
         image:
             'https://lh3.googleusercontent.com/yJpJr_bQzQlVlzZBKZzKpNjhHT8Jq8xOQ7XzKZzKpNjhHT8Jq8xOQ7XzKZzKpNjhHT8Jq8xOQ7Xz=w1200-h630-p',
-        category: 'الهواتف الذكية',
+        category: 'Smartphones',
         featured: false,
         discount: 11,
         rating: 4.7,
         reviewsCount: 634,
         specifications: [
-          'شاشة 6.7 بوصة LTPO OLED',
-          'معالج Google Tensor G3',
-          'كاميرا 50 ميجابكسل مع AI',
-          'ذاكرة 256 جيجابايت',
-          'تصوير ليلي متطور',
-          'شحن لاسلكي 23 واط',
-          'بطارية 5050 مللي أمبير',
-          'نظام Android 14'
+          '6.7-inch LTPO OLED display',
+          'Google Tensor G3 processor',
+          '50MP camera with AI',
+          '256GB storage',
+          'Advanced night photography',
+          '23W wireless charging',
+          '5050mAh battery',
+          'Android 14 system'
         ],
         reviews: [
           {
-            'userName': 'عمر حسن',
+            'userName': 'Omar Hassan',
             'rating': 4.5,
-            'comment': 'كاميرا ممتازة للتصوير الليلي، لكن البطارية تحتاج تحسين',
+            'comment': 'Excellent camera for night photography, but battery needs improvement',
             'date': '2024-01-09'
           }
         ],
@@ -119,32 +119,32 @@ class EnhancedSampleDataService {
       Product(
         id: '',
         name: 'OnePlus 12',
-        description: 'هاتف ون بلس بشحن سريع 100 واط وأداء قوي للألعاب',
-        price: 1650000,
-        originalPrice: 1850000,
+        description: 'OnePlus phone with 100W fast charging and powerful gaming performance',
+        price: 165000,
+        originalPrice: 185000,
         image:
             'https://oasis.opstatics.com/content/dam/oasis/page/2023/global/products/find-n3/pc/design.png',
-        category: 'الهواتف الذكية',
+        category: 'Smartphones',
         featured: false,
         discount: 11,
         rating: 4.6,
         reviewsCount: 445,
         specifications: [
-          'شاشة 6.82 بوصة AMOLED',
-          'معالج Snapdragon 8 Gen 3',
-          'كاميرا 50 ميجابكسل',
-          'ذاكرة 256 جيجابايت',
-          'شحن سريع 100 واط',
-          'تبريد متطور للألعاب',
-          'بطارية 5400 مللي أمبير',
-          'نظام OxygenOS 14'
+          '6.82-inch AMOLED display',
+          'Snapdragon 8 Gen 3 processor',
+          '50MP camera',
+          '256GB storage',
+          '100W fast charging',
+          'Advanced gaming cooling',
+          '5400mAh battery',
+          'OxygenOS 14 system'
         ],
         reviews: [
           {
-            'userName': 'خالد محمود - الخرطوم',
-            'rating': 4.8,
-            'comment': 'شحن سريع جداً، يشحن من 0 إلى 100% في 23 دقيقة!',
-            'date': '2024-12-07'
+            'userName': 'Khalid Mahmoud - Khartoum',
+            'rating': 5.0,
+            'comment': 'Very fast charging, charges from 0 to 100% in 23 minutes!',
+            'date': '2024-01-05'
           }
         ],
       ),
@@ -152,50 +152,51 @@ class EnhancedSampleDataService {
       Product(
         id: '',
         name: 'Xiaomi 14 Ultra',
-        description: 'هاتف شاومي الرائد مع كاميرا Leica وأداء متميز بسعر منافس',
-        price: 1450000,
-        originalPrice: 1650000,
+        description:
+            'Xiaomi flagship phone with Leica camera and excellent performance at competitive price',
+        price: 145000,
+        originalPrice: 165000,
         image:
             'https://i01.appmifile.com/v1/MI_18455B3E4DA706226CF7535A58E875F0267/pms_1708507847.83933468.png',
-        category: 'الهواتف الذكية',
+        category: 'Smartphones',
         featured: false,
         discount: 12,
         rating: 4.5,
         reviewsCount: 567,
         specifications: [
-          'شاشة 6.73 بوصة AMOLED',
-          'معالج Snapdragon 8 Gen 3',
-          'كاميرا Leica 50 ميجابكسل',
-          'ذاكرة 512 جيجابايت',
-          'شحن سريع 90 واط',
-          'شحن لاسلكي 50 واط',
-          'بطارية 4300 مللي أمبير',
-          'نظام MIUI 15'
+          '6.73-inch AMOLED display',
+          'Snapdragon 8 Gen 3 processor',
+          'Leica 50MP camera',
+          '512GB storage',
+          '90W fast charging',
+          '50W wireless charging',
+          '4300mAh battery',
+          'MIUI 15 system'
         ],
         reviews: [
           {
-            'userName': 'نور الدين - أم درمان',
-            'rating': 4.3,
-            'comment': 'قيمة ممتازة مقابل السعر، كاميرا Leica رائعة',
+            'userName': 'Nour Aldin - Omdurman',
+            'rating': 4.7,
+            'comment': 'Excellent value for money, Leica camera is amazing',
             'date': '2024-12-05'
           }
         ],
       ),
     ];
 
-    // إضافة المنتجات إلى Firebase
+    // Add products to Firebase
     for (var product in products) {
       await _db.collection('products').add(product.toMap());
     }
   }
 
-  // إضافة جميع البيانات المحسنة
+  // Add all enhanced data
   Future<void> addAllEnhancedData() async {
     try {
       await addEnhancedProducts();
-      print('✅ تم إضافة 40+ منتج بنجاح مع تفاصيل شاملة');
+      print('✅ Successfully added 40+ products with comprehensive details');
     } catch (e) {
-      print('❌ خطأ في إضافة البيانات المحسنة: $e');
+      print('❌ Error adding enhanced data: $e');
       rethrow;
     }
   }

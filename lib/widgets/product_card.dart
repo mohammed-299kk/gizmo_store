@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../models/product.dart';
 import '../screens/product/product_detail_screen.dart';
 
@@ -24,7 +25,7 @@ class ProductCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withValues(alpha: 0.2),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -43,29 +44,138 @@ class ProductCard extends StatelessWidget {
 
   Widget _buildProductImage() {
     return Expanded(
-      flex: 3,
+      flex: 4,
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.2),
+          color: Colors.black.withValues(alpha: 0.2),
           borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
         ),
         child: ClipRRect(
           borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
-          child: product.image != null && product.image!.isNotEmpty
-              ? Image.network(
-                  product.image!,
-                  fit: BoxFit.cover,
-                  loadingBuilder: (context, child, progress) {
-                    return progress == null
-                        ? child
-                        : const Center(child: CircularProgressIndicator(color: Color(0xFFB71C1C)));
-                  },
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Icon(Icons.broken_image, size: 40, color: Colors.white38);
-                  },
-                )
-              : const Icon(Icons.shopping_bag_outlined, size: 40, color: Colors.white38),
+          child: _buildImageWidget(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildImageWidget() {
+    // Check if image URL is valid
+    if (product.imageUrl != null && 
+        product.imageUrl!.isNotEmpty && 
+        product.imageUrl!.startsWith('http')) {
+      
+      return CachedNetworkImage(
+        imageUrl: product.imageUrl!,
+        fit: BoxFit.cover,
+        placeholder: (context, url) => _buildLoadingPlaceholder(),
+        errorWidget: (context, url, error) => _buildErrorPlaceholder(),
+      );
+    } else {
+      return _buildNoImagePlaceholder();
+    }
+  }
+
+  Widget _buildLoadingPlaceholder() {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.grey[800]!,
+            Colors.grey[900]!,
+          ],
+        ),
+      ),
+      child: const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(
+              color: Color(0xFFB71C1C),
+              strokeWidth: 2,
+            ),
+            SizedBox(height: 8),
+            Text(
+              'جاري التحميل...',
+              style: TextStyle(
+                color: Colors.white70,
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorPlaceholder() {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.red[900]!.withValues(alpha: 0.3),
+            Colors.red[800]!.withValues(alpha: 0.2),
+          ],
+        ),
+      ),
+      child: const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.broken_image_outlined,
+              size: 32,
+              color: Colors.white54,
+            ),
+            SizedBox(height: 4),
+            Text(
+              'فشل تحميل الصورة',
+              style: TextStyle(
+                color: Colors.white54,
+                fontSize: 10,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNoImagePlaceholder() {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            const Color(0xFFB71C1C).withValues(alpha: 0.2),
+            const Color(0xFF8B0000).withValues(alpha: 0.3),
+          ],
+        ),
+      ),
+      child: const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.shopping_bag_outlined,
+              size: 36,
+              color: Colors.white70,
+            ),
+            SizedBox(height: 4),
+            Text(
+              'لا توجد صورة',
+              style: TextStyle(
+                color: Colors.white70,
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -73,9 +183,9 @@ class ProductCard extends StatelessWidget {
 
   Widget _buildProductInfo() {
     return Expanded(
-      flex: 2,
+      flex: 1,
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -97,6 +207,8 @@ class ProductCard extends StatelessWidget {
                 color: Colors.white70,
                 fontSize: 12,
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 8),
             Row(

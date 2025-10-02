@@ -1,10 +1,13 @@
 // lib/screens/product_detail/product_detail_screen.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:gizmo_store/models/product.dart';
 import 'package:gizmo_store/models/cart_item.dart';
 import 'package:gizmo_store/screens/cart/cart_screen.dart';
 import 'package:gizmo_store/services/cart_service.dart';
+import 'package:gizmo_store/providers/wishlist_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final Product product;
@@ -17,24 +20,31 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int _quantity = 1;
-  int _selectedImageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            const Text('تفاصيل المنتج', style: TextStyle(color: Colors.white)),
-        backgroundColor: const Color(0xFFB71C1C),
-        iconTheme: const IconThemeData(color: Colors.white),
+          title: Text(AppLocalizations.of(context)!.productDetails,
+              style: TextStyle(color: Theme.of(context).appBarTheme.foregroundColor)),
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+          iconTheme: IconThemeData(color: Theme.of(context).appBarTheme.foregroundColor),
         actions: [
           IconButton(
             icon: const Icon(Icons.share),
             onPressed: _shareProduct,
           ),
-          IconButton(
-            icon: const Icon(Icons.favorite_border),
-            onPressed: _addToFavorites,
+          Consumer<WishlistProvider>(
+            builder: (context, wishlistProvider, child) {
+              final isInWishlist = wishlistProvider.isInWishlist(widget.product.id);
+              return IconButton(
+                icon: Icon(
+                  isInWishlist ? Icons.favorite : Icons.favorite_border,
+                  color: isInWishlist ? Colors.red : null,
+                ),
+                onPressed: () => _toggleFavorites(wishlistProvider),
+              );
+            },
           ),
         ],
       ),
@@ -58,67 +68,119 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   // معرض صور المنتج
   Widget _buildImageGallery() {
-    final images = widget.product.images ?? [];
-    if (images.isEmpty) {
-      return const Icon(Icons.image_not_supported,
-          size: 200, color: Colors.grey);
+    // استخدام imageUrl بدلاً من images للحصول على صورة صحيحة
+    final imageUrl = widget.product.imageUrl;
+    
+    if (imageUrl == null || imageUrl.isEmpty) {
+      return Container(
+      height: 200,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Icon(
+        Icons.image_not_supported,
+        size: 80,
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+      ),
+    );
     }
 
-    return Column(
-      children: [
-        SizedBox(
-          height: 300,
-          child: PageView.builder(
-            itemCount: images.length,
-            onPageChanged: (index) =>
-                setState(() => _selectedImageIndex = index),
-            itemBuilder: (context, index) => CachedNetworkImage(
-              imageUrl: images[index],
-              placeholder: (context, url) =>
-                  const Center(child: CircularProgressIndicator()),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-              fit: BoxFit.cover,
-            ),
+    return Container(
+      height: 200,
+      width: double.infinity,
+      margin: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
           ),
-        ),
-        Container(
-          height: 60,
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: images.length,
-            itemBuilder: (context, index) => GestureDetector(
-              onTap: () => setState(() => _selectedImageIndex = index),
-              child: Container(
-                width: 50,
-                height: 50,
-                margin: const EdgeInsets.only(right: 8),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: _selectedImageIndex == index
-                        ? const Color(0xFFB71C1C)
-                        : Colors.grey.withOpacity(0.3),
-                    width: 2,
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: CachedNetworkImage(
+          imageUrl: imageUrl,
+          fit: BoxFit.cover,
+          // تحسينات الأداء لصور تفاصيل المنتج
+          memCacheWidth: 800, // حجم أكبر لصور التفاصيل
+          memCacheHeight: 800,
+          maxWidthDiskCache: 1200,
+          maxHeightDiskCache: 1200,
+          fadeInDuration: const Duration(milliseconds: 200),
+          fadeOutDuration: const Duration(milliseconds: 150),
+          httpHeaders: const {
+            'Cache-Control': 'max-age=86400',
+            'Accept': 'image/webp,image/jpeg,image/png,*/*',
+          },
+          placeholder: (context, url) => Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.primary,
+                    strokeWidth: 3,
                   ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
-                  child: CachedNetworkImage(
-                    imageUrl: images[index],
-                    placeholder: (context, url) =>
-                        Container(color: Colors.grey[200]),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
-                    fit: BoxFit.cover,
+                  const SizedBox(height: 12),
+                  Text(
+                    'تحميل الصورة...',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           ),
+          errorWidget: (context, url, error) => Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.red.shade100,
+                  Colors.red.shade50,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.image_not_supported,
+                  size: 100,
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'فشل في تحميل الصورة',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
-      ],
+      ),
     );
   }
 
@@ -131,31 +193,31 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         children: [
           Text(
             widget.product.name,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF212121),
+              color: Theme.of(context).textTheme.headlineSmall?.color,
             ),
           ),
           const SizedBox(height: 8),
           Row(
             children: [
               Text(
-                '\$${widget.product.price.toStringAsFixed(2)}',
-                style: const TextStyle(
+                '${_formatPrice(widget.product.price)} ج.س',
+                style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFFB71C1C),
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
               if (widget.product.originalPrice != null) ...[
                 const SizedBox(width: 12),
                 Text(
-                  '\$${widget.product.originalPrice!.toStringAsFixed(2)}',
-                  style: const TextStyle(
+                  '${_formatPrice(widget.product.originalPrice!)} ج.س',
+                  style: TextStyle(
                     fontSize: 18,
                     decoration: TextDecoration.lineThrough,
-                    color: Colors.grey,
+                    color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
                   ),
                 ),
               ],
@@ -165,13 +227,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Colors.green,
+                    color: Theme.of(context).colorScheme.tertiary,
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
-                    'خصم ${widget.product.discount}%',
-                    style: const TextStyle(
-                      color: Colors.white,
+                    '${AppLocalizations.of(context)!.discount} ${widget.product.discount}%',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onTertiary,
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
@@ -198,15 +260,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             children: List.generate(5, (index) {
               return Icon(
                 index < rating.floor() ? Icons.star : Icons.star_border,
-                color: Colors.amber,
+                color: Theme.of(context).colorScheme.tertiary,
                 size: 20,
               );
             }),
           ),
           const SizedBox(width: 8),
           Text(
-            '$rating ($reviewsCount تقييم)',
-            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+            '$rating ($reviewsCount ${AppLocalizations.of(context)!.reviews})',
+            style: TextStyle(fontSize: 14, color: Theme.of(context).textTheme.bodySmall?.color),
           ),
         ],
       ),
@@ -215,23 +277,23 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   // قسم الوصف
   Widget _buildDescriptionSection() {
-    final description = widget.product.description ?? 'لا يوجد وصف للمنتج.';
+    final description = widget.product.description ?? AppLocalizations.of(context)!.noProductDescription;
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'الوصف',
+          Text(
+            AppLocalizations.of(context)!.description,
             style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF212121)),
+                color: Theme.of(context).textTheme.titleLarge?.color),
           ),
           const SizedBox(height: 8),
           Text(description,
               style: TextStyle(
-                  fontSize: 14, color: Colors.grey[700], height: 1.5)),
+                  fontSize: 14, color: Theme.of(context).textTheme.bodyMedium?.color, height: 1.5)),
         ],
       ),
     );
@@ -239,19 +301,89 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   // قسم المواصفات
   Widget _buildSpecificationsSection() {
-    final specs = widget.product.specifications ?? [];
-    if (specs.isEmpty) return const SizedBox.shrink();
+    List<String> specs = widget.product.specifications ?? [];
+    
+    // إذا لم تكن هناك مواصفات، نضع مواصفات افتراضية
+    if (specs.isEmpty) {
+      final productName = widget.product.name.toLowerCase();
+      
+      if (productName.contains('phone') || productName.contains('mobile') || productName.contains('iphone') || productName.contains('samsung')) {
+        specs = [
+          'شاشة عالية الدقة',
+          'معالج قوي ومتطور',
+          'كاميرا عالية الجودة',
+          'بطارية طويلة المدى',
+          'نظام تشغيل حديث',
+          'ذاكرة تخزين كبيرة',
+          'تصميم أنيق ومتين',
+          'اتصال 5G/4G',
+        ];
+      } else if (productName.contains('laptop') || productName.contains('macbook') || productName.contains('computer')) {
+        specs = [
+          'معالج عالي الأداء',
+          'ذاكرة عشوائية كبيرة',
+          'ذاكرة تخزين SSD سريعة',
+          'شاشة عالية الدقة',
+          'بطارية طويلة المدى',
+          'تصميم نحيف وخفيف',
+          'منافذ متعددة',
+          'نظام تشغيل حديث',
+        ];
+      } else if (productName.contains('headphone') || productName.contains('earphone') || productName.contains('airpods') || productName.contains('sony')) {
+        specs = [
+          'جودة صوت عالية',
+          'تصميم مريح',
+          'بطارية طويلة المدى',
+          'اتصال لاسلكي',
+          'ميكروفون مدمج',
+          'تحكم باللمس',
+          'مقاومة للماء',
+          'إلغاء الضوضاء',
+        ];
+      } else if (productName.contains('watch') || productName.contains('ساعة')) {
+        specs = [
+          'شاشة عالية الدقة',
+          'مراقبة اللياقة البدنية',
+          'مقاومة للماء',
+          'بطارية طويلة المدى',
+          'اتصال لاسلكي',
+          'تطبيقات متنوعة',
+          'تصميم أنيق',
+          'سهولة الاستخدام',
+        ];
+      } else if (productName.contains('ipad') || productName.contains('tablet')) {
+        specs = [
+          'شاشة كبيرة عالية الدقة',
+          'معالج قوي',
+          'كاميرا عالية الجودة',
+          'بطارية طويلة المدى',
+          'دعم القلم الرقمي',
+          'تصميم نحيف وخفيف',
+          'نظام تشغيل متطور',
+          'ذاكرة تخزين كبيرة',
+        ];
+      } else {
+        specs = [
+          'جودة عالية في التصنيع',
+          'تصميم عصري وأنيق',
+          'سهولة في الاستخدام',
+          'ضمان الشركة المصنعة',
+          'متوافق مع المعايير العالمية',
+          'أداء موثوق ومستقر',
+        ];
+      }
+    }
 
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('المواصفات',
+          Text(AppLocalizations.of(context)!.specifications,
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF212121))),
+                  color: Theme.of(context).textTheme.titleLarge?.color)),
           const SizedBox(height: 8),
           ...specs
               .map((spec) => Padding(
@@ -263,13 +395,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             width: 4,
                             height: 4,
                             margin: const EdgeInsets.only(top: 8, right: 8),
-                            decoration: const BoxDecoration(
-                                color: Color(0xFFB71C1C),
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary,
                                 shape: BoxShape.circle)),
                         Expanded(
                             child: Text(spec,
                                 style: TextStyle(
-                                    fontSize: 14, color: Colors.grey[700]))),
+                                    fontSize: 14, color: Theme.of(context).textTheme.bodyMedium?.color))),
                       ],
                     ),
                   ))
@@ -289,11 +421,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('المراجعات',
+          Text(AppLocalizations.of(context)!.reviewsSection,
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF212121))),
+                  color: Theme.of(context).textTheme.titleLarge?.color)),
           const SizedBox(height: 12),
           ...reviews
               .take(3)
@@ -301,7 +433,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     margin: const EdgeInsets.only(bottom: 12),
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                        color: Colors.grey[100],
+                        color: Theme.of(context).colorScheme.surface,
                         borderRadius: BorderRadius.circular(8)),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -319,7 +451,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                       index < review['rating']
                                           ? Icons.star
                                           : Icons.star_border,
-                                      color: Colors.amber,
+                                      color: Theme.of(context).colorScheme.tertiary,
                                       size: 16)),
                             ),
                           ],
@@ -327,7 +459,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         const SizedBox(height: 4),
                         Text(review['comment'],
                             style: TextStyle(
-                                fontSize: 13, color: Colors.grey[700])),
+                                fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color)),
                       ],
                     ),
                   ))
@@ -335,7 +467,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           if (reviews.length > 3)
             TextButton(
                 onPressed: _viewAllReviews,
-                child: const Text('عرض جميع المراجعات')),
+                child: Text(AppLocalizations.of(context)!.viewAllReviews)),
         ],
       ),
     );
@@ -347,12 +479,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          const Text('الكمية:',
+          Text(AppLocalizations.of(context)!.quantity,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           const SizedBox(width: 16),
           Container(
             decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey[300]!),
+                border: Border.all(color: Theme.of(context).colorScheme.outline),
                 borderRadius: BorderRadius.circular(8)),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -382,9 +514,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   Widget _buildBottomActionBar() {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [
+      decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor, boxShadow: [
         BoxShadow(
-            color: Colors.grey.withOpacity(0.2), spreadRadius: 1, blurRadius: 5)
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.2), spreadRadius: 1, blurRadius: 5)
       ]),
       child: Row(
         children: [
@@ -392,24 +524,24 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             child: ElevatedButton(
               onPressed: _addToCart,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFB71C1C),
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12)),
               ),
-              child: const Text('أضف إلى السلة',
-                  style: TextStyle(fontSize: 16, color: Colors.white)),
+              child: Text(AppLocalizations.of(context)!.addToCart,
+                  style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.onPrimary)),
             ),
           ),
           const SizedBox(width: 12),
           Container(
             decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xFFB71C1C)),
+                border: Border.all(color: Theme.of(context).colorScheme.primary),
                 borderRadius: BorderRadius.circular(12)),
             child: IconButton(
               onPressed: () => Navigator.push(context,
                   MaterialPageRoute(builder: (context) => const CartScreen())),
-              icon: const Icon(Icons.shopping_cart, color: Color(0xFFB71C1C)),
+              icon: Icon(Icons.shopping_cart, color: Theme.of(context).colorScheme.primary),
             ),
           ),
         ],
@@ -421,8 +553,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     CartService.addItem(CartItem(product: widget.product, quantity: _quantity));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${widget.product.name} تمت إضافته إلى السلة'),
-        backgroundColor: Colors.green,
+        content: Text('${widget.product.name} ${AppLocalizations.of(context)!.addedToCart}'),
+        backgroundColor: Color(0xFFB71C1C),
         duration: const Duration(seconds: 2),
       ),
     );
@@ -432,11 +564,36 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     // تنفيذ مشاركة المنتج
   }
 
-  void _addToFavorites() {
-    // تنفيذ إضافة المنتج إلى المفضلة
+  void _toggleFavorites(WishlistProvider wishlistProvider) {
+    if (wishlistProvider.isInWishlist(widget.product.id)) {
+      wishlistProvider.removeFromWishlist(widget.product.id);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${AppLocalizations.of(context)!.removedFromWishlist} ${widget.product.name} ${AppLocalizations.of(context)!.fromWishlist}'),
+          backgroundColor: Color(0xFFB71C1C),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } else {
+      wishlistProvider.addToWishlist(widget.product);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${AppLocalizations.of(context)!.addedToWishlist} ${widget.product.name} ${AppLocalizations.of(context)!.toWishlist}'),
+          backgroundColor: Color(0xFFB71C1C),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   void _viewAllReviews() {
     // تنفيذ عرض جميع المراجعات
+  }
+
+  String _formatPrice(double price) {
+    return price.toStringAsFixed(0).replaceAllMapped(
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+      (Match m) => '${m[1]},',
+    );
   }
 }

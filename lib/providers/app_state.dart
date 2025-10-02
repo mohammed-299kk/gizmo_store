@@ -4,12 +4,10 @@ class AppState with ChangeNotifier {
   int _currentBottomNavIndex = 0;
   String _currentCategory = 'الكل';
   String _searchQuery = '';
-  bool _isDarkMode = false;
 
   int get currentBottomNavIndex => _currentBottomNavIndex;
   String get currentCategory => _currentCategory;
   String get searchQuery => _searchQuery;
-  bool get isDarkMode => _isDarkMode;
 
   // تحديث مؤشر التنقل السفلي
   void updateBottomNavIndex(int index) {
@@ -29,11 +27,7 @@ class AppState with ChangeNotifier {
     notifyListeners();
   }
 
-  // تبديل وضع الظلام
-  void toggleDarkMode() {
-    _isDarkMode = !_isDarkMode;
-    notifyListeners();
-  }
+
 
   // إعادة تعيين حالة التطبيق
   void reset() {

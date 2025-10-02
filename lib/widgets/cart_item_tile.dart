@@ -10,7 +10,6 @@ class CartItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cartService = Provider.of<CartService>(context, listen: false);
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),

@@ -70,6 +70,10 @@ cloud_firestore_web
 3.4
 file:///D:/flutter_pub_cache/hosted/pub.dev/cloud_firestore_web-4.4.12/
 file:///D:/flutter_pub_cache/hosted/pub.dev/cloud_firestore_web-4.4.12/lib/
+cloudinary_public
+2.12
+file:///D:/flutter_pub_cache/hosted/pub.dev/cloudinary_public-0.21.0/
+file:///D:/flutter_pub_cache/hosted/pub.dev/cloudinary_public-0.21.0/lib/
 collection
 3.4
 file:///D:/flutter_pub_cache/hosted/pub.dev/collection-1.19.1/
@@ -94,6 +98,14 @@ desktop_webview_auth
 2.12
 file:///D:/flutter_pub_cache/hosted/pub.dev/desktop_webview_auth-0.0.15/
 file:///D:/flutter_pub_cache/hosted/pub.dev/desktop_webview_auth-0.0.15/lib/
+dio
+2.18
+file:///D:/flutter_pub_cache/hosted/pub.dev/dio-5.9.0/
+file:///D:/flutter_pub_cache/hosted/pub.dev/dio-5.9.0/lib/
+dio_web_adapter
+3.3
+file:///D:/flutter_pub_cache/hosted/pub.dev/dio_web_adapter-2.1.1/
+file:///D:/flutter_pub_cache/hosted/pub.dev/dio_web_adapter-2.1.1/lib/
 email_validator
 2.12
 file:///D:/flutter_pub_cache/hosted/pub.dev/email_validator-2.1.17/

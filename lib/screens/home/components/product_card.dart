@@ -1,8 +1,11 @@
 // lib/screens/home/components/product_card.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gizmo_store/models/product.dart';
 import 'package:gizmo_store/providers/wishlist_provider.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
+import 'package:gizmo_store/utils/image_helper.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -16,20 +19,25 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // تحديد حجم البطاقة بناءً على حجم الشاشة
+    final screenWidth = MediaQuery.of(context).size.width;
+    final cardWidth =
+        screenWidth < 600 ? 120.0 : 180.0; // أصغر جداً للهاتف المحمول
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 180,
-        margin: const EdgeInsets.only(right: 16),
+        width: cardWidth,
+        margin: const EdgeInsets.only(right: 8), // تقليل المسافة أكثر
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(10), // تقليل الانحناء
           border: Border.all(color: Colors.grey[300]!),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.08),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
+              color: Colors.black.withValues(alpha: 0.06), // تقليل الظل
+              blurRadius: 3,
+              offset: const Offset(0, 1),
             ),
           ],
         ),
@@ -41,37 +49,20 @@ class ProductCard extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(12)),
+                      const BorderRadius.vertical(top: Radius.circular(10)),
                   child: Container(
-                    height: 140,
+                    height: screenWidth < 600
+                        ? 90
+                        : 140, // أصغر جداً للهاتف المحمول
                     width: double.infinity,
                     color: Colors.grey[100],
-                    child: product.image != null && product.image!.isNotEmpty
-                        ? Image.network(
-                            product.image!,
+                    child: product.imageUrl != null &&
+                            product.imageUrl!.isNotEmpty
+                        ? ImageHelper.buildCachedImage(
+                            imageUrl: product.imageUrl!,
+                            width: double.infinity,
+                            height: screenWidth < 600 ? 90 : 140,
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                color: Colors.grey[200],
-                                child: const Icon(
-                                  Icons.image_not_supported,
-                                  color: Colors.grey,
-                                  size: 50,
-                                ),
-                              );
-                            },
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Container(
-                                color: Colors.grey[200],
-                                child: const Center(
-                                  child: CircularProgressIndicator(
-                                    color: Color(0xFFB71C1C),
-                                    strokeWidth: 2,
-                                  ),
-                                ),
-                              );
-                            },
                           )
                         : const Icon(
                             Icons.image_not_supported,
@@ -112,7 +103,46 @@ class ProductCard extends StatelessWidget {
                       return GestureDetector(
                         onTap: () async {
                           try {
+                            // التحقق من تسجيل الدخول أولاً
+                            final user = FirebaseAuth.instance.currentUser;
+                            if (user == null) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(AppLocalizations.of(context)!
+                                            .pleaseLoginFirst ??
+                                        'يرجى تسجيل الدخول أولاً'),
+                                    backgroundColor: Colors.orange,
+                                    action: SnackBarAction(
+                                      label: 'تسجيل الدخول',
+                                      textColor: Colors.white,
+                                      onPressed: () {
+                                        Navigator.pushNamed(context, '/auth');
+                                      },
+                                    ),
+                                  ),
+                                );
+                              }
+                              return;
+                            }
+
                             await wishlistProvider.toggleWishlist(product);
+
+                            // إظهار رسالة نجاح
+                            if (context.mounted) {
+                              final isInWishlist =
+                                  wishlistProvider.isInWishlist(product.id);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(isInWishlist
+                                      ? 'تم إضافة ${product.name} للمفضلة'
+                                      : 'تم إزالة ${product.name} من المفضلة'),
+                                  backgroundColor:
+                                      isInWishlist ? Colors.green : Colors.grey,
+                                  duration: const Duration(seconds: 2),
+                                ),
+                              );
+                            }
                           } catch (error) {
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -135,9 +165,11 @@ class ProductCard extends StatelessWidget {
                                 ? Icons.favorite
                                 : Icons.favorite_border,
                             color: isInWishlist
-                                ? const Color(0xFFB71C1C)
+                                ? Color(0xFFB71C1C)
                                 : Colors.grey[600],
-                            size: 18,
+                            size: screenWidth < 600
+                                ? 16
+                                : 18, // تصغير أيقونة القلب للهاتف
                           ),
                         ),
                       );
@@ -149,21 +181,24 @@ class ProductCard extends StatelessWidget {
             // تفاصيل المنتج
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(12),
+                padding: EdgeInsets.all(
+                    screenWidth < 600 ? 4 : 8), // تقليل المسافة أكثر للهاتف
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       product.name,
-                      style: const TextStyle(
-                        fontSize: 14,
+                      style: TextStyle(
+                        fontSize:
+                            screenWidth < 600 ? 12 : 14, // تصغير النص للهاتف
                         fontWeight: FontWeight.w600,
                         color: Colors.black87,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 6),
+                    SizedBox(
+                        height: screenWidth < 600 ? 2 : 6), // تقليل المسافة أكثر
                     // التقييم
                     if (product.rating != null)
                       Row(
@@ -175,7 +210,9 @@ class ProductCard extends StatelessWidget {
                                     ? Icons.star
                                     : Icons.star_border,
                                 color: Colors.amber,
-                                size: 12,
+                                size: screenWidth < 600
+                                    ? 10
+                                    : 12, // تصغير النجوم للهاتف
                               );
                             }),
                           ),
@@ -196,7 +233,7 @@ class ProductCard extends StatelessWidget {
                       children: [
                         if (product.originalPrice != null)
                           Text(
-                            '${product.originalPrice!.toStringAsFixed(0)} جنيه',
+                            '${product.originalPrice!.toStringAsFixed(0)} ${AppLocalizations.of(context)!.currency}',
                             style: TextStyle(
                               color: Colors.grey[500],
                               fontSize: 11,
@@ -204,17 +241,19 @@ class ProductCard extends StatelessWidget {
                             ),
                           ),
                         Text(
-                          '${product.price.toStringAsFixed(0)} جنيه',
-                          style: const TextStyle(
+                          '${product.price.toStringAsFixed(0)} ${AppLocalizations.of(context)!.currency}',
+                          style: TextStyle(
                             color: Color(0xFFB71C1C),
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            fontSize: screenWidth < 600
+                                ? 14
+                                : 16, // تصغير السعر للهاتف
                           ),
                         ),
                         const SizedBox(height: 4),
-                        // عنوان الخرطوم وتاريخ هذا الشهر
+                        // Location and date for this month
                         Text(
-                          'الخرطوم - ديسمبر 2024',
+                          AppLocalizations.of(context)!.locationAndDate,
                           style: TextStyle(
                             color: Colors.grey[600],
                             fontSize: 10,

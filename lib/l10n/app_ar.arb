@@ -1,0 +1,1107 @@
+{
+  "@@locale": "ar",
+  "appTitle": "متجر جيزمو",
+  "home": "الرئيسية",
+  "categories": "الفئات",
+  "cart": "السلة",
+  "profile": "الملف الشخصي",
+  "settings": "الإعدادات",
+  "search": "البحث",
+  "searchProducts": "البحث عن المنتجات...",
+  "featuredProducts": "المنتجات المميزة",
+  "newArrivals": "الوافدات الجديدة",
+  "bestSellers": "الأكثر مبيعاً",
+  "viewAll": "عرض الكل",
+  "addToCart": "أضف إلى السلة",
+  "buyNow": "اشتري الآن",
+  "price": "السعر",
+  "profile": "الملف الشخصي",
+  "youAreGuestNow": "أنت زائر الآن",
+  "loginToViewProfile": "سجل الدخول لعرض ملفك الشخصي والاستفادة من ميزات التطبيق الكاملة.",
+  "goToRegistrationPage": "الانتقال إلى صفحة التسجيل",
+  "logout": "تسجيل الخروج",
+  "newUser": "مستخدم جديد",
+  "userId": "معرف المستخدم",
+  "registrationDate": "تاريخ التسجيل",
+  "undefined": "غير محدد",
+  "orders": "الطلبات",
+  "favorites": "المفضلة",
+  "myAccount": "حسابي",
+  "editProfile": "تعديل الملف الشخصي",
+  "myOrders": "طلباتي",
+  "addresses": "العناوين",
+  "addressManagementInDevelopment": "إدارة العناوين قيد التطوير",
+  "settings": "الإعدادات",
+  "application": "التطبيق",
+  "notifications": "الإشعارات",
+  "notificationManagementInDevelopment": "إدارة الإشعارات قيد التطوير",
+  "helpAndSupport": "المساعدة والدعم",
+  "helpAndSupportInDevelopment": "المساعدة والدعم قيد التطوير",
+  "privacyAndSecurity": "الخصوصية والأمان",
+  "privacyAndSecurityInDevelopment": "إعدادات الخصوصية والأمان قيد التطوير",
+  "aboutApp": "عن التطبيق",
+  "firebaseDetails": "تفاصيل Firebase",
+  "areYouSureYouWantToLogout": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+  "cancel": "إلغاء",
+  "confirm": "تأكيد",
+  "aboutGizmoStore": "عن Gizmo Store",
+  "version100": "الإصدار: 1.0.0",
+  "demoEcommerceApp": "تطبيق متجر إلكتروني تجريبي.",
+  "ok": "موافق",
+  "privacyAndSecurityTitle": "الخصوصية والأمان",
+  "securitySettings": "إعدادات الأمان",
+  "privacySettings": "إعدادات الخصوصية",
+  "changePassword": "تغيير كلمة المرور",
+  "biometricAuthentication": "المصادقة البيومترية",
+  "managePrivacyData": "إدارة بيانات الخصوصية",
+  "privacyPolicy": "سياسة الخصوصية",
+  "changePasswordUnderDevelopment": "ميزة تغيير كلمة المرور قيد التطوير",
+  "biometricAuthUnderDevelopment": "ميزة المصادقة البيومترية قيد التطوير",
+  "managePrivacyDataUnderDevelopment": "ميزة إدارة بيانات الخصوصية قيد التطوير",
+  "privacyPolicyUnderDevelopment": "ميزة سياسة الخصوصية قيد التطوير",
+  "description": "الوصف",
+  "reviews": "التقييمات",
+  "rating": "التقييم",
+  "inStock": "متوفر",
+  "outOfStock": "غير متوفر",
+  "quantity": "الكمية",
+  "total": "المجموع",
+  "subtotal": "المجموع الفرعي",
+  "checkout": "الدفع",
+  "search": "البحث",
+  "searchForProducts": "البحث عن المنتجات...",
+  "newest": "الأحدث",
+  "priceLowToHigh": "السعر: من الأقل للأعلى",
+  "priceHighToLow": "السعر: من الأعلى للأقل",
+  "topRated": "الأعلى تقييماً",
+  "all": "الكل",
+  "smartphones": "الهواتف الذكية",
+  "computers": "أجهزة الكمبيوتر",
+  "tablets": "الأجهزة اللوحية",
+  "smartwatches": "الساعات الذكية",
+  "headphones": "السماعات",
+  "accessories": "الملحقات",
+  "failedToLoadProducts": "فشل في تحميل المنتجات.",
+  "category": "التصنيف",
+  "sortBy": "ترتيب حسب",
+  "priceRange": "السعر: من \\${min} إلى \\${max}",
+  "brand": "العلامة التجارية",
+  "noResults": "لا توجد نتائج",
+  "resetFilters": "إعادة تعيين المرشحات",
+  "loadMore": "عرض المزيد",
+  "price": "السعر",
+  "emptyCart": "سلتك فارغة",
+  "continueShopping": "متابعة التسوق",
+  "account": "الحساب",
+  "addressManagement": "إدارة العناوين",
+  "shipping": "الشحن",
+  "paymentMethods": "طرق الدفع",
+  "notifications": "الإشعارات",
+  "darkMode": "الوضع المظلم",
+  "language": "اللغة",
+  "helpSupport": "المساعدة والدعم",
+  "appInformation": "معلومات التطبيق",
+  "logout": "تسجيل الخروج",
+  "login": "تسجيل الدخول",
+  "register": "التسجيل",
+  "email": "البريد الإلكتروني",
+  "password": "كلمة المرور",
+  "confirmPassword": "تأكيد كلمة المرور",
+  "forgotPassword": "نسيت كلمة المرور؟",
+  "dontHaveAccount": "ليس لديك حساب؟",
+  "alreadyHaveAccount": "لديك حساب بالفعل؟",
+  "signUp": "إنشاء حساب",
+  "signIn": "تسجيل الدخول",
+  "name": "الاسم",
+  "phone": "الهاتف",
+  "address": "العنوان",
+  "city": "المدينة",
+  "state": "المحافظة",
+  "postalCode": "الرمز البريدي",
+  "country": "البلد",
+  "save": "حفظ",
+  "cancel": "إلغاء",
+  "edit": "تعديل",
+  "delete": "حذف",
+  "add": "إضافة",
+  "update": "تحديث",
+  "confirm": "تأكيد",
+  "yes": "نعم",
+  "no": "لا",
+  "ok": "موافق",
+  "error": "خطأ",
+  "success": "نجح",
+  "loading": "جاري التحميل...",
+  "retry": "إعادة المحاولة",
+  "noInternetConnection": "لا يوجد اتصال بالإنترنت",
+  "somethingWentWrong": "حدث خطأ ما",
+  "addAddress": "إضافة عنوان",
+  "editAddress": "تعديل العنوان",
+  "deleteAddress": "حذف العنوان",
+  "setAsDefault": "تعيين كافتراضي",
+  "defaultAddress": "العنوان الافتراضي",
+  "noAddressesFound": "لم يتم العثور على عناوين",
+  "addYourFirstAddress": "أضف عنوانك الأول",
+  "street": "الشارع",
+  "required": "مطلوب",
+  "invalidEmail": "بريد إلكتروني غير صحيح",
+  "passwordTooShort": "كلمة المرور قصيرة جداً",
+  "passwordsDoNotMatch": "كلمات المرور غير متطابقة",
+  "pleaseEnterValidName": "يرجى إدخال اسم صحيح",
+  "pleaseEnterValidPhone": "يرجى إدخال رقم هاتف صحيح",
+  "pleaseEnterValidStreet": "يرجى إدخال عنوان شارع صحيح",
+  "pleaseEnterValidCity": "يرجى إدخال مدينة صحيحة",
+  "pleaseEnterValidState": "يرجى إدخال محافظة صحيحة",
+  "pleaseEnterValidPostalCode": "يرجى إدخال رمز بريدي صحيح",
+  "pleaseEnterValidCountry": "يرجى إدخال بلد صحيح",
+  "deleteAddressConfirmation": "هل أنت متأكد من حذف هذا العنوان؟",
+  "addressDeletedSuccessfully": "تم حذف العنوان بنجاح",
+  "addressSavedSuccessfully": "تم حفظ العنوان بنجاح",
+  "failedToSaveAddress": "فشل في حفظ العنوان",
+  "failedToDeleteAddress": "فشل في حذف العنوان",
+  "failedToLoadAddresses": "فشل في تحميل العناوين",
+  "priceFormat": "السعر: {price} جنيه",
+  "notSpecified": "غير محدد",
+  "fillAllRequiredFields": "يرجى ملء جميع الحقول المطلوبة",
+  "enterFirstAndLastName": "يرجى إدخال الاسم الأول والأخير",
+  "passwordsDoNotMatch": "كلمات المرور غير متطابقة",
+  "passwordMinLength": "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+  "processing": "جاري المعالجة...",
+  "english": "English",
+  "arabic": "العربية",
+  "continueAsGuest": "متابعة كضيف",
+  "adminLogin": "تسجيل دخول الأدمن",
+  "signInSuccess": "تم تسجيل الدخول بنجاح!",
+  "accountCreatedSuccess": "تم إنشاء الحساب بنجاح!",
+  "databaseInitDescription": "جاري تهيئة قاعدة البيانات ببيانات تجريبية...",
+  "or": "أو",
+  "fullName": "الاسم الكامل",
+  "createAccount": "إنشاء حساب",
+  "noAccountCreateNew": "ليس لديك حساب؟ أنشئ حساباً جديداً",
+  "haveAccountSignIn": "لديك حساب بالفعل؟ سجل دخولك",
+  "createNewAccount": "إنشاء حساب جديد",
+  "signInToContinue": "سجل الدخول للمتابعة",
+  "joinGizmoFamily": "انضم إلى عائلة جيزمو",
+  "welcomeBack": "مرحباً بعودتك",
+  "aboutGizmoStore": "حول متجر جيزمو",
+  "aboutDescription": "متجر جيزمو هو متجرك الشامل لجميع الأجهزة الإلكترونية والإكسسوارات.",
+  "logoutConfirmation": "هل أنت متأكد من أنك تريد تسجيل الخروج؟",
+  "privacyPolicy": "سياسة الخصوصية",
+  "termsOfService": "شروط الخدمة",
+  "comingSoon": "قريباً!",
+  "rateApp": "قيم التطبيق",
+  "appInfo": "معلومات التطبيق",
+  "aboutApp": "حول التطبيق",
+  "version": "الإصدار 1.0.0",
+  "helpCenter": "مركز المساعدة",
+  "contactUs": "اتصل بنا",
+  "firstName": "الاسم الأول",
+  "lastName": "اسم العائلة",
+  "helpAndSupport": "المساعدة والدعم",
+  "appLaunchedSuccessfully": "تم تشغيل التطبيق بنجاح!",
+  "userType": "نوع المستخدم",
+  "registeredUser": "مستخدم مسجل",
+  "appWorkingNormally": "التطبيق يعمل بشكل طبيعي الآن!",
+  "navigationButtons": "أزرار التنقل",
+  "cartWorks": "السلة تعمل!",
+  "favoritesWork": "المفضلة تعمل!",
+  "settingsWork": "الإعدادات تعمل!",
+  "wishlist": "المفضلة",
+  "phones": "الهواتف",
+  "computers": "أجهزة الكمبيوتر",
+  "headphones": "سماعات الرأس",
+  "tablets": "الأجهزة اللوحية",
+  "watches": "الساعات",
+  "televisions": "أجهزة التلفزيون",
+  "currency": "ج.س",
+  "welcome": "ترحيب",
+  "welcomeGuest": "مرحباً، ضيف",
+  "discoverLatestProducts": "اكتشف أحدث المنتجات",
+  "productTitle": "عنوان المنتجات",
+  "noFavoriteProducts": "لا توجد منتجات مفضلة بعد",
+  "addedToCart": "تمت الإضافة للسلة",
+  "viewCart": "عرض السلة",
+  "guest": "ضيف",
+  "myOrders": "طلباتي",
+  "search": "البحث",
+  "firebaseSettings": "إعدادات Firebase",
+  "logout": "تسجيل الخروج",
+  "homeTab": "الرئيسية",
+  "categoriesTab": "الفئات",
+  "favoritesTab": "المفضلة",
+  "accountTab": "الحساب",
+  "errorLoadingProducts": "خطأ في تحميل المنتجات: {error}",
+  "welcomeToGizmoStore": "مرحباً بك في Gizmo Store!",
+  "discoverLatestTechProducts": "اكتشف أحدث المنتجات التقنية",
+  "featuredProducts": "المنتجات المميزة",
+  "allProducts": "جميع المنتجات",
+  "general": "عام",
+  "noFavoriteProductsYet": "لا توجد منتجات مفضلة بعد",
+  "tapHeartToAddFavorites": "اضغط على ♡ لإضافة منتجات للمفضلة",
+  "addedToCart": "تم إضافة {productName} للسلة!",
+  "viewCart": "عرض السلة",
+  "removedFromFavorites": "تم إزالة {productName} من المفضلة",
+  "addedToFavorites": "تم إضافة {productName} للمفضلة",
+  "logoutConfirmation": "هل أنت متأكد من أنك تريد تسجيل الخروج؟",
+  "logoutButton": "تسجيل الخروج",
+  "currency": "ج.س",
+  "locationAndDate": "الخرطوم - ديسمبر 2024",
+  "searchForProducts": "البحث عن المنتجات...",
+  "errorPrefix": "خطأ:",
+  "categoriesTitle": "الفئات",
+  "refresh": "تحديث",
+  "loadingCategories": "جاري تحميل الفئات...",
+  "noCategoriesAvailable": "لا توجد فئات متاحة",
+  "retry": "إعادة المحاولة",
+  "failedToLoadCategories": "فشل في تحميل الفئات. يتم عرض الفئات الافتراضية.",
+  "smartphones": "هواتف ذكية",
+  "laptops": "لابتوبات",
+  "headphones": "سماعات",
+  "smartwatches": "ساعات ذكية",
+  "tablets": "أجهزة لوحية",
+  "accessories": "إكسسوارات",
+  "failedToLoadProducts": "فشل في تحميل المنتجات",
+  "categoryProducts": "منتجات",
+  "noProductsInCategory": "لا توجد منتجات في هذا التصنيف",
+  "shoppingCart": "سلة المشتريات",
+  "cartEmpty": "السلة فارغة",
+  "quantity": "الكمية",
+  "total": "المجموع",
+  "checkout": "الدفع",
+  "free": "مجاني",
+  "shippingCost": "تكلفة الشحن",
+  "orderSummary": "ملخص الطلب",
+  "proceedToCheckout": "المتابعة للدفع",
+  "itemCount": "عدد العناصر:",
+  "items": "عنصر",
+  "removeProduct": "حذف المنتج",
+  "removeProductConfirmation": "هل تريد حذف \"{productName}\" من السلة؟",
+  "productRemovedFromCart": "تم حذف {productName} من السلة",
+  "clearCart": "مسح السلة",
+  "clearCartConfirmation": "هل تريد مسح جميع المنتجات من السلة؟",
+  "cartClearedCompletely": "تم مسح السلة بالكامل",
+  "clearAll": "مسح الكل",
+  "checkoutComingSoon": "شاشة الدفع قريباً!",
+  "hidePassword": "إخفاء كلمة المرور",
+  "showPassword": "إظهار كلمة المرور",
+  "categoryPhones": "هواتف",
+  "categoryComputers": "حاسوب",
+  "categoryHeadphones": "سماعات",
+  "categoryTablets": "تابلت",
+  "categoryWatches": "ساعات",
+  "categoryTv": "تلفزيون",
+  "checkout": "الدفع",
+  "shippingAddress": "عنوان الشحن",
+  "pleaseSelectAddress": "الرجاء تحديد عنوان",
+  "shippingMethod": "طريقة الشحن",
+  "pleaseSelectShippingMethod": "الرجاء تحديد طريقة الشحن",
+  "orderSummary": "ملخص الطلب",
+  "quantity": "الكمية",
+  "total": "المجموع",
+  "wishlist": "المفضلة",
+  "clearWishlist": "مسح المفضلة",
+  "cancel": "إلغاء",
+  "clear": "مسح",
+  "languageArabic": "العربية",
+  "languageEnglish": "English",
+  "addresses": "العناوين",
+  "home": "المنزل",
+  "work": "العمل",
+  "homeAddress": "شارع الملك فهد، الرياض، المملكة العربية السعودية",
+  "workAddress": "طريق الملك عبدالله، الرياض، المملكة العربية السعودية",
+  "addressManagement": "إدارة العناوين",
+  "mustLoginFirst": "يجب تسجيل الدخول أولاً",
+  "errorLoadingAddresses": "حدث خطأ في تحميل العناوين",
+  "retry": "إعادة المحاولة",
+  "noSavedAddresses": "لا توجد عناوين محفوظة",
+  "addFirstAddress": "أضف عنوانك الأول للبدء",
+  "addNewAddress": "إضافة عنوان جديد",
+  "shipping": "الشحن",
+  "standardShipping": "الشحن العادي",
+  "standardShippingDesc": "يستغرق من 5-7 أيام عمل",
+  "expressShipping": "الشحن السريع",
+  "expressShippingDesc": "يستغرق من 2-3 أيام عمل",
+  "sameDayShipping": "الشحن في نفس اليوم",
+  "sameDayShippingDesc": "يصلك طلبك في نفس اليوم",
+  "gizmoStoreAdminPanel": "لوحة إدارة جزمو ستور",
+  "dashboard": "لوحة التحكم",
+  "addProduct": "إضافة منتج",
+  "addCategory": "إضافة فئة",
+  "manageProducts": "إدارة المنتجات",
+  "welcomeToDashboard": "مرحباً بك في لوحة التحكم",
+  "addNewProduct": "إضافة منتج جديد",
+  "addNewCategory": "إضافة فئة جديدة",
+  "manageOrders": "إدارة الطلبات",
+  "sudanesePound": "جنيه سوداني",
+  "usDollar": "دولار أمريكي",
+  "euro": "يورو",
+  "saudiRiyal": "ريال سعودي",
+  "emiratiDirham": "درهم إماراتي",
+  "errorLoadingCategories": "خطأ في تحميل الفئات",
+  "productAddedSuccessfully": "تم إضافة المنتج بنجاح",
+  "errorAddingProduct": "خطأ في إضافة المنتج",
+  "addNewProductTitle": "إضافة منتج جديد",
+  "productName": "اسم المنتج",
+  "pleaseEnterProductName": "يرجى إدخال اسم المنتج",
+  "productDescription": "وصف المنتج",
+  "pleaseEnterProductDescription": "يرجى إدخال وصف المنتج",
+  "price": "السعر",
+  "pleaseEnterPrice": "يرجى إدخال السعر",
+  "pleaseEnterValidNumber": "يرجى إدخال رقم صحيح",
+  "currency": "العملة",
+  "category": "الفئة",
+  "pleaseSelectCategory": "يرجى اختيار الفئة",
+  "discountPercentage": "نسبة الخصم (%)",
+  "location": "الموقع",
+  "featuredProduct": "منتج مميز",
+  "errorLoadingCategories": "خطأ في تحميل الفئات",
+  "sudanesePound": "جنيه سوداني",
+  "usDollar": "دولار أمريكي",
+  "euro": "يورو",
+  "saudiRiyal": "ريال سعودي",
+  "emiratiDirham": "درهم إماراتي",
+  "productImages": "صور المنتج",
+  "imageUrl": "رابط الصورة",
+  "add": "إضافة",
+  "specifications": "المواصفات",
+  "specification": "مواصفة",
+  "saveProduct": "حفظ المنتج",
+  "@saveProduct": {
+    "description": "Save product button text"
+  },
+  "searchForProduct": "البحث عن منتج",
+  "@searchForProduct": {
+    "description": "Search field placeholder for products"
+  },
+  "noProducts": "لا توجد منتجات",
+  "@noProducts": {
+    "description": "Message when no products are available"
+  },
+  "noName": "بدون اسم",
+  "@noName": {
+    "description": "Default text when product has no name"
+  },
+  "categoryLabel": "الفئة: ",
+  "@categoryLabel": {
+    "description": "Category label prefix"
+  },
+  "priceLabel": "السعر: ",
+  "@priceLabel": {
+    "description": "Price label prefix"
+  },
+  "discountLabel": "الخصم: ",
+  "@discountLabel": {
+    "description": "Discount label prefix"
+  },
+  "notSpecified": "غير محدد",
+  "@notSpecified": {
+    "description": "Text for unspecified values"
+  },
+  "edit": "تعديل",
+  "@edit": {
+    "description": "Edit button text"
+  },
+  "hide": "إخفاء",
+  "@hide": {
+    "description": "Hide button text"
+  },
+  "show": "إظهار",
+  "@show": {
+    "description": "Show button text"
+  },
+  "delete": "حذف",
+  "@delete": {
+    "description": "Delete button text"
+  },
+  "confirmDelete": "تأكيد الحذف",
+  "@confirmDelete": {
+    "description": "Delete confirmation dialog title"
+  },
+  "deleteProductConfirmation": "هل أنت متأكد من حذف المنتج \"{productName}\"؟",
+  "@deleteProductConfirmation": {
+    "description": "Delete product confirmation message",
+    "placeholders": {
+      "productName": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "إلغاء",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+  "productDeletedSuccessfully": "تم حذف المنتج بنجاح",
+  "@productDeletedSuccessfully": {
+    "description": "Success message when product is deleted"
+  },
+  "errorDeletingProduct": "خطأ في حذف المنتج",
+  "@errorDeletingProduct": {
+    "description": "Error message when deleting product fails"
+  },
+  "productHidden": "تم إخفاء المنتج",
+  "@productHidden": {
+    "description": "Message when product is hidden"
+  },
+  "productShown": "تم إظهار المنتج",
+  "@productShown": {
+    "description": "Message when product is shown"
+  },
+  "errorUpdatingProduct": "خطأ في تحديث المنتج",
+  "@errorUpdatingProduct": {
+    "description": "Error message when updating product fails"
+  },
+  "productDetails": "تفاصيل المنتج",
+  "@productDetails": {
+    "description": "Product details dialog title"
+  },
+  "descriptionLabel": "الوصف: ",
+  "@descriptionLabel": {
+    "description": "Description label prefix"
+  },
+  "noDescription": "لا يوجد وصف",
+  "@noDescription": {
+    "description": "Text when product has no description"
+  },
+  "stockLabel": "المخزون: ",
+  "@stockLabel": {
+    "description": "Stock label prefix"
+  },
+  "ratingLabel": "التقييم: ",
+  "@ratingLabel": {
+    "description": "Rating label prefix"
+  },
+  "reviews": "تقييم",
+  "@reviews": {
+    "description": "Reviews text"
+  },
+  "statusLabel": "الحالة: ",
+  "@statusLabel": {
+    "description": "Status label prefix"
+  },
+  "available": "متاح",
+  "@available": {
+    "description": "Available status text"
+  },
+  "unavailable": "غير متاح",
+  "@unavailable": {
+    "description": "Unavailable status text"
+  },
+  "close": "إغلاق",
+  "@close": {
+    "description": "Close button text"
+  },
+  "manageProducts": "إدارة المنتجات",
+  "@manageProducts": {
+    "description": "Manage products screen title"
+  },
+  "editProduct": "تعديل المنتج",
+  "errorPickingImage": "خطأ في اختيار الصورة",
+  "errorUploadingImage": "خطأ في رفع الصورة",
+  "errorDeletingImage": "خطأ في حذف الصورة",
+  "imageDeletedSuccessfully": "تم حذف الصورة بنجاح",
+  "productUpdatedSuccessfully": "تم تحديث المنتج بنجاح",
+  "discount": "الخصم (%)",
+  "images": "الصور",
+  "addImageFromGallery": "إضافة صورة من المعرض",
+  "selectedImage": "الصورة المختارة:",
+  "currentImages": "الصور الحالية:",
+  "addSpecification": "إضافة مواصفة",
+  "currentSpecifications": "المواصفات الحالية:",
+  "availableForSale": "متاح للبيع",
+  "updateProduct": "تحديث المنتج",
+  "productName": "اسم المنتج",
+  "pleaseEnterProductName": "يرجى إدخال اسم المنتج",
+  "productDescription": "وصف المنتج",
+  "pleaseEnterProductDescription": "يرجى إدخال وصف المنتج",
+  "pleaseSelectCategory": "يرجى اختيار الفئة",
+  "pleaseEnterPrice": "يرجى إدخال السعر",
+  "pleaseEnterValidNumber": "يرجى إدخال رقم صحيح",
+  "currency": "العملة",
+  "location": "الموقع",
+  "imageUrl": "رابط الصورة",
+  "featuredProduct": "منتج مميز",
+  "categorySmartphones": "هواتف ذكية",
+  "categoryLaptops": "لابتوبات",
+  "categoryHeadphones": "سماعات",
+  "categorySmartWatches": "ساعات ذكية",
+  "categoryTablets": "أجهزة لوحية",
+  "categoryAccessories": "إكسسوارات",
+  "categoryComputers": "أجهزة كمبيوتر",
+  "categoryCameras": "كاميرات",
+  "categoryGaming": "ألعاب",
+  "productIphone15ProDesc": "أحدث هاتف من Apple مع شريحة A17 Pro وكاميرا محسنة",
+  "productGalaxyS24UltraDesc": "هاتف Samsung الرائد مع قلم S Pen وكاميرا 200 ميجابكسل",
+  "productPixel8ProDesc": "هاتف Google مع ذكاء اصطناعي متقدم وكاميرا ممتازة",
+  "productMacBookProDesc": "لابتوب Apple مع شريحة M3 Pro وشاشة Retina",
+  "productDellXpsDesc": "لابتوب Dell خفيف الوزن مع معالج Intel Core i7",
+  "productAirPodsProDesc": "سماعات Apple اللاسلكية مع إلغاء الضوضاء النشط",
+  "productSonyWHDesc": "سماعات Sony الرائدة مع إلغاء الضوضاء الممتاز",
+  "productAppleWatchDesc": "ساعة Apple الذكية مع مراقبة الصحة المتقدمة",
+  "productIpadProDesc": "جهاز iPad Pro مع شريحة M2 وشاشة Liquid Retina",
+  "productMagSafeDesc": "شاحن Apple اللاسلكي المغناطيسي",
+  "productOnePlus12Desc": "هاتف ون بلس بشحن سريع 100 واط وأداء قوي",
+  "productMacBookPro16M3MaxDesc": "لابتوب آبل الاحترافي مع معالج M3 Max للمصممين والمطورين",
+  "productDellXps15Desc": "لابتوب ديل الاحترافي مع شاشة 4K وأداء قوي",
+  "productIpadProM2Desc": "جهاز آيباد الاحترافي مع معالج M2 وشاشة Liquid Retina XDR",
+  "productGalaxyTabS9UltraDesc": "جهاز لوحي من سامسونج بشاشة كبيرة وقلم S Pen",
+  "productAppleWatchSeries9Desc": "ساعة آبل الذكية مع مستشعرات صحية متطورة",
+  "productGalaxyWatch6Desc": "ساعة سامسونج الذكية مع تتبع صحي شامل",
+  "productAirPodsPro2Desc": "سماعات آبل اللاسلكية مع إلغاء الضوضاء النشط",
+  "productSonyWH1000XM5Desc": "سماعات سوني الاحترافية مع أفضل إلغاء ضوضاء",
+  "sampleDataAddedSuccess": "تم إضافة جميع البيانات التجريبية بنجاح",
+  "sampleDataAddError": "خطأ في إضافة البيانات",
+  "errorFetchingFeaturedProducts": "خطأ في جلب المنتجات المميزة",
+  "errorFetchingCategoryProducts": "خطأ في جلب منتجات الفئة",
+  "errorSearching": "خطأ في البحث",
+  "errorAddingProduct": "خطأ في إضافة المنتج",
+  "failedToAddProduct": "فشل في إضافة المنتج",
+  "errorUpdatingProduct": "خطأ في تحديث المنتج",
+  "failedToUpdateProduct": "فشل في تحديث المنتج",
+  "errorDeletingProduct": "خطأ في حذف المنتج",
+  "failedToDeleteProduct": "فشل في حذف المنتج",
+  "errorUploadingImage": "خطأ في رفع الصورة",
+  "failedToUploadImage": "فشل في رفع الصورة",
+  "errorDeletingImage": "خطأ في حذف الصورة",
+  "failedToDeleteImage": "فشل في حذف الصورة",
+  "errorUpdatingProductStatus": "خطأ في تحديث حالة المنتج",
+  "failedToUpdateProductStatus": "فشل في تحديث حالة المنتج",
+  "errorFetchingProduct": "خطأ في جلب المنتج",
+  "sampleDataCreatedSuccess": "✅ تم إنشاء البيانات التجريبية بنجاح",
+  "errorCreatingSampleData": "❌ خطأ في إنشاء البيانات التجريبية",
+  "unexpectedError": "حدث خطأ غير متوقع",
+  "signOutFailed": "فشل في تسجيل الخروج",
+  "passwordResetFailed": "فشل في إرسال رابط إعادة التعيين",
+  "errorCreatingUserProfile": "خطأ في إنشاء ملف المستخدم",
+  "errorCreatingGuestProfile": "خطأ في إنشاء ملف الضيف",
+  "errorUpdatingLastLogin": "خطأ في تحديث آخر تسجيل دخول",
+  "errorFetchingUserData": "خطأ في جلب بيانات المستخدم",
+  "failedToUpdateData": "فشل في تحديث البيانات",
+  "errorFetchingUserStats": "خطأ في جلب إحصائيات المستخدم",
+  "errorUpdatingUserStats": "خطأ في تحديث إحصائيات المستخدم",
+  "guest": "ضيف",
+  "userNotFound": "لا يوجد مستخدم بهذا البريد الإلكتروني",
+  "wrongPassword": "كلمة المرور غير صحيحة",
+  "emailAlreadyInUse": "البريد الإلكتروني مستخدم بالفعل",
+  "weakPassword": "كلمة المرور ضعيفة جداً",
+  "invalidEmail": "البريد الإلكتروني غير صحيح",
+  "userDisabled": "تم تعطيل هذا الحساب",
+  "tooManyRequests": "محاولات كثيرة جداً. حاول لاحقاً",
+  "operationNotAllowed": "هذه العملية غير مسموحة",
+  "invalidCredential": "بيانات الاعتماد غير صحيحة",
+  "networkRequestFailed": "فشل في الاتصال بالشبكة",
+  "requiresRecentLogin": "يتطلب تسجيل دخول حديث",
+  "authenticationError": "حدث خطأ في المصادقة",
+  "guestName": "ضيف",
+  "authenticationFailed": "فشل في المصادقة",
+  "unexpectedSignInError": "حدث خطأ غير متوقع أثناء تسجيل الدخول",
+  "accountCreationFailed": "فشل في إنشاء الحساب",
+  "unexpectedSignUpError": "حدث خطأ غير متوقع أثناء إنشاء الحساب",
+  "anonymousSignInFailed": "فشل في تسجيل الدخول كضيف",
+  "unexpectedAnonymousSignInError": "حدث خطأ غير متوقع أثناء تسجيل الدخول كضيف",
+  "unexpectedSignOutError": "حدث خطأ غير متوقع أثناء تسجيل الخروج",
+  "authGenericError": "حدث خطأ في المصادقة",
+  "orderStatusPreparing": "قيد التحضير",
+  "couponTypePercentage": "خصم {value}%",
+  "couponTypeFixed": "خصم {value} جنيه",
+  "couponTypeFreeShipping": "شحن مجاني",
+  "couponStatusActive": "نشط",
+  "couponStatusExpired": "منتهي الصلاحية",
+  "couponStatusUsed": "مستخدم",
+  "couponStatusDisabled": "معطل",
+  "validationNameRequired": "الاسم مطلوب",
+  "validationNameTooShort": "الاسم يجب أن يكون أكثر من حرفين",
+  "validationPhoneRequired": "رقم الهاتف مطلوب",
+  "validationPhoneInvalid": "رقم الهاتف غير صحيح",
+  "validationStreetRequired": "عنوان الشارع مطلوب",
+  "validationStreetTooShort": "عنوان الشارع يجب أن يكون أكثر من 5 أحرف",
+  "validationCityRequired": "المدينة مطلوبة",
+  "validationCityTooShort": "اسم المدينة يجب أن يكون أكثر من حرفين",
+  "validationStateRequired": "المنطقة مطلوبة",
+  "validationPostalCodeRequired": "الرمز البريدي مطلوب",
+  "validationPostalCodeInvalid": "الرمز البريدي يجب أن يكون 5 أرقام",
+  "validationCountryRequired": "الدولة مطلوبة",
+  "couponAppliedSuccessfully": "تم تطبيق الكوبون بنجاح",
+  "editProfile": "تعديل الملف الشخصي",
+  "profilePicture": "صورة الملف الشخصي",
+  "changePhoto": "تغيير الصورة",
+  "addPhoto": "إضافة صورة",
+  "personalInformation": "المعلومات الشخصية",
+  "firstNameRequired": "الاسم الأول مطلوب",
+  "middleName": "الاسم الأوسط (اختياري)",
+  "lastNameRequired": "اسم العائلة مطلوب",
+  "contactInformation": "معلومات الاتصال",
+  "emailRequired": "البريد الإلكتروني مطلوب",
+  "phoneOptional": "رقم الهاتف (اختياري)",
+  "currentPassword": "كلمة المرور الحالية",
+  "currentPasswordRequired": "كلمة المرور الحالية مطلوبة",
+  "newPassword": "كلمة المرور الجديدة",
+  "newPasswordRequired": "كلمة المرور الجديدة مطلوبة",
+  "passwordMinLength": "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+  "confirmNewPassword": "تأكيد كلمة المرور الجديدة",
+  "confirmPasswordRequired": "تأكيد كلمة المرور مطلوب",
+  "chooseImageSource": "اختر مصدر الصورة",
+  "camera": "الكاميرا",
+  "gallery": "المعرض",
+  "errorSelectingImage": "خطأ في اختيار الصورة",
+  "selectingImage": "جاري اختيار الصورة...",
+  "imageSelectedSuccessfully": "تم اختيار الصورة بنجاح",
+  "fileNotFound": "الملف المحدد غير موجود",
+  "imageSelectionCancelled": "تم إلغاء اختيار الصورة",
+  "failedToSelectImage": "فشل في اختيار الصورة",
+  "userNotLoggedIn": "المستخدم غير مسجل الدخول",
+  "uploadingImage": "جاري رفع الصورة...",
+  "imageUploadedSuccessfully": "تم رفع الصورة بنجاح",
+  "failedToUploadImage": "فشل في رفع الصورة",
+  "changesSavedSuccessfully": "تم حفظ التغييرات بنجاح",
+  "failedToSaveChanges": "فشل في حفظ التغييرات",
+  "adminPanelTitle": "لوحة إدارة متجر جيزمو",
+  "adminLogin": "تسجيل دخول المدير",
+  "unauthorizedAccess": "غير مخول لك الوصول إلى لوحة الإدارة",
+  "wrongPassword": "كلمة مرور خاطئة",
+  "invalidEmailFormat": "تنسيق البريد الإلكتروني غير صحيح",
+  "accountDisabled": "تم تعطيل هذا الحساب",
+  "tooManyAttempts": "محاولات كثيرة جداً، يرجى المحاولة لاحقاً",
+  "loginError": "خطأ في تسجيل الدخول",
+  "onlyAdminAccess": "المدير فقط يمكنه الوصول إلى هذه اللوحة",
+  "filterByStatus": "تصفية حسب الحالة",
+  "preparing": "قيد التحضير",
+  "delivered": "تم التسليم",
+  "cancelled": "ملغي",
+  "loadingOrders": "جاري تحميل الطلبات...",
+  "errorLoadingOrders": "خطأ في تحميل الطلبات",
+  "noOrdersYet": "لا توجد طلبات بعد",
+  "noOrdersWithStatus": "لا توجد طلبات بحالة",
+  "startShoppingFirstOrder": "ابدأ التسوق لإنشاء طلبك الأول",
+  "orderDetails": "تفاصيل الطلب",
+  "trackOrder": "تتبع الطلب",
+  "orderDate": "تاريخ الطلب",
+  "paymentMethod": "طريقة الدفع: بطاقة ائتمان",
+  "orderAddress": "العنوان: الخرطوم، حي الرياض، شارع النيل فهد",
+  "orderProducts": "المنتجات:",
+  "orderSubtotal": "المجموع الفرعي:",
+  "orderShipping": "الشحن:",
+  "orderTax": "الضريبة:",
+  "orderGrandTotal": "المجموع الإجمالي:",
+  "loginRequiredForOrders": "يجب تسجيل الدخول لعرض الطلبات",
+  "errorLoadingOrdersMessage": "حدث خطأ أثناء تحميل الطلبات",
+  "retryLoading": "إعادة المحاولة",
+  "shippingInformation": "معلومات الشحن",
+  "fullNameLabel": "الاسم الكامل",
+  "pleaseEnterFullName": "يرجى إدخال الاسم الكامل",
+  "addressLabel": "العنوان",
+  "pleaseEnterAddress": "يرجى إدخال العنوان",
+  "cityLabel": "المدينة",
+  "pleaseEnterCity": "يرجى إدخال المدينة",
+  "phoneLabel": "رقم الهاتف",
+  "pleaseEnterPhone": "يرجى إدخال رقم الهاتف",
+  "paymentMethodLabel": "طريقة الدفع",
+  "creditCard": "بطاقة ائتمان",
+  "cashOnDelivery": "الدفع عند الاستلام",
+  "productsLabel": "المنتجات:",
+  "shippingLabel": "الشحن:",
+  "taxLabel": "الضريبة:",
+  "grandTotalLabel": "المجموع الإجمالي:",
+  "completeOrder": "إتمام الطلب",
+  "orderCompleted": "تم إتمام الطلب",
+  "orderCompletedMessage": "شكراً لك! تم إتمام طلبك بنجاح. سنتواصل معك قريباً.",
+  "completeOrderButton": "إتمام الطلب",
+  "loadingText": "جاري التحميل...",
+  "redScreenIssueFixed": "تم إصلاح مشكلة تجمد الشاشة الحمراء",
+  "gizmoStoreTest": "متجر جيزمو - اختبار",
+  "databaseInitialization": "تهيئة قاعدة البيانات",
+  "readyToInitialize": "جاهز لتهيئة قاعدة البيانات",
+  "initializingDatabase": "جاري تهيئة قاعدة البيانات...",
+  "startingInitialization": "بدء تهيئة قاعدة البيانات...",
+  "creatingCategories": "إنشاء الفئات...",
+  "categoriesCreatedSuccessfully": "✅ تم إنشاء الفئات بنجاح",
+  "creatingSampleProducts": "إنشاء منتجات تجريبية...",
+  "productsCreatedSuccessfully": "✅ تم إنشاء المنتجات بنجاح",
+  "databaseInitializedSuccessfully": "✅ تم تهيئة قاعدة البيانات بنجاح!",
+  "initializationCompleted": "🎉 تم إكمال تهيئة قاعدة البيانات بنجاح!",
+  "initializationSuccess": "نجح التهيئة",
+  "initializationSuccessMessage": "تم تهيئة قاعدة البيانات بنجاح!\nيمكنك الآن استخدام التطبيق.",
+  "initializationFailed": "❌ فشل في تهيئة قاعدة البيانات",
+  "operationLog": "سجل العمليات:",
+  "initializeDatabase": "تهيئة قاعدة البيانات",
+  "clearCart": "مسح السلة",
+  "emptyCart": "سلة التسوق فارغة",
+  "startAddingProducts": "ابدأ بإضافة منتجات إلى سلتك",
+  "browseProducts": "تصفح المنتجات",
+  "proceedToPayment": "متابعة الدفع",
+  "productRemovedFromCart": "تم حذف المنتج من السلة",
+  "clearCartConfirmation": "هل أنت متأكد من مسح جميع المنتجات من السلة؟",
+  "clear": "مسح",
+  "cartClearedSuccessfully": "تم مسح السلة بنجاح",
+  "checkoutComingSoon": "صفحة الدفع ستتوفر قريباً!",
+  "productDetails": "تفاصيل المنتج",
+  "discount": "خصم",
+  "reviews": "تقييم",
+  "noProductDescription": "لا يوجد وصف للمنتج.",
+  "description": "الوصف",
+  "specifications": "المواصفات",
+  "reviewsSection": "المراجعات",
+  "viewAllReviews": "عرض جميع المراجعات",
+  "quantity": "الكمية:",
+  "addToCart": "أضف إلى السلة",
+  "addedToCart": "تمت إضافته إلى السلة",
+  "removedFromWishlist": "تم إزالة",
+  "addedToWishlist": "تم إضافة",
+  "fromWishlist": "من المفضلة",
+  "toWishlist": "للمفضلة",
+   "checkoutPageComingSoon": "صفحة الدفع ستتوفر قريباً!",
+   "notSpecified": "غير محدد",
+  "passwordMinLength": "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+  "@passwordMinLength": {
+    "description": "رسالة خطأ للحد الأدنى لطول كلمة المرور"
+  },
+  "errorFetchingProducts": "خطأ في جلب المنتجات",
+  "@errorFetchingProducts": {
+    "description": "رسالة خطأ عند فشل جلب المنتجات"
+  },
+  "errorFetchingFeaturedProducts": "خطأ في جلب المنتجات المميزة",
+  "@errorFetchingFeaturedProducts": {
+    "description": "رسالة خطأ عند فشل جلب المنتجات المميزة"
+  },
+  "errorFetchingCategoryProducts": "خطأ في جلب منتجات التصنيف",
+  "@errorFetchingCategoryProducts": {
+    "description": "رسالة خطأ عند فشل جلب منتجات التصنيف"
+  },
+  "errorSearching": "خطأ في البحث",
+  "@errorSearching": {
+    "description": "رسالة خطأ عند فشل البحث"
+  },
+  "errorAddingProduct": "خطأ في إضافة المنتج",
+  "@errorAddingProduct": {
+    "description": "رسالة خطأ عند فشل إضافة المنتج"
+  },
+  "failedToAddProduct": "فشل في إضافة المنتج",
+  "@failedToAddProduct": {
+    "description": "رسالة استثناء عند فشل إضافة المنتج"
+  },
+  "errorUpdatingProduct": "خطأ في تحديث المنتج",
+  "@errorUpdatingProduct": {
+    "description": "رسالة خطأ عند فشل تحديث المنتج"
+  },
+  "failedToUpdateProduct": "فشل في تحديث المنتج",
+  "@failedToUpdateProduct": {
+    "description": "رسالة استثناء عند فشل تحديث المنتج"
+  },
+  "errorDeletingProduct": "خطأ في حذف المنتج",
+  "@errorDeletingProduct": {
+    "description": "رسالة خطأ عند فشل حذف المنتج"
+  },
+  "failedToDeleteProduct": "فشل في حذف المنتج",
+  "@failedToDeleteProduct": {
+    "description": "رسالة استثناء عند فشل حذف المنتج"
+  },
+  "errorUploadingImage": "خطأ في رفع الصورة",
+  "@errorUploadingImage": {
+    "description": "رسالة خطأ عند فشل رفع الصورة"
+  },
+  "failedToUploadImage": "فشل في رفع الصورة",
+  "@failedToUploadImage": {
+    "description": "رسالة استثناء عند فشل رفع الصورة"
+  },
+  "errorDeletingImage": "خطأ في حذف الصورة",
+  "@errorDeletingImage": {
+    "description": "رسالة خطأ عند فشل حذف الصورة"
+  },
+  "failedToDeleteImage": "فشل في حذف الصورة",
+  "@failedToDeleteImage": {
+    "description": "رسالة استثناء عند فشل حذف الصورة"
+  },
+  "errorUpdatingProductStatus": "خطأ في تحديث حالة المنتج",
+  "@errorUpdatingProductStatus": {
+    "description": "رسالة خطأ عند فشل تحديث حالة المنتج"
+  },
+  "failedToUpdateProductStatus": "فشل في تحديث حالة المنتج",
+  "@failedToUpdateProductStatus": {
+    "description": "رسالة استثناء عند فشل تحديث حالة المنتج"
+  },
+  "errorFetchingProduct": "خطأ في جلب المنتج",
+  "@errorFetchingProduct": {
+    "description": "رسالة خطأ عند فشل جلب منتج واحد"
+  },
+  "sampleDataAddedSuccess": "تم إضافة البيانات التجريبية بنجاح",
+  "@sampleDataAddedSuccess": {
+    "description": "رسالة نجاح عند إضافة البيانات التجريبية"
+  },
+  "sampleDataAddError": "خطأ في إضافة البيانات التجريبية",
+  "@sampleDataAddError": {
+    "description": "رسالة خطأ عند فشل إضافة البيانات التجريبية"
+  },
+  "test": "اختبار",
+  "@test": {
+    "description": "تسمية الاختبار"
+  },
+  "smartElectronicsStore": "متجر الإلكترونيات الذكي",
+  "@smartElectronicsStore": {
+    "description": "وصف متجر الإلكترونيات الذكي"
+  },
+  "appWorkingSuccessfully": "التطبيق يعمل بنجاح! 🎉",
+  "@appWorkingSuccessfully": {
+    "description": "رسالة نجاح عمل التطبيق"
+  },
+  "redScreenFreezeFixed": "تم حل مشكلة تجميد الشاشة الحمراء",
+  "@redScreenFreezeFixed": {
+    "description": "رسالة تشير إلى حل مشكلة تجميد الشاشة الحمراء"
+  },
+  "sales": "المبيعات",
+  "@sales": {
+    "description": "تسمية المبيعات"
+  },
+  "currency": "ج.س",
+  "@currency": {
+    "description": "اختصار العملة"
+  },
+  "emptyWishlistTitle": "قائمة المفضلة فارغة",
+  "@emptyWishlistTitle": {
+    "description": "عنوان قائمة المفضلة الفارغة"
+  },
+  "emptyWishlistMessage": "أضف المنتجات التي تعجبك للوصول إليها بسهولة لاحقًا.",
+  "@emptyWishlistMessage": {
+    "description": "رسالة قائمة المفضلة الفارغة"
+  },
+  "shopNow": "تسوق الآن",
+  "@shopNow": {
+    "description": "نص زر بدء التسوق"
+  },
+  "stock": "المخزون",
+  "@stock": {
+    "description": "تسمية المخزون لجرد المنتج"
+  },
+  "images": "الصور",
+  "@images": {
+    "description": "تسمية الصور لصور المنتج"
+  },
+  "imageUploadSuccess": "تم رفع الصورة بنجاح",
+  "@imageUploadSuccess": {
+    "description": "رسالة نجاح رفع الصورة"
+  },
+  "imageUploadFailed": "فشل في رفع الصورة",
+  "@imageUploadFailed": {
+    "description": "رسالة خطأ فشل رفع الصورة"
+  },
+  "changesSavedSuccess": "تم حفظ التغييرات بنجاح",
+  "@changesSavedSuccess": {
+    "description": "رسالة نجاح لحفظ التغييرات"
+  },
+  "setAsDefaultAddress": "تعيين كعنوان افتراضي",
+  "@setAsDefaultAddress": {
+    "description": "خيار لتعيين العنوان كافتراضي"
+  },
+  "addressUpdatedSuccessfully": "تم تحديث العنوان بنجاح",
+  "@addressUpdatedSuccessfully": {
+    "description": "رسالة نجاح لتحديث العنوان"
+  },
+  "addressAddedSuccessfully": "تم إضافة العنوان بنجاح",
+  "@addressAddedSuccessfully": {
+    "description": "رسالة نجاح لإضافة العنوان"
+  },
+  "confirmDeleteAddress": "هل أنت متأكد من حذف العنوان الخاص بـ {name}؟",
+  "@confirmDeleteAddress": {
+    "description": "رسالة تأكيد لحذف العنوان",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "description": "الاسم المرتبط بالعنوان"
+      }
+    }
+  },
+  "saudiArabia": "المملكة العربية السعودية",
+  "@saudiArabia": {
+    "description": "اسم دولة المملكة العربية السعودية"
+  },
+  "phoneNumber": "رقم الهاتف",
+  "@phoneNumber": {
+    "description": "تسمية لحقل رقم الهاتف"
+  },
+  "streetAddress": "عنوان الشارع",
+  "@streetAddress": {
+    "description": "تسمية لحقل عنوان الشارع"
+  },
+  "addressSetAsDefault": "تم تعيين العنوان كافتراضي",
+  "@addressSetAsDefault": {
+    "description": "رسالة نجاح عند تعيين العنوان كافتراضي"
+  },
+  "product": "منتج",
+  "@product": {
+    "description": "تسمية للمنتج"
+  },
+  "imageSelectionError": "خطأ في اختيار الصورة",
+  "@imageSelectionError": {
+    "description": "Error message for image selection failure"
+  },
+  "imageSelectedSuccess": "تم اختيار الصورة بنجاح",
+  "@imageSelectedSuccess": {
+    "description": "Success message for image selection"
+  },
+  "imageSelectionFailed": "فشل في اختيار الصورة",
+  "@imageSelectionFailed": {
+    "description": "Error message when image selection fails"
+  },
+  "saveChangesFailed": "فشل في حفظ التغييرات",
+  "@saveChangesFailed": {
+    "description": "Error message when saving changes fails"
+  },
+  "changeImage": "تغيير الصورة",
+  "@changeImage": {
+    "description": "Button text to change profile image"
+  },
+  "placeOrder": "تأكيد الطلب",
+  "@placeOrder": {
+    "description": "Button text to place an order"
+  },
+  "orderPlacedSuccessfully": "تم تأكيد الطلب بنجاح!",
+  "@orderPlacedSuccessfully": {
+    "description": "Success message when order is placed"
+  },
+  "errorPlacingOrder": "خطأ في تأكيد الطلب. يرجى المحاولة مرة أخرى.",
+  "@errorPlacingOrder": {
+    "description": "Error message when order placement fails"
+  },
+  "noAddressSelected": "يرجى اختيار عنوان التوصيل",
+  "@noAddressSelected": {
+    "description": "Error message when no address is selected"
+  },
+  "deliveryAddress": "عنوان التوصيل",
+  "@deliveryAddress": {
+    "description": "Label for delivery address section"
+  },
+  "change": "تغيير",
+  "@change": {
+    "description": "Button text to change something"
+  },
+  "addImage": "إضافة صورة",
+  "@addImage": {
+    "description": "Button text to add profile image"
+  },
+  "middleNameOptional": "الاسم الأوسط (اختياري)",
+  "@middleNameOptional": {
+    "description": "Label for optional middle name field"
+  },
+  "passwordMismatch": "كلمات المرور غير متطابقة",
+  "@passwordMismatch": {
+    "description": "Error message when passwords don't match"
+  },
+  "connectedIfAppRunning": "متصل (إذا كان التطبيق يعمل)",
+  "@connectedIfAppRunning": {
+    "description": "Status message for Firestore connection"
+  },
+  "connectedIfConfigured": "متصل (إذا تم التكوين)",
+  "@connectedIfConfigured": {
+    "description": "Status message for messaging connection"
+  },
+  "dataUpdateFailed": "فشل في تحديث البيانات",
+  "@dataUpdateFailed": {
+    "description": "رسالة خطأ عند فشل تحديث البيانات"
+  },
+  "failedToLoadUserData": "فشل في تحميل بيانات المستخدم",
+  "@failedToLoadUserData": {
+    "description": "Error message when user data loading fails"
+  },
+  "privacyAndSecuritySettingsUnderDevelopment": "إعدادات الخصوصية والأمان قيد التطوير",
+  "@privacyAndSecuritySettingsUnderDevelopment": {
+    "description": "رسالة تظهر عندما تكون إعدادات الخصوصية والأمان غير مطبقة بعد"
+  },
+  "app": "التطبيق",
+  "@app": {
+    "description": "تسمية عامة للتطبيق"
+  },
+  "notificationManagementUnderDevelopment": "إدارة الإشعارات قيد التطوير",
+  "@notificationManagementUnderDevelopment": {
+    "description": "رسالة تظهر عندما تكون إدارة الإشعارات غير مطبقة بعد"
+  },
+  "helpAndSupportUnderDevelopment": "المساعدة والدعم قيد التطوير",
+  "@helpAndSupportUnderDevelopment": {
+    "description": "رسالة تظهر عندما تكون المساعدة والدعم غير مطبقة بعد"
+  },
+  "addressManagementUnderDevelopment": "إدارة العناوين قيد التطوير",
+  "@addressManagementUnderDevelopment": {
+    "description": "رسالة تظهر عندما تكون إدارة العناوين غير مطبقة بعد"
+  },
+  "yes": "نعم",
+  "@yes": {
+    "description": "إجابة إيجابية"
+  },
+  "no": "لا",
+  "@no": {
+    "description": "إجابة سلبية"
+  },
+  "servicesStatus": "حالة الخدمات",
+  "@servicesStatus": {
+    "description": "عنوان قسم حالة خدمات Firebase"
+  },
+  "connectedIfAppRunning": "متصل (إذا كان التطبيق يعمل)",
+  "@connectedIfAppRunning": {
+    "description": "رسالة حالة للخدمات المتصلة عند تشغيل التطبيق"
+  },
+  "connectedIfConfigured": "متصل (إذا تم التكوين)",
+  "@connectedIfConfigured": {
+    "description": "رسالة حالة للخدمات المتصلة عند التكوين الصحيح"
+  },
+  "errorLoadingProducts": "خطأ في تحميل المنتجات: {error}",
+  "@errorLoadingProducts": {
+    "description": "رسالة خطأ عند فشل تحميل المنتجات",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "رسالة الخطأ"
+      }
+    }
+  },
+  "addedToCart": "تمت الإضافة إلى السلة",
+  "@addedToCart": {
+    "description": "رسالة عند إضافة عنصر إلى السلة"
+  },
+  "tax": "الضريبة",
+  "finalTotal": "المجموع النهائي",
+  "paymentPageComingSoon": "صفحة الدفع ستتوفر قريباً!",
+  "orderCreatedSuccessfully": "تم إنشاء الطلب بنجاح",
+  "confirmOrder": "تأكيد الطلب",
+  "filters": "المرشحات",
+  "minimumRating": "الحد الأدنى للتقييم",
+  "reset": "إعادة تعيين",
+  "apply": "تطبيق",
+  "previousSearches": "البحثات السابقة",
+  "tryDifferentKeywords": "جرب كلمات مفتاحية مختلفة",
+  "products": "المنتجات",
+  "appName": "اسم التطبيق",
+  "projectId": "معرف المشروع",
+  "apiKey": "مفتاح API",
+  "appId": "معرف التطبيق",
+  "androidClientId": "معرف عميل Android",
+  "iosClientId": "معرف عميل iOS",
+  "notAvailable": "غير متوفر",
+  "authStatus": "حالة المصادقة",
+  "loginStatus": "حالة تسجيل الدخول",
+  "loggedIn": "مسجل الدخول",
+  "notLoggedIn": "غير مسجل الدخول",
+  "displayName": "اسم العرض",
+  "anonymous": "مجهول",
+  "firestoreStatus": "حالة Firestore",
+  "messagingStatus": "حالة الرسائل",
+  "wishlistEmpty": "قائمة الأمنيات فارغة",
+  "addFavoriteProducts": "أضف منتجات مفضلة",
+  "clearWishlistConfirmation": "تأكيد مسح قائمة الأمنيات",
+  "specialOffer": "عرض خاص",
+  "upTo50Off": "خصم يصل إلى 50%",
+  "availableCoupons": "الكوبونات المتاحة",
+  "myCoupons": "كوبوناتي",
+  "haveCouponCode": "لديك رمز كوبون؟",
+  "enterCouponCode": "أدخل رمز الكوبون",
+  "applyCoupon": "تطبيق الكوبون",
+  "couponApplied": "تم تطبيق الكوبون",
+  "remove": "إزالة",
+  "noCouponsAvailable": "لا توجد كوبونات متاحة",
+  "noCouponsInWallet": "لا توجد كوبونات في المحفظة",
+  "minimumOrder": "الحد الأدنى للطلب",
+  "maximumDiscount": "الحد الأقصى للخصم",
+  "validUntil": "صالح حتى",
+  "codeCopied": "تم نسخ الرمز",
+  "use": "استخدام",
+  "expired": "منتهي الصلاحية",
+  "errorAddingToCart": "خطأ في إضافة المنتج إلى السلة: {error}",
+  "logoutConfirmationMessage": "هل أنت متأكد من تسجيل الخروج؟",
+  "pleaseLoginFirst": "يرجى تسجيل الدخول أولاً لإضافة المنتجات للمفضلة"
+}

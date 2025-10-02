@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Admin User</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
+        .status { margin: 20px 0; padding: 15px; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+        #console { background: #f8f9fa; border: 1px solid #dee2e6; padding: 10px; margin-top: 20px; height: 200px; overflow-y: auto; font-family: monospace; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <h1>Create Admin User</h1>
+    <button id="createBtn" onclick="createAdmin()">Create Admin User</button>
+    <div id="status"></div>
+    <div id="console"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Console logging function
+        function logToConsole(message) {
+            const consoleDiv = document.getElementById('console');
+            const timestamp = new Date().toLocaleTimeString();
+            consoleDiv.innerHTML += `[${timestamp}] ${message}<br>`;
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+            console.log(message);
+        }
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAo4-Ge1dC4LnIyG_wUjYgWc9KHCxEYUxM",
+            authDomain: "gizmostore-2a3ff.firebaseapp.com",
+            projectId: "gizmostore-2a3ff",
+            storageBucket: "gizmostore-2a3ff.firebasestorage.app",
+            messagingSenderId: "32902740595",
+            appId: "1:32902740595:web:7de8f1273a64f9f28fc806",
+            measurementId: "G-WF0Z8EKYMX"
+        };
+
+        let app, auth, db;
+        let firebaseInitialized = false;
+        
+        // Initialize Firebase when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            logToConsole('Initializing Firebase...');
+            try {
+                app = firebase.initializeApp(firebaseConfig);
+                auth = firebase.auth();
+                db = firebase.firestore();
+                firebaseInitialized = true;
+                logToConsole('Firebase initialized successfully');
+                
+                // Test Firebase connection
+                auth.onAuthStateChanged((user) => {
+                    if (user) {
+                        logToConsole(`User signed in: ${user.email}`);
+                    } else {
+                        logToConsole('No user signed in');
+                    }
+                });
+            } catch (error) {
+                logToConsole(`Firebase initialization error: ${error.message}`);
+                document.getElementById('status').innerHTML = `<div class="status error">Firebase initialization failed: ${error.message}</div>`;
+            }
+        });
+
+        async function createAdmin() {
+            const email = 'admin@gizmo.com';
+            const password = 'gizmo1234';
+            const statusDiv = document.getElementById('status');
+            const createBtn = document.getElementById('createBtn');
+            
+            logToConsole('Starting admin user creation...');
+            
+            // Check if Firebase is initialized
+            if (!firebaseInitialized || !auth || !db) {
+                const errorMsg = 'Firebase not initialized yet. Please wait and try again.';
+                statusDiv.innerHTML = `<div class="status error">${errorMsg}</div>`;
+                logToConsole(errorMsg);
+                return;
+            }
+            
+            try {
+                createBtn.disabled = true;
+                statusDiv.innerHTML = '<div class="status info">Creating admin user...</div>';
+                logToConsole(`Attempting to create user with email: ${email}`);
+                
+                // Create user with email and password
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                logToConsole(`User created successfully with UID: ${user.uid}`);
+                
+                // Update display name
+                await user.updateProfile({
+                    displayName: 'Admin User'
+                });
+                
+                logToConsole('Display name updated');
+                
+                // Create user document in Firestore
+                const userData = {
+                    uid: user.uid,
+                    email: email,
+                    displayName: 'Admin User',
+                    isAdmin: true,
+                    role: 'admin',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                logToConsole('Creating Firestore document...');
+                await db.collection('users').doc(user.uid).set(userData);
+                
+                logToConsole('Firestore document created successfully');
+                
+                // Sign out the admin user
+                await auth.signOut();
+                logToConsole('Admin user signed out');
+                
+                statusDiv.innerHTML = '<div class="status success">✅ Admin user created successfully!<br>Email: admin@gizmo.com<br>Password: gizmo1234</div>';
+                logToConsole('Admin user creation completed successfully');
+                
+            } catch (error) {
+                logToConsole(`Error creating admin user: ${error.code} - ${error.message}`);
+                
+                let errorMessage = 'Error creating admin user: ';
+                
+                switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        errorMessage += 'Email already exists. Admin user may already be created.';
+                        break;
+                    case 'auth/weak-password':
+                        errorMessage += 'Password is too weak.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage += 'Invalid email address.';
+                        break;
+                    case 'auth/network-request-failed':
+                        errorMessage += 'Network error. Please check your internet connection.';
+                        break;
+                    default:
+                        errorMessage += error.message;
+                }
+                
+                statusDiv.innerHTML = `<div class="status error">❌ ${errorMessage}</div>`;
+            } finally {
+                createBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

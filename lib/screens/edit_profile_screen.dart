@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:gizmo_store/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'dart:io';
 import 'package:gizmo_store/providers/auth_provider.dart' as auth;
 import 'package:gizmo_store/services/firebase_auth_service.dart';
+import 'package:gizmo_store/widgets/image_upload_widget.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -25,15 +23,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _phoneController = TextEditingController();
   final _currentPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-
   bool _isLoading = false;
   bool _showPasswordFields = false;
-  bool _obscureCurrentPassword = true;
-  bool _obscureNewPassword = true;
-  bool _obscureConfirmPassword = true;
-  File? _selectedImage;
-  final ImagePicker _picker = ImagePicker();
+  String? _profileImageUrl;
 
   @override
   void initState() {
@@ -45,7 +37,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       try {
-        final userData = await FirebaseAuthService.getUserData(user.uid);
+        final userData = await FirebaseAuthService.getUserData(user.uid, context);
         if (userData != null) {
           setState(() {
             _emailController.text = userData['email'] ?? '';
@@ -66,10 +58,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             // Load profile data
             final profile = userData['profile'] ?? {};
             _phoneController.text = profile['phone'] ?? '';
+            _profileImageUrl = userData['photoURL'] ?? user.photoURL;
           });
         }
       } catch (e) {
-        _showErrorMessage('فشل في تحميل بيانات المستخدم: $e');
+        _showErrorMessage('${AppLocalizations.of(context)!.failedToLoadUserData}: $e');
       }
     }
   }
@@ -83,39 +76,38 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _phoneController.dispose();
     _currentPasswordController.dispose();
     _newPasswordController.dispose();
-    _confirmPasswordController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('تعديل الملف الشخصي', style: TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: const Color(0xFF1F1F1F),
-        foregroundColor: Colors.white,
+        title: Text(AppLocalizations.of(context)!.editProfile, style: const TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
         elevation: 0,
         centerTitle: true,
         actions: [
           if (_isLoading)
-            const Padding(
-              padding: EdgeInsets.all(16.0),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
               child: SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primary),
                 ),
               ),
             )
           else
             TextButton(
               onPressed: _saveProfile,
-              child: const Text(
-                'حفظ',
-                style: TextStyle(color: Color(0xFFB71C1C), fontWeight: FontWeight.bold),
+              child: Text(
+                AppLocalizations.of(context)!.save,
+                style: TextStyle(color: Theme.of(context).colorScheme.error, fontWeight: FontWeight.bold),
               ),
             ),
         ],
@@ -131,8 +123,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               _buildPersonalInfoSection(),
               const SizedBox(height: 24),
               _buildContactInfoSection(),
-              const SizedBox(height: 24),
-              _buildPasswordSection(),
               const SizedBox(height: 32),
             ],
           ),
@@ -142,51 +132,30 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Widget _buildProfileImageSection() {
-    final user = FirebaseAuth.instance.currentUser;
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF1F1F1F),
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
         children: [
-          const Text(
-            'صورة الملف الشخصي',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+          Text(
+            AppLocalizations.of(context)!.profilePicture,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.headlineSmall?.color),
           ),
           const SizedBox(height: 16),
-          GestureDetector(
-            onTap: _pickImage,
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFB71C1C), width: 3),
-              ),
-              child: CircleAvatar(
-                radius: 60,
-                backgroundColor: Colors.grey[800],
-                backgroundImage: _selectedImage != null
-                    ? FileImage(_selectedImage!) as ImageProvider
-                    : (user?.photoURL != null ? NetworkImage(user!.photoURL!) as ImageProvider : null),
-                child: _selectedImage == null && user?.photoURL == null
-                    ? Icon(
-                        Icons.camera_alt,
-                        size: 40,
-                        color: Colors.grey[400],
-                      )
-                    : null,
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          TextButton.icon(
-            onPressed: _pickImage,
-            icon: const Icon(Icons.edit, color: Color(0xFFB71C1C)),
-            label: Text(
-              (_selectedImage != null || user?.photoURL != null) ? 'تغيير الصورة' : 'إضافة صورة',
-              style: const TextStyle(color: Color(0xFFB71C1C)),
-            ),
+          ImageUploadWidget(
+            initialImages: _profileImageUrl != null ? [_profileImageUrl!] : [],
+            onImagesChanged: (imageUrls) {
+              setState(() {
+                _profileImageUrl = imageUrls.isNotEmpty ? imageUrls.first : null;
+              });
+            },
+            folder: 'gizmo_store/profiles',
+            allowMultiple: false,
+            height: 120,
+            width: 120,
           ),
         ],
       ),
@@ -197,24 +166,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF1F1F1F),
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'المعلومات الشخصية',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+          Text(
+            AppLocalizations.of(context)!.personalInformation,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.headlineSmall?.color),
           ),
           const SizedBox(height: 16),
           _buildTextField(
             controller: _firstNameController,
-            label: 'الاسم الأول',
+            label: AppLocalizations.of(context)!.firstName,
             icon: Icons.person,
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
-                return 'الاسم الأول مطلوب';
+                return AppLocalizations.of(context)!.firstNameRequired;
               }
               return null;
             },
@@ -222,17 +191,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           const SizedBox(height: 16),
           _buildTextField(
             controller: _middleNameController,
-            label: 'الاسم الأوسط (اختياري)',
+            label: AppLocalizations.of(context)!.middleNameOptional,
             icon: Icons.person_outline,
           ),
           const SizedBox(height: 16),
           _buildTextField(
             controller: _lastNameController,
-            label: 'الاسم الأخير',
+            label: AppLocalizations.of(context)!.lastName,
             icon: Icons.person,
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
-                return 'الاسم الأخير مطلوب';
+                return AppLocalizations.of(context)!.lastNameRequired;
               }
               return null;
             },
@@ -246,28 +215,28 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF1F1F1F),
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'معلومات الاتصال',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+          Text(
+            AppLocalizations.of(context)!.contactInformation,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.headlineSmall?.color),
           ),
           const SizedBox(height: 16),
           _buildTextField(
             controller: _emailController,
-            label: 'البريد الإلكتروني',
+            label: AppLocalizations.of(context)!.email,
             icon: Icons.email,
             keyboardType: TextInputType.emailAddress,
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
-                return 'البريد الإلكتروني مطلوب';
+                return AppLocalizations.of(context)!.emailRequired;
               }
               if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                return 'البريد الإلكتروني غير صحيح';
+                return AppLocalizations.of(context)!.invalidEmail;
               }
               return null;
             },
@@ -275,7 +244,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           const SizedBox(height: 16),
           _buildTextField(
             controller: _phoneController,
-            label: 'رقم الهاتف (اختياري)',
+            label: AppLocalizations.of(context)!.phoneOptional,
             icon: Icons.phone,
             keyboardType: TextInputType.phone,
           ),
@@ -284,112 +253,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  Widget _buildPasswordSection() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1F1F1F),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'تغيير كلمة المرور',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-              ),
-              Switch(
-                value: _showPasswordFields,
-                onChanged: (value) {
-                  setState(() {
-                    _showPasswordFields = value;
-                    if (!value) {
-                      _currentPasswordController.clear();
-                      _newPasswordController.clear();
-                      _confirmPasswordController.clear();
-                    }
-                  });
-                },
-                activeThumbColor: const Color(0xFFB71C1C),
-              ),
-            ],
-          ),
-          if (_showPasswordFields) ...[
-            const SizedBox(height: 16),
-            _buildTextField(
-              controller: _currentPasswordController,
-              label: 'كلمة المرور الحالية',
-              icon: Icons.lock_outline,
-              isPassword: true,
-              isPasswordVisible: !_obscureCurrentPassword,
-              onToggleVisibility: () {
-                setState(() {
-                  _obscureCurrentPassword = !_obscureCurrentPassword;
-                });
-              },
-              validator: (value) {
-                if (_showPasswordFields && (value == null || value.trim().isEmpty)) {
-                  return 'كلمة المرور الحالية مطلوبة';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            _buildTextField(
-              controller: _newPasswordController,
-              label: 'كلمة المرور الجديدة',
-              icon: Icons.lock,
-              isPassword: true,
-              isPasswordVisible: !_obscureNewPassword,
-              onToggleVisibility: () {
-                setState(() {
-                  _obscureNewPassword = !_obscureNewPassword;
-                });
-              },
-              validator: (value) {
-                if (_showPasswordFields) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'كلمة المرور الجديدة مطلوبة';
-                  }
-                  if (value.length < 6) {
-                    return 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
-                  }
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            _buildTextField(
-              controller: _confirmPasswordController,
-              label: 'تأكيد كلمة المرور الجديدة',
-              icon: Icons.lock_outline,
-              isPassword: true,
-              isPasswordVisible: !_obscureConfirmPassword,
-              onToggleVisibility: () {
-                setState(() {
-                  _obscureConfirmPassword = !_obscureConfirmPassword;
-                });
-              },
-              validator: (value) {
-                if (_showPasswordFields) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'تأكيد كلمة المرور مطلوب';
-                  }
-                  if (value != _newPasswordController.text) {
-                    return 'كلمات المرور غير متطابقة';
-                  }
-                }
-                return null;
-              },
-            ),
-          ],
-        ],
-      ),
-    );
-  }
+
 
   Widget _buildTextField({
     required TextEditingController controller,
@@ -407,259 +271,53 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       keyboardType: keyboardType,
       obscureText: isPassword ? !(isPasswordVisible ?? false) : obscureText,
       validator: validator,
-      style: const TextStyle(color: Colors.white),
+      style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(color: Colors.white70),
-        prefixIcon: Icon(icon, color: const Color(0xFFB71C1C)),
+        labelStyle: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7)),
+        prefixIcon: Icon(icon, color: Theme.of(context).colorScheme.error),
         suffixIcon: isPassword
             ? IconButton(
                 icon: Icon(
                   (isPasswordVisible ?? false) ? Icons.visibility : Icons.visibility_off,
-                  color: Colors.white70,
+                  color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.7),
                 ),
                 onPressed: onToggleVisibility,
               )
             : null,
         filled: true,
-        fillColor: const Color(0xFF2A2A2A),
+        fillColor: Theme.of(context).colorScheme.surface,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFB71C1C), width: 2),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.error, width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.red, width: 2),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.error, width: 2),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.red, width: 2),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.error, width: 2),
         ),
       ),
     );
   }
 
-  Future<void> _pickImage() async {
-    try {
-      showModalBottomSheet(
-        context: context,
-        backgroundColor: const Color(0xFF2A2A2A),
-        builder: (context) => Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'اختر مصدر الصورة',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildImageSourceOption(
-                    icon: Icons.camera_alt,
-                    label: 'الكاميرا',
-                    onTap: () {
-                      Navigator.pop(context);
-                      _pickImageFromSource(ImageSource.camera);
-                    },
-                  ),
-                  _buildImageSourceOption(
-                    icon: Icons.photo_library,
-                    label: 'المعرض',
-                    onTap: () {
-                      Navigator.pop(context);
-                      _pickImageFromSource(ImageSource.gallery);
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-            ],
-          ),
-        ),
-      );
-    } catch (e) {
-      _showErrorMessage('حدث خطأ في اختيار الصورة');
-    }
-  }
-
-  Widget _buildImageSourceOption({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: const Color(0xFF1F1F1F),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFB71C1C), width: 1),
-        ),
-        child: Column(
-          children: [
-            Icon(icon, color: const Color(0xFFB71C1C), size: 40),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: const TextStyle(color: Colors.white),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _pickImageFromSource(ImageSource source) async {
-    try {
-      // Try to request permissions, but continue even if denied
-      await _checkAndRequestPermissions(source);
-
-      // Show loading indicator
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('جاري اختيار الصورة...'),
-            duration: Duration(seconds: 1),
-          ),
-        );
-      }
-
-      final XFile? pickedFile = await _picker.pickImage(
-        source: source,
-        maxWidth: 1024,
-        maxHeight: 1024,
-        imageQuality: 85,
-      );
-
-      if (pickedFile != null) {
-        final file = File(pickedFile.path);
-
-        // Verify file exists and is readable
-        if (await file.exists()) {
-          setState(() {
-            _selectedImage = file;
-          });
-
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('تم اختيار الصورة بنجاح'),
-                backgroundColor: Colors.green,
-                duration: Duration(seconds: 2),
-              ),
-            );
-          }
-        } else {
-          _showErrorMessage('الملف المحدد غير موجود');
-        }
-      } else {
-        // User cancelled the picker
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('تم إلغاء اختيار الصورة'),
-              duration: Duration(seconds: 1),
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      _showErrorMessage('فشل في اختيار الصورة: ${e.toString()}');
-    }
-  }
-
-  Future<bool> _checkAndRequestPermissions(ImageSource source) async {
-    try {
-      if (source == ImageSource.camera) {
-        // Check camera permission
-        var cameraStatus = await Permission.camera.status;
-        if (cameraStatus.isDenied || cameraStatus.isRestricted) {
-          cameraStatus = await Permission.camera.request();
-        }
-        return cameraStatus.isGranted;
-      } else {
-        // For gallery access, try storage permission first (works on most Android versions)
-        var storageStatus = await Permission.storage.status;
-        if (storageStatus.isDenied || storageStatus.isRestricted) {
-          storageStatus = await Permission.storage.request();
-        }
-
-        // If storage permission granted, return true
-        if (storageStatus.isGranted) {
-          return true;
-        }
-
-        // Try photos permission for newer Android versions
-        var photosStatus = await Permission.photos.status;
-        if (photosStatus.isDenied || photosStatus.isRestricted) {
-          photosStatus = await Permission.photos.request();
-        }
-
-        // Return true if either permission is granted, or if we should try anyway
-        return storageStatus.isGranted || photosStatus.isGranted || storageStatus.isLimited || photosStatus.isLimited;
-      }
-    } catch (e) {
-      return false;
-    }
-  }
 
 
 
-  Future<String?> _uploadImageToFirebase(File imageFile) async {
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        _showErrorMessage('المستخدم غير مسجل الدخول');
-        return null;
-      }
 
-      // Show upload progress
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('جاري رفع الصورة...'),
-          backgroundColor: Color(0xFFB71C1C),
-          duration: Duration(seconds: 2),
-        ),
-      );
 
-      final storageRef = FirebaseStorage.instance
-          .ref()
-          .child('profile_pictures')
-          .child('${user.uid}_${DateTime.now().millisecondsSinceEpoch}.jpg');
 
-      final uploadTask = storageRef.putFile(imageFile);
-      final snapshot = await uploadTask;
-      final downloadUrl = await snapshot.ref.getDownloadURL();
 
-      // Show success message
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('تم رفع الصورة بنجاح'),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 2),
-          ),
-        );
-      }
 
-      return downloadUrl;
-    } catch (e) {
-      _showErrorMessage('فشل في رفع الصورة: ${e.toString()}');
-      return null;
-    }
-  }
+
+
+
 
   Future<void> _saveProfile() async {
     if (!_formKey.currentState!.validate()) {
@@ -699,23 +357,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         await user.updatePassword(_newPasswordController.text);
       }
 
-      // Upload profile picture if selected
-      String? photoURL = user.photoURL;
-      if (_selectedImage != null) {
-        photoURL = await _uploadImageToFirebase(_selectedImage!);
-        if (photoURL != null) {
-          await user.updatePhotoURL(photoURL);
-          // Also update the auth provider to refresh the UI
-          if (mounted) {
-            final authProvider = Provider.of<auth.AuthProvider>(context, listen: false);
-            await authProvider.refreshUser();
-          }
-        } else {
-          // Upload failed, don't proceed with saving other data
-          setState(() {
-            _isLoading = false;
-          });
-          return;
+      // Update profile picture if changed
+      String? photoURL = _profileImageUrl;
+      if (photoURL != null && photoURL != user.photoURL) {
+        await user.updatePhotoURL(photoURL);
+        // Also update the auth provider to refresh the UI
+        if (mounted) {
+          final authProvider = Provider.of<auth.AuthProvider>(context, listen: false);
+          await authProvider.refreshUser();
         }
       }
 
@@ -732,14 +381,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         updateData['profile.photoURL'] = photoURL; // Also update in profile sub-document
       }
 
-      await FirebaseAuthService.updateUserData(user.uid, updateData);
+      await FirebaseAuthService.updateUserData(user.uid, updateData, context);
 
-      _showSuccessMessage('تم حفظ التغييرات بنجاح');
+      _showSuccessMessage(AppLocalizations.of(context)!.changesSavedSuccess);
       if (mounted) {
         Navigator.pop(context);
       }
     } catch (e) {
-      _showErrorMessage('فشل في حفظ التغييرات: $e');
+      _showErrorMessage('${AppLocalizations.of(context)!.saveChangesFailed}: $e');
     } finally {
       setState(() {
         _isLoading = false;
@@ -752,7 +401,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(message),
-          backgroundColor: Colors.red,
+          backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
     }
